@@ -3,6 +3,7 @@ import { program } from 'commander';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { limiter } from './src/utils';
+import { AuthModule } from './src/auth/auth.module';
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ const HOST: string = process.env.HOST || 'localhost';
 app.get('/', (_req, res) => {
   res.sendStatus(200);
 });
+
+app.use('/auth', AuthModule);
 
 export const server = app.listen(PORT, () => {
   console.log(`Server listening on http://${HOST}:${PORT}`);
