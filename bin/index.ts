@@ -27,7 +27,7 @@ app.get('/', (_req, res) => {
   res.sendStatus(200);
 });
 
-app.use('/auth', AuthRouter);
+app.use('/auth', AuthRouter); // TODO: write tests
 
 export const server = app.listen(PORT, () => {
   console.log(`Server listening on http://${HOST}:${PORT}`);
