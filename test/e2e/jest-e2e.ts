@@ -155,7 +155,7 @@ const config = {
   // ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  testRegex: '/bin/e2e/.*\\.(e2e-test|e2e-spec).(ts|js)$',
+  testRegex: '/e2e/.*\\.(e2e-test|e2e-spec).(ts|js)$',
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,

@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import supertest from 'supertest';
-import { app, server } from '../index';
+import { app, server } from '../../bin';
 
 dotenv.config();
 
