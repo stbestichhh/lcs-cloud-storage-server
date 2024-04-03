@@ -2,13 +2,16 @@
   "name": "cloud-storage",
   "version": "0.0.1-alpha",
   "description": "Local cloud storage with authentication",
-  "main": "./bin/index.ts",
+  "main": "bin/index.ts",
+  "bin": {
+    "lcs": "bin/index.ts"
+  },
   "repository": "https://github.com/stbestichhh/cloud-storage.git",
   "author": "Kiril Yakymchuk <stbestich@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node ./bin/index.ts",
-    "start:watch": "nodemon ./bin/index.ts",
+    "start": "ts-node bin/index.ts",
+    "start:watch": "nodemon bin/index.ts",
     "format": "prettier . --write",
     "test": "jest",
     "lint": "eslint ."
@@ -26,6 +29,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
+    "commander": "^12.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
   }
