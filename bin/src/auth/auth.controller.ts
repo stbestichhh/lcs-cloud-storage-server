@@ -1,16 +1,14 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
-import { AuthService } from './auth.service';
+import { signin, signup } from './auth.service';
 
 dotenv.config();
 
-export class AuthController {
-  constructor(private authService: AuthService) {}
-  async singup (req: Request, res: Response) {
-    return this.authService.signup(req, res);
+  export const _signup = async (req: Request, res: Response) => {
+    return signup(req, res);
   }
 
-  async signin(req: Request, res: Response) {
-    return this.authService.signin(req, res);
+  export const _signin = async (req: Request, res: Response) => {
+    return signin(req, res);
   }
-}
+

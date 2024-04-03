@@ -3,7 +3,7 @@ import { program } from 'commander';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { limiter } from './src/utils';
-import { AuthModule } from './src/auth/auth.module';
+import { AuthRouter } from './src/auth/auth.module';
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ app.get('/', (_req, res) => {
   res.sendStatus(200);
 });
 
-app.use('/auth', AuthModule);
+app.use('/auth', AuthRouter);
 
 export const server = app.listen(PORT, () => {
   console.log(`Server listening on http://${HOST}:${PORT}`);
