@@ -6,7 +6,7 @@ import { limiter } from './src/utils';
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(limiter);
@@ -14,6 +14,7 @@ app.use(limiter);
 program.version('0.0.1-alpha', '-v, --version', 'Current version');
 program
   .option('-p, --port <port>', 'Tell program which port to use.')
+  .allowUnknownOption()
   .parse(process.argv);
 
 const options = program.opts();
@@ -21,10 +22,10 @@ const options = program.opts();
 const PORT: number = options.port || process.env.PORT || 9110;
 const HOST: string = process.env.HOST || 'localhost';
 
-app.get('', (_req, res) => {
+app.get('/', (_req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(PORT, () => {
+export const server = app.listen(PORT, () => {
   console.log(`Server listening on http://${HOST}:${PORT}`);
 });

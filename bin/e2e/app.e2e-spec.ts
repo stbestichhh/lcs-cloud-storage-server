@@ -1,11 +1,17 @@
-import * as pactum from 'pactum';
+import dotenv from 'dotenv';
+import supertest from 'supertest';
+import { app, server } from '../index';
+
+dotenv.config();
 
 describe('App', () => {
-  pactum.request.setBaseUrl('http://localhost:9110');
+  afterAll(async () => {
+    server.close();
+  });
 
   describe('GET /', () => {
     it('Should response with status OK', async () => {
-      await pactum.spec().get('/').expectStatus(200);
+      return supertest(app).get('/').expect(200);
     });
   });
 });
