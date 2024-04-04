@@ -26,8 +26,7 @@ export const signup = async (req: Request, res: Response) => {
       const userRow = path.join(tableName, user.email);
       await db.push(userRow, user, false);
 
-      const authentication_token = await signToken(user);
-      return res.status(201).json({ authentication_token });
+      return res.status(201).json({ message: 'Successfully signed up.' });
     },
   );
 };
@@ -37,7 +36,7 @@ export const signin = async (req: Request, res: Response) => {
     const email = req.body.email;
     const password = req.body.password;
     const userRow = path.join(tableName, email);
-    const user: UserDto = await db.getObject<UserDto>(userRow)
+    const user: UserDto = await db.getObject<UserDto>(userRow);
     bcrypt.compare(password, user.password, async (error, same) => {
       await handleError(error, 500, res);
       if (same) {
@@ -47,7 +46,7 @@ export const signin = async (req: Request, res: Response) => {
       return res.status(400).json({ Error: 'Credentials are incorrect.' });
     });
   } catch (error) {
-    await handleError(error, 404, res);
+    await handleError(error, 404, res, 'Credentials are incorrect.');
   }
 };
 

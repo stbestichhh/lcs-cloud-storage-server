@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { limiter } from './src/utils';
 import { AuthRouter } from './src/auth/auth.module';
+import { loginValidation } from './src/middleware';
 
 dotenv.config();
 
@@ -24,6 +25,10 @@ const PORT: number = options.port || process.env.PORT || 9110;
 const HOST: string = process.env.HOST || 'localhost';
 
 app.get('/', (_req, res) => {
+  res.sendStatus(200);
+});
+
+app.get('/protected', loginValidation, (_req, res) => {
   res.sendStatus(200);
 });
 

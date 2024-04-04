@@ -6,6 +6,8 @@ import { UserDto } from '../../bin/src/auth/dto';
 dotenv.config();
 
 describe('App', () => {
+  let auth_token = '';
+
   afterAll(async () => {
     server.close();
   });
@@ -37,7 +39,8 @@ describe('App', () => {
             email: 'wrongemailformat.com',
             password: user.password,
             password_repeat: user.password,
-          }).expect(400);
+          })
+          .expect(400);
       });
 
       it('Should signup', async () => {
@@ -48,7 +51,8 @@ describe('App', () => {
             email: user.email,
             password: user.password,
             password_repeat: user.password,
-          }).expect(201);
+          })
+          .expect(201);
       });
     });
 
@@ -63,7 +67,8 @@ describe('App', () => {
           .send({
             email: 'wrongemailformat.com',
             password: user.password,
-          }).expect(400);
+          })
+          .expect(400);
       });
 
       it('Should throw if email not exists in database', async () => {
@@ -72,16 +77,32 @@ describe('App', () => {
           .send({
             email: 'wrongemail@email.com',
             password: user.password,
-          }).expect(404);
+          })
+          .expect(404);
       });
 
       it('Should signin', async () => {
+        const response = await supertest(app).post('/auth/signin').send({
+          email: user.email,
+          password: user.password,
+        });
+
+        auth_token = response.body.authentication_token;
+
+        expect(response.statusCode).toBe(200);
+      });
+    });
+
+    describe('GET /protected', () => {
+      it('Should throw if not logged in', async () => {
+        return supertest(app).get('/protected').expect(401);
+      });
+
+      it('Should response with status OK if logged in', async () => {
         return supertest(app)
-          .post('/auth/signin')
-          .send({
-            email: user.email,
-            password: user.password,
-          }).expect(200);
+          .get('/protected')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(200);
       });
     });
   });
