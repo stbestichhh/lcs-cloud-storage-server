@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { handleError } from '../../utils';
 
-interface IUserRequest extends Request {
-  user: JwtPayload;
+declare module "express-serve-static-core" {
+  interface Request {
+    user: JwtPayload;
+  }
 }
 
 export const loginValidation = async (
@@ -25,7 +27,7 @@ export const loginValidation = async (
   }
   jwt.verify(token, jwt_key, async (error: unknown, decoded: unknown) => {
     await handleError(error, 500, res);
-    (req as IUserRequest).user = (decoded as JwtPayload);
+    req.user = decoded as JwtPayload;
     next();
   });
 };
