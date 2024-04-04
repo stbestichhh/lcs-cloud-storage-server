@@ -3,7 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 
 export const signinValidation = [
   body('email').isEmail().withMessage('Wrong email format.'),
-  body('password').isString().isLength({ min: 6 }).withMessage('Pussword must be 6 or more characters length.'),
+  body('password')
+    .isString()
+    .isLength({ min: 6 })
+    .withMessage('Pussword must be 6 or more characters length.'),
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -13,5 +16,5 @@ export const signinValidation = [
     }
 
     next();
-  }
+  },
 ];

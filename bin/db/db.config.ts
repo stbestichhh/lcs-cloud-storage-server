@@ -6,7 +6,7 @@ import * as os from 'os';
 dotenv.config();
 
 const dbName = process.env.DB_NAME || 'lcs_db';
-const dbPath = path.join(os.homedir(), dbName);
+const dbPath = path.join(os.homedir(), '.lcs', dbName);
 const saveOnPush = true;
 
 const config = new Config(dbPath, saveOnPush);

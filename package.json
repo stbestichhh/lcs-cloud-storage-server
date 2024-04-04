@@ -13,12 +13,13 @@
     "start": "ts-node bin/index.ts",
     "start:watch": "nodemon bin/index.ts",
     "format": "prettier . --write",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config test/e2e/jest-e2e.ts",
-    "test:e2e:watch": "jest --config test/e2e/jest-e2e.ts --watch",
-    "lint": "eslint ."
+    "test:e2e:watch": "jest --config test/e2e/jest-e2e.ts --watch"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
