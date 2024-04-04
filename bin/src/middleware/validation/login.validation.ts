@@ -8,26 +8,50 @@ declare module "express-serve-static-core" {
   }
 }
 
+export const extractToken = (header: string): string => {
+  const parts = header.split(' ');
+
+  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+    throw new Error('Invalid authorization header format.');
+  }
+
+  return parts[1];
+}
+
+const verifyToken = async (token: string, jwt_key: string): Promise<JwtPayload> => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, jwt_key, (error, decoded) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(decoded as JwtPayload);
+    });
+  });
+}
+
 export const loginValidation = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  if (!req.headers.authorization) {
-    return res.status(401).json({ error: 'Unauthorized.' });
-  }
-
-  const header = req.headers.authorization || req.cookies.auth;
-  const token = header.split(' ')[1];
   const jwt_key = process.env.SECRET_KEY;
   if (!jwt_key) {
     throw new Error(
       `No jwt_key for authentication provided. Run lcs --config SECRET_KEY=""`,
     );
   }
-  jwt.verify(token, jwt_key, async (error: unknown, decoded: unknown) => {
-    await handleError(error, 500, res);
-    req.user = decoded as JwtPayload;
+
+  try {
+    const header = req.headers.authorization;
+    if (!header) {
+      return res.status(401).json({ error: 'Unauthorized.' });
+    }
+
+    const token = extractToken(header);
+
+    req.user = await verifyToken(token, jwt_key);
     next();
-  });
+  } catch (error) {
+    await handleError(error, 500, res);
+  }
 };
