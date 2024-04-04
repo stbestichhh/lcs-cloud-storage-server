@@ -6,10 +6,8 @@ export const handleError = async (
   res: Response,
   message?: string,
 ) => {
-  if (error) {
-    if (error instanceof Error) {
-      console.log(error);
-      return res.status(code).json({ error: message });
-    }
+  if (error && error instanceof Error) {
+    console.log(error);
+    return res.status(code).json({ error: message });
   }
 };
