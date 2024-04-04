@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from './dto';
 import bcrypt from 'bcrypt';
 import path from 'path';
-import { markAsUntransferable } from 'node:worker_threads';
 
 export const signup = async (req: Request, res: Response) => {
   try {
@@ -63,7 +62,7 @@ export const signToken = async (user: UserDto): Promise<string> => {
   return jwt.sign(payload, jwt_key, { expiresIn: '30d' });
 };
 
-export const hashPassword = async (password:string): Promise<string> => {
+export const hashPassword = async (password: string): Promise<string> => {
   const hashRounds = 10;
   return bcrypt.hash(password, hashRounds);
-}
+};

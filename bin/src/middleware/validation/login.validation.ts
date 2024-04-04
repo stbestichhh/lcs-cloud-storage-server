@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { handleError } from '../../utils';
 
-declare module "express-serve-static-core" {
+declare module 'express-serve-static-core' {
   interface Request {
     user: JwtPayload;
   }
@@ -16,9 +16,12 @@ export const extractToken = (header: string): string => {
   }
 
   return parts[1];
-}
+};
 
-const verifyToken = async (token: string, jwt_key: string): Promise<JwtPayload> => {
+const verifyToken = async (
+  token: string,
+  jwt_key: string,
+): Promise<JwtPayload> => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, jwt_key, (error, decoded) => {
       if (error) {
@@ -27,7 +30,7 @@ const verifyToken = async (token: string, jwt_key: string): Promise<JwtPayload> 
       resolve(decoded as JwtPayload);
     });
   });
-}
+};
 
 export const loginValidation = async (
   req: Request,
