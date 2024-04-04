@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import { handleError } from '../../utils';
 
 interface IUserRequest extends Request {
-  user: unknown;
+  user: JwtPayload;
 }
 
 export const loginValidation = async (
@@ -25,8 +25,7 @@ export const loginValidation = async (
   }
   jwt.verify(token, jwt_key, async (error: unknown, decoded: unknown) => {
     await handleError(error, 500, res);
-    console.log(decoded);
-    (req as IUserRequest).user = decoded;
+    (req as IUserRequest).user = (decoded as JwtPayload);
     next();
   });
 };
