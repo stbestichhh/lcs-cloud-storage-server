@@ -1,14 +1,15 @@
 import { Response } from 'express';
 
 export const handleError = async (
-  error: Error | undefined,
+  error: unknown,
   code: number,
   res: Response,
   message?: string,
 ) => {
   if (error) {
-    res.status(code).json({ error: message });
-    throw error;
+    if (error instanceof Error) {
+      console.log(error);
+      return res.status(code).json({ error: message });
+    }
   }
-  return;
 };

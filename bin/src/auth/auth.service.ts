@@ -27,24 +27,28 @@ export const signup = async (req: Request, res: Response) => {
       await db.push(userRow, user, false);
 
       const authentication_token = await signToken(user);
-      return res.status(200).json({ authentication_token });
+      return res.status(201).json({ authentication_token });
     },
   );
 };
 
 export const signin = async (req: Request, res: Response) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  const userRow = path.join(tableName, email);
-  const user: UserDto = await db.getObject<UserDto>(userRow);
-  bcrypt.compare(password, user.password, async (error, same) => {
-    await handleError(error, 500, res);
-    if (same) {
-      const authentication_token = await signToken(user);
-      return res.status(200).json({ authentication_token });
-    }
-    return res.status(400).jsonp({ Error: 'Credentials are incorrect.' });
-  });
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+    const userRow = path.join(tableName, email);
+    const user: UserDto = await db.getObject<UserDto>(userRow)
+    bcrypt.compare(password, user.password, async (error, same) => {
+      await handleError(error, 500, res);
+      if (same) {
+        const authentication_token = await signToken(user);
+        return res.status(200).json({ authentication_token });
+      }
+      return res.status(400).json({ Error: 'Credentials are incorrect.' });
+    });
+  } catch (error) {
+    await handleError(error, 404, res);
+  }
 };
 
 export const signToken = async (user: UserDto) => {

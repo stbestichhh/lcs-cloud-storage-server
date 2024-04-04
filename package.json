@@ -15,11 +15,11 @@
     "format": "prettier . --write",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "dotenv -e .env.test.local -- jest",
-    "test:watch": "dotenv -e .env.test.local -- jest --watch",
-    "test:cov": "dotenv -e .env.test.local -- jest --coverage",
-    "test:e2e": "dotenv -e .env.test.local -- jest --config test/e2e/jest-e2e.ts",
-    "test:e2e:watch": "dotenv -e .env.test.local -- jest --config test/e2e/jest-e2e.ts --watch"
+    "test": "dotenv -e .env.test -- jest",
+    "test:watch": "dotenv -e .env.test -- jest --watch",
+    "test:cov": "dotenv -e .env.test -- jest --coverage",
+    "test:e2e": "dotenv -e .env.test -- jest --config test/e2e/jest-e2e.ts",
+    "test:e2e:watch": "dotenv -e .env.test -- jest --config test/e2e/jest-e2e.ts --watch"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
