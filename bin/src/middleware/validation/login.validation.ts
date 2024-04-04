@@ -2,6 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { handleError } from '../../utils';
 
+interface IUserRequest extends Request {
+  user: unknown;
+}
+
 export const loginValidation = async (
   req: Request,
   res: Response,
@@ -21,13 +25,8 @@ export const loginValidation = async (
   }
   jwt.verify(token, jwt_key, async (error: unknown, decoded: unknown) => {
     await handleError(error, 500, res);
-    req.user = decoded;
+    console.log(decoded);
+    (req as IUserRequest).user = decoded;
     next();
   });
 };
-
-declare module 'express-serve-static-core' {
-  interface Request {
-    user: unknown;
-  }
-}

@@ -6,7 +6,7 @@ export const signinValidation = [
   body('password')
     .isString()
     .isLength({ min: 6 })
-    .withMessage('Pussword must be 6 or more characters length.'),
+    .withMessage('Password must be 6 or more characters length.'),
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
