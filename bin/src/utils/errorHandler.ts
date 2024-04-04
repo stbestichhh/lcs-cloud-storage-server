@@ -10,4 +10,5 @@ export const handleError = async (
     res.status(code).json({ error: message });
     throw error;
   }
+  return;
 };

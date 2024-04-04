@@ -1,1 +1,0 @@
-it('Should be defined', () => {});

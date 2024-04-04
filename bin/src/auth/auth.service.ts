@@ -47,7 +47,7 @@ export const signin = async (req: Request, res: Response) => {
   });
 };
 
-const signToken = async (user: UserDto) => {
+export const signToken = async (user: UserDto) => {
   const payload: JwtPayload = {
     sub: user.uuid,
     email: user.email,
