@@ -44,7 +44,7 @@ export const signin = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     const userRow = path.join(tableName, email);
-    const user: UserDto = await db.getObjectDefault<UserDto>(userRow);
+    const user: UserDto = await db.getObject<UserDto>(userRow);
 
     const match = await bcrypt.compare(password, user.password);
 
@@ -54,7 +54,7 @@ export const signin = async (req: Request, res: Response) => {
     }
     return res.status(400).json({ Error: 'Credentials are incorrect.' });
   } catch (error) {
-    await handleError(error, 404, res, 'Credentials are incorrect.');
+    await handleError(error, 404, res, 'Not found');
   }
 };
 

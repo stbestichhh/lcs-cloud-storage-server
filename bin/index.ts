@@ -6,6 +6,7 @@ import cors from 'cors';
 import { limiter } from './src/utils';
 import { AuthRouter } from './src/auth/auth.module';
 import { loginValidation } from './src/middleware';
+import { _getUser } from './src/auth/auth.controller';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.get('/protected', loginValidation, (_req, res) => {
   res.sendStatus(200);
 });
 
+app.get('/me', loginValidation, _getUser);
 app.use('/auth', AuthRouter);
 
 export const server = app.listen(PORT, () => {

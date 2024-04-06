@@ -111,8 +111,9 @@ describe('App', () => {
       });
 
       it('User ditectory should exists', async () => {
-        const resUser = await supertest(app).get('/auth/me').set('Authorization', `Bearer ${auth_token}`);
+        const resUser = await supertest(app).get('/me').set('Authorization', `Bearer ${auth_token}`);
         const userUuid: string = String(resUser.body.sub);
+        expect(resUser.statusCode).toBe(200);
         return expect(fs.existsSync(path.join(storageRoot, userUuid))).toBeTruthy();
       });
     });

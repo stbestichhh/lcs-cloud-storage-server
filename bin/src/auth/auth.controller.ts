@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
-import { getUser, signin, signup } from './auth.service';
+import { signin, signup, getUser } from './auth.service';
 
 dotenv.config();
 
