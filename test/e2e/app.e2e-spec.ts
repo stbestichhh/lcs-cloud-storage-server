@@ -6,7 +6,6 @@ import { db, tableName } from '../../bin/db';
 import * as fs from 'fs';
 import path from 'path';
 import { storageRoot } from '../../bin/src/filesystem';
-import { JwtPayload } from 'jsonwebtoken';
 
 dotenv.config();
 
