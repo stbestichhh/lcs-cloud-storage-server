@@ -3,6 +3,10 @@ import supertest from 'supertest';
 import { app, server } from '../../bin';
 import { UserDto } from '../../bin/src/auth/dto';
 import { db, tableName } from '../../bin/db';
+import * as fs from 'fs';
+import path from 'path';
+import { storageRoot } from '../../bin/src/filesystem';
+import { JwtPayload } from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -104,6 +108,12 @@ describe('App', () => {
         auth_token = response.body.authentication_token;
 
         expect(response.statusCode).toBe(200);
+      });
+
+      it('User ditectory should exists', async () => {
+        const resUser = await supertest(app).get('/auth/me').set('Authorization', `Bearer ${auth_token}`);
+        const userUuid: string = String(resUser.body.sub);
+        return expect(fs.existsSync(path.join(storageRoot, userUuid))).toBeTruthy();
       });
     });
 

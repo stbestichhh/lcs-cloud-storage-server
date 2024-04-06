@@ -1,6 +1,7 @@
 import { hashPassword, signToken } from '../../bin/src/auth/auth.service';
 import { UserDto } from '../../bin/src/auth/dto';
 import { extractToken } from '../../bin/src/middleware';
+import { FolderService, storageRoot } from '../../bin/src/filesystem';
 
 describe('Auth service', () => {
   const user: UserDto = {

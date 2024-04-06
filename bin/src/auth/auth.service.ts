@@ -6,24 +6,30 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from './dto';
 import bcrypt from 'bcrypt';
 import path from 'path';
+import { FolderService, storageRoot } from '../filesystem';
+
+export const getUser = async (req: Request, res: Response) => {
+  return res.status(200).json(req.user);
+}
 
 export const signup = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
     const hash = await hashPassword(password);
 
-    const dto: UserDto = {
+    const userDto: UserDto = {
       uuid: uuidv4(),
       name,
       email,
       password: hash,
     };
 
-    const userRow = path.join(tableName, dto.email);
+    const userRow = path.join(tableName, userDto.email);
     const user: UserDto | boolean = await db.getObjectDefault<UserDto | boolean>(userRow, false);
 
     if (!user) {
-      await db.push(userRow, dto);
+      await db.push(userRow, userDto);
+      await createUserDirectory(userDto);
       return res.status(201).json({ message: 'Successfully signed up.' });
     }
 
@@ -71,3 +77,7 @@ export const hashPassword = async (password: string): Promise<string> => {
   const hashRounds = 10;
   return bcrypt.hash(password, hashRounds);
 };
+
+export const createUserDirectory = async (userDto: UserDto): Promise<string | undefined> => {
+  return await new FolderService(userDto.uuid).create(storageRoot);
+}
