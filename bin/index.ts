@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 import express from 'express';
 import { program } from 'commander';
 import dotenv from 'dotenv';
@@ -13,8 +14,10 @@ app.use(express.json());
 app.use(cors());
 app.use(limiter);
 
-program.version('0.0.1-alpha', '-v, --version', 'Current version');
+
 program
+  .version('0.0.1-alpha.1')
+  .description('Local cloud storage with authentication')
   .option('-p, --port <port>', 'Tell program which port to use.')
   .allowUnknownOption()
   .parse(process.argv);
