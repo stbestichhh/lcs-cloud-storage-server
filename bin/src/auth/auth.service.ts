@@ -12,17 +12,22 @@ export const signup = async (req: Request, res: Response) => {
     const { name, email, password } = req.body;
     const hash = await hashPassword(password);
 
-    const user: UserDto = {
+    const dto: UserDto = {
       uuid: uuidv4(),
       name,
       email,
       password: hash,
     };
 
-    const userRow = path.join(tableName, user.email);
-    await db.push(userRow, user, false);
+    const userRow = path.join(tableName, dto.email);
+    const user: UserDto | boolean = await db.getObjectDefault<UserDto | boolean>(userRow, false);
 
-    return res.status(201).json({ message: 'Successfully signed up.' });
+    if (!user) {
+      await db.push(userRow, dto);
+      return res.status(201).json({ message: 'Successfully signed up.' });
+    }
+
+    return res.status(403).json({ error: 'Email already registered.' });
   } catch (error) {
     await handleError(error, 500, res);
   }
@@ -33,13 +38,13 @@ export const signin = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     const userRow = path.join(tableName, email);
-    const user: UserDto = await db.getObject<UserDto>(userRow);
+    const user: UserDto = await db.getObjectDefault<UserDto>(userRow);
 
     const match = await bcrypt.compare(password, user.password);
 
     if (match) {
       const authentication_token = await signToken(user);
-      return res.status(200).json({ authentication_token });
+      return res.status(200).json({ message: 'Successfully signed in.', authentication_token });
     }
     return res.status(400).json({ Error: 'Credentials are incorrect.' });
   } catch (error) {

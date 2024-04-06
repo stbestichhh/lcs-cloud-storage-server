@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import supertest from 'supertest';
 import { app, server } from '../../bin';
 import { UserDto } from '../../bin/src/auth/dto';
+import { db, tableName } from '../../bin/db';
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ describe('App', () => {
 
   afterAll(async () => {
     server.close();
+    await db.delete(tableName);
   });
 
   describe('GET /', () => {
@@ -53,6 +55,18 @@ describe('App', () => {
             password_repeat: user.password,
           })
           .expect(201);
+      });
+
+      it('Should throw if user with the same email already exists', async () => {
+        return supertest(app)
+          .post('/auth/signup')
+          .send({
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            password_repeat: user.password,
+          })
+          .expect(403);
       });
     });
 
