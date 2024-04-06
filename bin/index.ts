@@ -15,7 +15,6 @@ app.use(express.json());
 app.use(cors());
 app.use(limiter);
 
-
 program
   .version('0.0.1-alpha.1')
   .description('Local cloud storage with authentication')

@@ -2,7 +2,7 @@ import * as fs from 'fs/promises';
 import path from 'path';
 import { PathLike } from 'node:fs';
 
-export class FolderService{
+export class FolderService {
   public readonly name: string;
 
   constructor(name: string) {

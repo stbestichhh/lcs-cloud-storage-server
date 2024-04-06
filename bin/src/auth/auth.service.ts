@@ -10,7 +10,7 @@ import { FolderService, storageRoot } from '../filesystem';
 
 export const getUser = async (req: Request, res: Response) => {
   return res.status(200).json(req.user);
-}
+};
 
 export const signup = async (req: Request, res: Response) => {
   try {
@@ -25,7 +25,9 @@ export const signup = async (req: Request, res: Response) => {
     };
 
     const userRow = path.join(tableName, userDto.email);
-    const user: UserDto | boolean = await db.getObjectDefault<UserDto | boolean>(userRow, false);
+    const user: UserDto | boolean = await db.getObjectDefault<
+      UserDto | boolean
+    >(userRow, false);
 
     if (!user) {
       await db.push(userRow, userDto);
@@ -50,7 +52,9 @@ export const signin = async (req: Request, res: Response) => {
 
     if (match) {
       const authentication_token = await signToken(user);
-      return res.status(200).json({ message: 'Successfully signed in.', authentication_token });
+      return res
+        .status(200)
+        .json({ message: 'Successfully signed in.', authentication_token });
     }
     return res.status(400).json({ Error: 'Credentials are incorrect.' });
   } catch (error) {
@@ -78,6 +82,8 @@ export const hashPassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, hashRounds);
 };
 
-export const createUserDirectory = async (userDto: UserDto): Promise<string | undefined> => {
+export const createUserDirectory = async (
+  userDto: UserDto,
+): Promise<string | undefined> => {
   return await new FolderService(userDto.uuid).create(storageRoot);
-}
+};

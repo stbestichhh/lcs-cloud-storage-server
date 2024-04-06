@@ -14,4 +14,4 @@ export const _signin = async (req: Request, res: Response) => {
 
 export const _getUser = async (req: Request, res: Response) => {
   return getUser(req, res);
-}
+};
