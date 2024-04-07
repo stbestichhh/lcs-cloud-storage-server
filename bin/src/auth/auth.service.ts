@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from './dto';
 import bcrypt from 'bcrypt';
 import path from 'path';
-import { FolderService, storageRoot } from '../filesystem';
+import { Folder, storageRoot } from '../filesystem';
 
 export const getUser = async (req: Request, res: Response) => {
   return res.status(200).json(req.user);
@@ -31,7 +31,7 @@ export const signup = async (req: Request, res: Response) => {
 
     if (!user) {
       await db.push(userRow, userDto);
-      await createUserDirectory(userDto);
+      await createUserDirectory(userDto.uuid);
       return res.status(201).json({ message: 'Successfully signed up.' });
     }
 
@@ -83,7 +83,7 @@ export const hashPassword = async (password: string): Promise<string> => {
 };
 
 export const createUserDirectory = async (
-  userDto: UserDto,
+  name: string,
 ): Promise<string | undefined> => {
-  return await new FolderService(userDto.uuid).create(storageRoot);
+  return await new Folder(name).create(storageRoot);
 };
