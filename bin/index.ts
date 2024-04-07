@@ -4,9 +4,8 @@ import { program } from 'commander';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { limiter } from './src/utils';
-import { AuthRouter } from './src/auth/auth.module';
+import { AuthRouter, _getUser } from './src/auth/auth.module';
 import { loginValidation } from './src/middleware';
-import { _getUser } from './src/auth/auth.controller';
 
 dotenv.config();
 
@@ -16,7 +15,7 @@ app.use(cors());
 app.use(limiter);
 
 program
-  .version('0.0.1-alpha.1')
+  .version('0.0.1-alpha.2')
   .description('Local cloud storage with authentication')
   .option('-p, --port <port>', 'Tell program which port to use.')
   .allowUnknownOption()
