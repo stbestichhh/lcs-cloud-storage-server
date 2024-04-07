@@ -18,6 +18,6 @@ export class Folder {
   }
 
   static async delete(dirpath: PathLike): Promise<void> {
-    return await fs.unlink(dirpath);
+    return await fs.rm(dirpath, { recursive: true, force: true });
   }
 }

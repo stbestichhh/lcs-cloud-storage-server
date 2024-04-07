@@ -5,16 +5,25 @@ import { UserDto } from '../../bin/src/auth/dto';
 import { db, tableName } from '../../bin/db';
 import * as fs from 'fs';
 import path from 'path';
-import { storageRoot } from '../../bin/src/filesystem';
+import { Folder, storageRoot } from '../../bin/src/filesystem';
 
 dotenv.config();
 
 describe('App', () => {
   let auth_token = '';
+  let userUuid: string;
+
+  const user: UserDto = {
+    uuid: 'uuid',
+    name: 'username',
+    email: 'email@email.com',
+    password: 'userpass',
+  };
 
   afterAll(async () => {
     server.close();
     await db.delete(tableName);
+    await Folder.delete(path.join(storageRoot, userUuid));
   });
 
   describe('GET /', () => {
@@ -24,13 +33,6 @@ describe('App', () => {
   });
 
   describe('Auth', () => {
-    const user: UserDto = {
-      uuid: 'uuid',
-      name: 'username',
-      email: 'email@email.com',
-      password: 'userpass',
-    };
-
     describe('Signup', () => {
       it('Should throw if no data provided', async () => {
         return supertest(app).post('/auth/signup').expect(400);
@@ -113,7 +115,7 @@ describe('App', () => {
         const resUser = await supertest(app)
           .get('/me')
           .set('Authorization', `Bearer ${auth_token}`);
-        const userUuid: string = String(resUser.body.sub);
+        userUuid = String(resUser.body.sub);
         expect(resUser.statusCode).toBe(200);
         return expect(
           fs.existsSync(path.join(storageRoot, userUuid)),
