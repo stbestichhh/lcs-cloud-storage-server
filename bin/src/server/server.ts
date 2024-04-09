@@ -6,6 +6,7 @@ import { options } from '../cli';
 import { loginValidation } from '../middleware';
 import { _getUser } from '../auth/auth.controller';
 import { AuthRouter } from '../auth/auth.module';
+import { FilesystemRouter } from '../filesystem/filesystem.router';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.get('/protected', loginValidation, (_req, res) => {
 
 app.get('/me', loginValidation, _getUser);
 app.use('/auth', AuthRouter);
+app.use('/storage', FilesystemRouter);
 
 export const server = app.listen(PORT, () => {
   console.log(`Server listening on http://${HOST}:${PORT}`);
