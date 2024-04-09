@@ -1,5 +1,8 @@
 import { Response } from 'express';
 import { handleError } from '../../bin/src/utils';
+import { extractPath, fsCommand } from '../../bin/src/utils/pathFromUrl';
+import path from 'path';
+import { storageRoot } from '../../bin/src/filesystem';
 
 describe('Utils', () => {
   describe('handleError', () => {
@@ -32,6 +35,20 @@ describe('Utils', () => {
 
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Exract path from url', () => {
+    it('Should return extracted path', async () => {
+      expect(extractPath('/ls/path/to-dir', fsCommand.ls)).toBe(storageRoot + '/path/to-dir');
+    });
+
+    it('Should return extracted path', async () => {
+      expect(extractPath('/upload/path/to-dir', fsCommand.upload)).toBe(storageRoot + '/path/to-dir');
+    });
+
+    it('Should return wrong path', async () => {
+      expect(extractPath('/upload/path/to-dir', fsCommand.mv)).toBe(storageRoot + '/upload/path/to-dir');
     });
   });
 });
