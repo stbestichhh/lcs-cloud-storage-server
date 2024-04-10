@@ -20,11 +20,13 @@ export type fsCommandType =
 
 export const extractPath = (
   pathUrl: string,
+  userDir: string,
   command: fsCommandType,
   name?: string,
 ): string => {
   return path.join(
     storageRoot,
+    userDir,
     pathUrl.replace(command, ''),
     typeof name === 'string' ? name : '',
   );
