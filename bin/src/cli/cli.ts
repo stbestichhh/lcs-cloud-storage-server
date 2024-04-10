@@ -2,7 +2,7 @@
 import { program } from 'commander';
 
 program
-  .version('0.0.1-alpha.beta')
+  .version('0.0.1-alpha.beta.1')
   .description('Local cloud storage with authentication')
   .option('-p, --port <port>', 'Tell program which port to use.')
   .allowUnknownOption()
