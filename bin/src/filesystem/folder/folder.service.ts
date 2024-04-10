@@ -9,7 +9,7 @@ export const listdir = async (req: Request, res: Response) => {
   try {
     const userDir = req.user.sub;
     if (!userDir) {
-      return res.status(404).json({ error: 'Forbidden' });
+      return res.status(404).json({ error: 'Forbidden.' });
     }
 
     const dirpath = extractPath(req.path, userDir, fsCommand.ls);
@@ -24,10 +24,13 @@ export const makedir = async (req: Request, res: Response) => {
   try {
     const userDir = req.user.sub;
     if (!userDir) {
-      return res.status(404).json({ error: 'Forbidden' });
+      return res.status(400).json({ error: 'Forbidden.' });
     }
 
     const dirpath = extractPath(req.path, userDir, fsCommand.md);
+    if (!req.body.dirname || req.body.dirname === '') {
+      return res.status(400).json({ error: 'Provide a directory name.' });
+    }
     const dir = new Folder(req.body.dirname);
     const directory = await dir.create(dirpath);
     return res.status(201).json({ directory });
