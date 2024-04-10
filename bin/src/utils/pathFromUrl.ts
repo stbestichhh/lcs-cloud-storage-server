@@ -3,7 +3,7 @@ import { storageRoot } from '../filesystem';
 
 export enum fsCommand {
   ls = '/ls/',
-  md = '/md',
+  md = '/md/',
   mv = '/mv/',
   rm = '/rm/',
   rmrf = '/rmrf/',
