@@ -6,6 +6,7 @@ import {
   _removedir,
   _move,
 } from './folder/folder.controller';
+import { _remove } from './file/file.controller';
 
 export const FilesystemRouter = express.Router();
 
@@ -19,4 +20,4 @@ FilesystemRouter.delete('/rmrf/*', _removedir);
 
 // File routes
 FilesystemRouter.post('/upload/*');
-FilesystemRouter.delete('/rm/*');
+FilesystemRouter.delete('/rm/*', _remove);
