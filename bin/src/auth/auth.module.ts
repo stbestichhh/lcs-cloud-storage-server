@@ -7,3 +7,5 @@ export const AuthRouter = express.Router();
 
 AuthRouter.post('/signup', signupValidation, _signup);
 AuthRouter.post('/signin', signinValidation, _signin);
+
+//! File should be renamed with the name that describes what it does

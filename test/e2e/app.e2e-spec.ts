@@ -23,7 +23,7 @@ describe('App', () => {
   afterAll(async () => {
     server.close();
     await db.delete(tableName);
-    await Folder.delete(path.join(storageRoot, userUuid));
+    await Folder.remove(path.join(storageRoot, userUuid));
   });
 
   describe('GET /', () => {

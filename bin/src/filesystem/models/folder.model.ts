@@ -19,7 +19,11 @@ export class Folder {
     return await fs.readdir(dirpath);
   }
 
-  static async delete(dirpath: PathLike): Promise<void> {
+  static async move(dirpath: PathLike, newDirpath: PathLike): Promise<void> {
+    return await fs.rename(dirpath, newDirpath);
+  }
+
+  static async remove(dirpath: PathLike): Promise<void> {
     return await fs.rm(dirpath, { recursive: true, force: true });
   }
 }
