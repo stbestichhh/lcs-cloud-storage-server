@@ -7,6 +7,7 @@ import {
   _move,
 } from './folder/folder.controller';
 import { _remove } from './file/file.controller';
+import { upload } from './filesystem.config';
 
 export const FilesystemRouter = express.Router();
 
@@ -19,5 +20,7 @@ FilesystemRouter.put('/mv/*', _move);
 FilesystemRouter.delete('/rmrf/*', _removedir);
 
 // File routes
-FilesystemRouter.post('/upload/*');
+FilesystemRouter.post('/upload/*', upload.any(), (_req, res) => {
+  return res.status(200).json({ message: 'Uploaded.' });
+});
 FilesystemRouter.delete('/rm/*', _remove);
