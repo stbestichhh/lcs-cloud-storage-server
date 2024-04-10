@@ -137,7 +137,116 @@ describe('App', () => {
     });
   });
 
-  describe('File Sytem', () => {
+  describe('File System', () => {
+    describe('Create directory', () => {
+      it('Should create directory', async () => {
+        return supertest(app)
+          .post('/storage/md/')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .send({
+            dirname: 'dir1',
+          })
+          .expect(201);
+      });
 
+      it('Should create directory recursively', async () => {
+        return supertest(app)
+          .post('/storage/md/dir2')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .send({
+            dirname: 'dir3',
+          })
+          .expect(201);
+      });
+    });
+
+    describe('List directory', () => {
+      it('Should list root', async () => {
+        const response = await supertest(app)
+          .get('/storage/ls/')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(['dir1', 'dir2']);
+      });
+
+      it('Should list dir1', async () => {
+        const response = await supertest(app)
+          .get('/storage/ls/dir1')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual([]);
+      });
+
+      it('Should list dir2', async () => {
+        const response = await supertest(app)
+          .get('/storage/ls/dir2')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(['dir3']);
+      });
+    });
+  });
+
+  describe('Move file', () => {
+    it('Should rename directory', async () => {
+      const response = await supertest(app)
+        .put('/storage/mv/dir1')
+        .set('Authorization', `Bearer ${auth_token}`)
+        .send({
+          newDirpath: 'newname',
+        });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveProperty('oldDirpath');
+      expect(response.body).toHaveProperty('newDirpath');
+    });
+
+    it('Should list with new dir name', async () => {
+      const response = await supertest(app)
+        .get('/storage/ls/')
+        .set('Authorization', `Bearer ${auth_token}`);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual(['dir2', 'newname']);
+    });
+  });
+
+  describe('Delete', () => {
+    it('Should delete directory', async () => {
+      const response = await supertest(app)
+        .delete('/storage/rmrf/newname')
+        .set('Authorization', `Bearer ${auth_token}`);
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('Should list without deleted direcory', async () => {
+      const response = await supertest(app)
+        .get('/storage/ls/')
+        .set('Authorization', `Bearer ${auth_token}`);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual(['dir2']);
+    });
+
+    it('Should delete directory with subdirectories', async () => {
+      const response = await supertest(app)
+        .delete('/storage/rmrf/dir2')
+        .set('Authorization', `Bearer ${auth_token}`);
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('Should list empty directory', async () => {
+      const response = await supertest(app)
+        .get('/storage/ls/')
+        .set('Authorization', `Bearer ${auth_token}`);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual([]);
+    });
   });
 });

@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   },
   filename: (_req, file, callback) => {
     callback(null, file.originalname);
-  }
+  },
 });
 
 export const upload = multer({ storage });

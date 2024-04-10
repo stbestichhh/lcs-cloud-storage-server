@@ -8,6 +8,6 @@ export const handleError = async (
 ) => {
   if (error && error instanceof Error) {
     console.log(error);
-    return res.status(code).json({ error: message });
+    return res.status(code).json({ error: message ?? 'Internal server error' });
   }
 };

@@ -46,7 +46,7 @@ export const move = async (req: Request, res: Response) => {
     const dirpath = extractPath(req.path, userDir, fsCommand.mv);
     const newDirpath = path.join(storageRoot, userDir, req.body.newDirpath);
     await Folder.move(dirpath, newDirpath);
-    return res.status(200).json({ oldDirpath: dirpath, newDirpath })
+    return res.status(200).json({ oldDirpath: dirpath, newDirpath });
   } catch (error) {
     await handleError(error, 500, res);
   }
