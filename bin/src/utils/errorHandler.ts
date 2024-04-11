@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import colors from '@colors/colors/safe';
 
 export const handleError = async (
   error: unknown,
@@ -7,7 +8,8 @@ export const handleError = async (
   message?: string,
 ) => {
   if (error && error instanceof Error) {
-    console.log(error);
+    console.error(colors.red(message ?? 'Unexpected error'));
+    console.error(error);
     return res.status(code).json({ error: message ?? 'Internal server error' });
   }
 };
