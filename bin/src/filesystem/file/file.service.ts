@@ -17,3 +17,15 @@ export const remove = async (req: Request, res: Response) => {
     await handleError(error, 500, res);
   }
 };
+
+export const download = async (req: Request, res: Response) => {
+  const userDir = req.user.sub;
+  if (!userDir) {
+    return res.status(404).json({ error: 'Forbidden' });
+  }
+
+  const filePath = extractPath(req.path, userDir, fsCommand.download);
+  return res.download(filePath, async (error) => {
+    await handleError(error, 500, res);
+  });
+}

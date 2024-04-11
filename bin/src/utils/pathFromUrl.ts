@@ -8,6 +8,7 @@ export enum fsCommand {
   rm = '/rm/',
   rmrf = '/rmrf/',
   upload = '/upload/',
+  download = '/download/'
 }
 
 export type fsCommandType =
@@ -16,7 +17,8 @@ export type fsCommandType =
   | '/mv/'
   | '/rm/'
   | '/rmrf/'
-  | '/upload/';
+  | '/upload/'
+  | '/download/';
 
 export const extractPath = (
   pathUrl: string,
