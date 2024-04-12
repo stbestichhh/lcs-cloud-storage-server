@@ -78,8 +78,9 @@ export const signToken = async (user: UserDto): Promise<string> => {
 };
 
 export const hashPassword = async (password: string): Promise<string> => {
-  const hashRounds = 10;
-  return bcrypt.hash(password, hashRounds);
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  return await bcrypt.hash(password, salt);
 };
 
 export const createUserDirectory = async (

@@ -22,6 +22,13 @@ describe('Auth service', () => {
       const hash: string = await hashPassword(user.password);
       expect(hash.length).toBeGreaterThan(user.password.length);
     });
+
+    it('Two same passwords should be different hashed', async () => {
+      const fisrtPass: string = await hashPassword(user.password);
+      const secondPass: string = await hashPassword(user.password);
+
+      expect(fisrtPass === secondPass).toBeFalsy();
+    });
   });
 
   describe('Extract token', () => {
