@@ -5,7 +5,7 @@ import { PathLike } from 'node:fs';
 import { isExists } from '../src/utils/fileExists';
 import { configPath } from './index';
 
-type ConfigType = {
+export type ConfigType = {
   dport: string;
   dhost: string;
   jwtkey: string;
@@ -29,7 +29,7 @@ export const configure = async (options: OptionValues) => {
   }
 };
 
-const readConfig = async (configPath: PathLike) => {
+export const readConfig = async (configPath: PathLike): Promise<ConfigType> => {
   const data = await fs.readFile(configPath);
   return JSON.parse(String(data));
 };
