@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { handleError } from '../../utils';
+import { handleServerError } from '../../utils';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -55,6 +55,6 @@ export const loginValidation = async (
     req.user = await verifyToken(token, jwt_key);
     next();
   } catch (error) {
-    await handleError(error, 500, res);
+    await handleServerError(error, 500, res);
   }
 };

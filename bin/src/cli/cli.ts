@@ -3,13 +3,14 @@ import { program } from 'commander';
 import { configure } from '../../config';
 
 program
-  .name('lcs-cloud-storage')
+  .name('lcs')
   .version('0.0.1-beta')
   .description('Local cloud storage server with authentication.');
 
 program
   .option('-p, --port <port>', 'Tell server which port to use.')
   .option('-h, --host <host>', 'Tell server which host to use.')
+  .option('-l, --log', 'Log every error to logfile.')
   .allowUnknownOption();
 
 program
@@ -20,10 +21,13 @@ program
   .option('--dport <dport>', 'default server port')
   .option('--jwtkey <jwtkey>', 'define jwt key to sign tokens')
   .option('--dbname <dbname>', 'define name for users database')
+  .allowUnknownOption()
   .action(async (options) => {
     await configure(options);
   });
 
-program.parse();
+program.action(() => {});
+
+program.parse(process.argv);
 
 export const options = program.opts();

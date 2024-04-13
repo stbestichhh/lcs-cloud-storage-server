@@ -25,7 +25,7 @@ export const configure = async (options: OptionValues) => {
       return await writeConfig(configPath, config);
     }
   } catch (error) {
-    await handleError(error, 500);
+    await handleError(error);
   }
 };
 

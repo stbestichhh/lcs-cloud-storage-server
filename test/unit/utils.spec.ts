@@ -1,10 +1,11 @@
 import { Response } from 'express';
-import { handleError } from '../../bin/src/utils';
+import { handleServerError, logError } from '../../bin/src/utils';
 import { extractPath, fsCommand } from '../../bin/src/utils/pathFromUrl';
-import { storageRoot } from '../../bin/src/filesystem';
+import { storageRoot } from '../../bin/config';
+import * as fs from 'fs';
 
 describe('Utils', () => {
-  describe('handleError', () => {
+  describe('Handle Server Error', () => {
     let mockResponse: Partial<Response>;
 
     beforeEach(() => {
@@ -19,7 +20,7 @@ describe('Utils', () => {
       const code = 404;
       const message = 'Custom error message';
 
-      await handleError(error, code, mockResponse as Response, message);
+      await handleServerError(error, code, mockResponse as Response, message);
 
       expect(mockResponse.status).toHaveBeenCalledWith(code);
       expect(mockResponse.json).toHaveBeenCalledWith({ error: message });
@@ -30,7 +31,7 @@ describe('Utils', () => {
       const code = 404;
       const message = 'Custom error message';
 
-      await handleError(error, code, mockResponse as Response, message);
+      await handleServerError(error, code, mockResponse as Response, message);
 
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();

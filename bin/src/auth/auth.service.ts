@@ -1,7 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { db, tableName } from '../../db';
-import { handleError } from '../utils';
+import { handleError, handleServerError } from '../utils';
 import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from './dto';
 import bcrypt from 'bcrypt';
@@ -38,7 +38,7 @@ export const signup = async (req: Request, res: Response) => {
 
     return res.status(403).json({ error: 'Email already registered.' });
   } catch (error) {
-    await handleError(error, 500, res);
+    await handleServerError(error, 500, res);
   }
 };
 
@@ -59,7 +59,7 @@ export const signin = async (req: Request, res: Response) => {
     }
     return res.status(400).json({ Error: 'Credentials are incorrect.' });
   } catch (error) {
-    await handleError(error, 404, res, 'Not found');
+    await handleServerError(error, 404, res, 'Not found');
   }
 };
 
