@@ -4,7 +4,7 @@ import { configure } from '../../config';
 
 program
   .name('lcs')
-  .version('0.0.1-beta')
+  .version('0.0.1-beta.1')
   .description('Local cloud storage server with authentication.');
 
 program
