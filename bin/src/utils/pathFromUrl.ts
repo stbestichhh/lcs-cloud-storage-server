@@ -1,5 +1,5 @@
 import path from 'path';
-import { storageRoot } from '../filesystem';
+import { storageRoot } from '../../config';
 
 export enum fsCommand {
   ls = '/ls/',
@@ -8,7 +8,7 @@ export enum fsCommand {
   rm = '/rm/',
   rmrf = '/rmrf/',
   upload = '/upload/',
-  download = '/download/'
+  download = '/download/',
 }
 
 export type fsCommandType =

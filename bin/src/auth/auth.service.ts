@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from './dto';
 import bcrypt from 'bcrypt';
 import path from 'path';
-import { Folder, storageRoot } from '../filesystem';
+import { Folder } from '../filesystem';
+import { storageRoot } from '../../config';
 
 export const getUser = async (req: Request, res: Response) => {
   return res.status(200).json(req.user);
@@ -71,7 +72,7 @@ export const signToken = async (user: UserDto): Promise<string> => {
   const jwt_key = process.env.SECRET_KEY;
   if (!jwt_key) {
     throw Error(
-      `No jwt_key for authentication provided. Run lcs --config SECRET_KEY=""`,
+      `No jwt_key for authentication provided. Run lcs config --jwt-key 'Your key'`,
     );
   }
   return jwt.sign(payload, jwt_key, { expiresIn: '30d' });

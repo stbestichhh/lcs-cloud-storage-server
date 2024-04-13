@@ -4,12 +4,18 @@ import colors from '@colors/colors/safe';
 export const handleError = async (
   error: unknown,
   code: number,
-  res: Response,
+  res?: Response,
   message?: string,
 ) => {
-  if (error && error instanceof Error) {
-    console.error(colors.red(message ?? 'Unexpected error'));
-    console.error(error);
-    return res.status(code).json({ error: message ?? 'Internal server error' });
+  if (res) {
+    if (error && error instanceof Error) {
+      console.error(colors.red(message ?? 'Internal server error.'));
+      console.error(error);
+      return res
+        .status(code)
+        .json({ error: message ?? 'Internal server error.' });
+    }
   }
+  console.error(colors.red(message ?? 'Unexpected error'));
+  throw error;
 };

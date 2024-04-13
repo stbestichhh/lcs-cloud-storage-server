@@ -3,7 +3,7 @@ import { handleError } from '../../utils';
 import { extractPath, fsCommand } from '../../utils/pathFromUrl';
 import { Folder } from '../models/folder.model';
 import path from 'path';
-import { storageRoot } from '../index';
+import { storageRoot } from '../../../config';
 
 export const listdir = async (req: Request, res: Response) => {
   try {

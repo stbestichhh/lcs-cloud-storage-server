@@ -1,11 +1,29 @@
 #! /usr/bin/env node
 import { program } from 'commander';
+import { configure } from '../../config';
 
 program
+  .name('lcs-cloud-storage')
   .version('0.0.1-beta')
-  .description('Local cloud storage with authentication')
-  .option('-p, --port <port>', 'Tell program which port to use.')
-  .allowUnknownOption()
-  .parse(process.argv);
+  .description('Local cloud storage server with authentication.');
+
+program
+  .option('-p, --port <port>', 'Tell server which port to use.')
+  .option('-h, --host <host>', 'Tell server which host to use.')
+  .allowUnknownOption();
+
+program
+  .command('config')
+  .alias('cfg')
+  .description('Define a default config for the server.')
+  .option('--dhost <dhost>', 'default server host')
+  .option('--dport <dport>', 'default server port')
+  .option('--jwtkey <jwtkey>', 'define jwt key to sign tokens')
+  .option('--dbname <dbname>', 'define name for users database')
+  .action(async (options) => {
+    await configure(options);
+  });
+
+program.parse();
 
 export const options = program.opts();

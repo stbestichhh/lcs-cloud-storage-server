@@ -28,4 +28,4 @@ export const download = async (req: Request, res: Response) => {
   return res.download(filePath, async (error) => {
     await handleError(error, 500, res);
   });
-}
+};
