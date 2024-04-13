@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { handleError } from '../../utils';
+import { handleServerError } from '../../utils';
 import { extractPath, fsCommand } from '../../utils/pathFromUrl';
 import { Folder } from '../models/folder.model';
 import path from 'path';
-import { storageRoot } from '../index';
+import { storageRoot } from '../../../config';
 
 export const listdir = async (req: Request, res: Response) => {
   try {
@@ -16,7 +16,7 @@ export const listdir = async (req: Request, res: Response) => {
     const files = await Folder.list(dirpath);
     return res.status(200).json(files);
   } catch (error) {
-    await handleError(error, 500, res);
+    await handleServerError(error, 500, res);
   }
 };
 
@@ -35,7 +35,7 @@ export const makedir = async (req: Request, res: Response) => {
     const directory = await dir.create(dirpath);
     return res.status(201).json({ directory });
   } catch (error) {
-    await handleError(error, 500, res);
+    await handleServerError(error, 500, res);
   }
 };
 
@@ -51,7 +51,7 @@ export const move = async (req: Request, res: Response) => {
     await Folder.move(dirpath, newDirpath);
     return res.status(200).json({ oldDirpath: dirpath, newDirpath });
   } catch (error) {
-    await handleError(error, 500, res);
+    await handleServerError(error, 500, res);
   }
 };
 
@@ -66,6 +66,6 @@ export const removedir = async (req: Request, res: Response) => {
     await Folder.remove(dirPath);
     return res.status(200).json({ message: 'Directory removed.' });
   } catch (error) {
-    await handleError(error, 500, res);
+    await handleServerError(error, 500, res);
   }
 };
