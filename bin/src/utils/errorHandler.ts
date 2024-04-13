@@ -19,22 +19,19 @@ export const handleServerError = async (
   }
 };
 
-export const handleError = async (
-  error: unknown,
-  message?: string,
-) => {
+export const handleError = async (error: unknown, message?: string) => {
   if (error && error instanceof Error) {
     console.error(colors.red(message ?? 'Unexpected error.'));
     console.error(error);
   }
 
-  if(options.log) {
+  if (options.log) {
     await logError(error);
   }
 };
 
 export const logError = async (error: unknown) => {
   const date = new Date(Date.now()).toISOString();
-  const logData = `[${date}] ${error}`
+  const logData = `[${date}] ${error}`;
   await fs.appendFile(logfilePath, logData);
-}
+};

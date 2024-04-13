@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { handleServerError } from '../../utils';
+import { LcsConfig } from '../../../config/lcs.config.model';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -37,7 +38,7 @@ export const loginValidation = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const jwt_key = process.env.SECRET_KEY;
+  const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
   if (!jwt_key) {
     throw new Error(
       `No jwt_key for authentication provided. Run lcs --config SECRET_KEY=""`,

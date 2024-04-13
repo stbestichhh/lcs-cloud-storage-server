@@ -5,6 +5,6 @@ import { configPath } from './lcs.pathes';
 export class LcsConfig {
   static get(key: keyof ConfigType) {
     const config = fs.readFileSync(configPath);
-    return Number(JSON.parse(String(config))[key]);
+    return JSON.parse(String(config))[key];
   }
 }

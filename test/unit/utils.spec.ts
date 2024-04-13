@@ -1,8 +1,7 @@
 import { Response } from 'express';
-import { handleServerError, logError } from '../../bin/src/utils';
+import { handleServerError } from '../../bin/src/utils';
 import { extractPath, fsCommand } from '../../bin/src/utils/pathFromUrl';
 import { storageRoot } from '../../bin/config';
-import * as fs from 'fs';
 
 describe('Utils', () => {
   describe('Handle Server Error', () => {

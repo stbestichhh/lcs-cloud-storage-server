@@ -4,8 +4,9 @@ import { UserDto } from '../../bin/src/auth/dto';
 import { db, tableName } from '../../bin/db';
 import * as fs from 'fs';
 import path from 'path';
-import { Folder, storageRoot } from '../../bin/src/filesystem';
+import { Folder } from '../../bin/src/filesystem';
 import { app, server } from '../../bin/src/server';
+import { storageRoot } from '../../bin/config';
 
 dotenv.config();
 
