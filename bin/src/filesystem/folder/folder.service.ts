@@ -52,7 +52,12 @@ export const move = async (req: Request, res: Response) => {
     await Folder.move(dirpath, newDirpath);
     return res.status(200).json({ oldDirpath: dirpath, newDirpath });
   } catch (error) {
-    await handleServerError(error, 403, res, 'The path to move in does not exist.');
+    await handleServerError(
+      error,
+      403,
+      res,
+      'The path to move in does not exist.',
+    );
   }
 };
 
@@ -66,8 +71,10 @@ export const removedir = async (req: Request, res: Response) => {
     const dirPath = extractPath(req.path, userDir, fsCommand.rmrf);
     const dirExists = await isExists(dirPath);
     console.log(req.path);
-    if(!dirExists || req.path === fsCommand.rmrf) {
-      return res.status(403).json({ error: 'The path to delete does not exist.' });
+    if (!dirExists || req.path === fsCommand.rmrf) {
+      return res
+        .status(403)
+        .json({ error: 'The path to delete does not exist.' });
     }
     await Folder.remove(dirPath);
     return res.status(200).json({ message: 'Directory removed.' });

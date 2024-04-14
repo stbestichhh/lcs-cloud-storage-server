@@ -9,8 +9,7 @@ program
   .description('Local cloud storage server with authentication.')
   .allowUnknownOption();
 
-program
-  .option('-l, --log', 'Log every error to logfile.')
+program.option('-l, --log', 'Log every error to logfile.');
 
 program
   .command('config')
@@ -24,7 +23,8 @@ program
     await configure(options);
   });
 
-program.command('server')
+program
+  .command('server')
   .alias('run')
   .description('Start the local cloud storage server.')
   .option('-p, --port <port>', 'Tell server which port to use.')

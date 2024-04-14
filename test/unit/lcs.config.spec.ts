@@ -3,8 +3,8 @@ import { LcsConfig } from '../../bin/config/lcs.config.model';
 
 const mockedFs = fs as jest.Mocked<typeof fs>;
 
-  jest.mock('fs', () => ({
-  readFileSync: jest.fn()
+jest.mock('fs', () => ({
+  readFileSync: jest.fn(),
 }));
 
 describe('Lcs config', () => {
@@ -14,7 +14,7 @@ describe('Lcs config', () => {
 
   afterAll(() => {
     jest.clearAllMocks();
-  })
+  });
 
   describe('Lcs config get', () => {
     it('Should return the value from the config file', () => {
@@ -40,7 +40,7 @@ describe('Lcs config', () => {
       mockedFs.readFileSync.mockReturnValue(JSON.stringify(mockConfig));
 
       expect(LcsConfig.get('dport')).toBeFalsy();
-    })
+    });
 
     it('Should throw an error if the provided key does not exist in the config file', () => {
       const mockConfig = {
@@ -50,6 +50,6 @@ describe('Lcs config', () => {
       mockedFs.readFileSync.mockReturnValueOnce(JSON.stringify(mockConfig));
 
       expect(LcsConfig.get('jwtkey')).toBeFalsy();
-    })
+    });
   });
 });

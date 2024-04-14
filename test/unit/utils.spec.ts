@@ -4,7 +4,6 @@ import { extractPath, fsCommand } from '../../bin/src/utils/pathFromUrl';
 import { storageRoot } from '../../bin/config';
 import { isExists } from '../../bin/src/utils/fileExists';
 import path from 'path';
-import * as fs from 'fs/promises';
 
 describe('Utils', () => {
   describe('Handle Server Error', () => {

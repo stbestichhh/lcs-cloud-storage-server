@@ -31,8 +31,12 @@ app.use('/storage', FilesystemRouter);
 export const start = async (options: OptionValues) => {
   try {
     const PORT: number =
-      options.port || Number(LcsConfig.get('dport')) || process.env.PORT || 9110;
-    const HOST: string = options.host || LcsConfig.get('dhost') || process.env.HOST || 'localhost';
+      options.port ||
+      Number(LcsConfig.get('dport')) ||
+      process.env.PORT ||
+      9110;
+    const HOST: string =
+      options.host || LcsConfig.get('dhost') || process.env.HOST || 'localhost';
 
     app.listen(PORT, () => {
       console.log(`Server listening on http://${HOST}:${PORT}`);
@@ -40,4 +44,4 @@ export const start = async (options: OptionValues) => {
   } catch (error) {
     await handleError(error);
   }
-}
+};

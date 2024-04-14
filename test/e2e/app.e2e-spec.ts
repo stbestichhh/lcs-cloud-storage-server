@@ -204,7 +204,8 @@ describe('App', () => {
 
         return supertest(app)
           .get('/storage/ls/wrong/path')
-          .set('Authorization', `Bearer ${auth_token}`).expect(403);
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
       });
     });
 
@@ -217,7 +218,8 @@ describe('App', () => {
           .set('Authorization', `Bearer ${auth_token}`)
           .send({
             newDirpath: '',
-          }).expect(403);
+          })
+          .expect(403);
       });
 
       it('Should rename directory', async () => {
