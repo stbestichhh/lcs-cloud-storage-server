@@ -33,7 +33,7 @@ export const handleError = async (error: unknown, message?: string) => {
 
 export const handleErrorSync = (error: unknown, message?: string) => {
   if (options.log) {
-    logErrorSyns(error);
+    logErrorSync(error);
   }
 
   if (error && error instanceof Error) {
@@ -48,7 +48,7 @@ export const logError = async (error: unknown) => {
   await fs.appendFile(logfilePath, logData);
 };
 
-export const logErrorSyns = (error: unknown) => {
+export const logErrorSync = (error: unknown) => {
   const date = new Date(Date.now()).toISOString();
   const logData = `[${date}] ${error}`;
   fsSync.appendFileSync(logfilePath, logData);

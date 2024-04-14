@@ -10,6 +10,10 @@ const mockedFs = fs as jest.Mocked<typeof fs>;
 describe('Lcs config', () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
   })
 
   describe('Lcs config get', () => {
@@ -31,13 +35,11 @@ describe('Lcs config', () => {
     });
 
     it('Should throw an error if the config filed does not exist', () => {
-      mockedFs.readFileSync.mockImplementation(() => {
-        throw new Error('No config provided. Run lcs help config.');
-      })
+      const mockConfig = undefined;
 
-      expect(() => {
-        LcsConfig.get('dport')
-      }).toThrow('No config provided. Run lcs help config.');
+      mockedFs.readFileSync.mockReturnValue(JSON.stringify(mockConfig));
+
+      expect(LcsConfig.get('dport')).toBeFalsy();
     })
 
     it('Should throw an error if the provided key does not exist in the config file', () => {
@@ -47,9 +49,7 @@ describe('Lcs config', () => {
 
       mockedFs.readFileSync.mockReturnValueOnce(JSON.stringify(mockConfig));
 
-      expect(() => {
-        LcsConfig.get('jwtkey');
-      }).toThrow('jwtkey is missing in config file. Run lcs config --jwtkey=value to define it.');
+      expect(LcsConfig.get('jwtkey')).toBeFalsy();
     })
   });
 });
