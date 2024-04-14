@@ -5,7 +5,7 @@ import { db, tableName } from '../../bin/db';
 import * as fs from 'fs';
 import path from 'path';
 import { Folder } from '../../bin/src/filesystem';
-import { app, server } from '../../bin/src/server';
+import { app } from '../../bin/src/server';
 import { storageRoot } from '../../bin/config';
 
 dotenv.config();
@@ -22,7 +22,6 @@ describe('App', () => {
   };
 
   afterAll(async () => {
-    server.close();
     await db.delete(tableName);
     await Folder.remove(path.join(storageRoot, userUuid));
   });
@@ -39,7 +38,7 @@ describe('App', () => {
         return supertest(app).post('/auth/signup').expect(400);
       });
 
-      it('Should throw if email is wrong format', async () => {
+      it('Should throw if email is in wrong format', async () => {
         return supertest(app)
           .post('/auth/signup')
           .send({
@@ -139,7 +138,18 @@ describe('App', () => {
   });
 
   describe('File System', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
     describe('Create directory', () => {
+      it('Should throw if no directory name provided', async () => {
+        return supertest(app)
+          .post('/storage/md/')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(400);
+      });
+
       it('Should create directory', async () => {
         return supertest(app)
           .post('/storage/md/')
@@ -188,66 +198,103 @@ describe('App', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual(['dir3']);
       });
-    });
-  });
 
-  describe('Move file', () => {
-    it('Should rename directory', async () => {
-      const response = await supertest(app)
-        .put('/storage/mv/dir1')
-        .set('Authorization', `Bearer ${auth_token}`)
-        .send({
-          newDirpath: 'newname',
-        });
+      it('Should throw if path does not exist', async () => {
+        jest.spyOn(Folder, 'list').mockRejectedValue(new Error());
 
-      expect(response.statusCode).toBe(200);
-      expect(response.body).toHaveProperty('oldDirpath');
-      expect(response.body).toHaveProperty('newDirpath');
+        return supertest(app)
+          .get('/storage/ls/wrong/path')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      });
     });
 
-    it('Should list with new dir name', async () => {
-      const response = await supertest(app)
-        .get('/storage/ls/')
-        .set('Authorization', `Bearer ${auth_token}`);
+    describe('Move file', () => {
+      it('Should throw if the target path does not exist.', async () => {
+        jest.spyOn(Folder, 'move').mockRejectedValue(new Error());
 
-      expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual(['dir2', 'newname']);
+        return supertest(app)
+          .put('/storage/mv/dir1')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .send({
+            newDirpath: '',
+          })
+          .expect(403);
+      });
+
+      it('Should rename directory', async () => {
+        const response = await supertest(app)
+          .put('/storage/mv/dir1')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .send({
+            newDirpath: 'newname',
+          });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toHaveProperty('oldDirpath');
+        expect(response.body).toHaveProperty('newDirpath');
+      });
+
+      it('Should list with new dir name', async () => {
+        const response = await supertest(app)
+          .get('/storage/ls/')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(['dir2', 'newname']);
+      });
     });
-  });
 
-  describe('Delete', () => {
-    it('Should delete directory', async () => {
-      const response = await supertest(app)
-        .delete('/storage/rmrf/newname')
-        .set('Authorization', `Bearer ${auth_token}`);
+    describe('Delete', () => {
+      it('Should throw if target path does not exist', async () => {
+        return supertest(app)
+          .delete('/storage/rmrf/wrong/path')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      });
 
-      expect(response.statusCode).toBe(200);
-    });
+      it('Should throw unexpected error', async () => {
+        jest.spyOn(Folder, 'remove').mockRejectedValue(new Error());
 
-    it('Should list without deleted direcory', async () => {
-      const response = await supertest(app)
-        .get('/storage/ls/')
-        .set('Authorization', `Bearer ${auth_token}`);
+        return supertest(app)
+          .delete('/storage/rmrf/newname')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(500);
+      });
 
-      expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual(['dir2']);
-    });
+      it('Should delete directory', async () => {
+        const response = await supertest(app)
+          .delete('/storage/rmrf/newname')
+          .set('Authorization', `Bearer ${auth_token}`);
 
-    it('Should delete directory with subdirectories', async () => {
-      const response = await supertest(app)
-        .delete('/storage/rmrf/dir2')
-        .set('Authorization', `Bearer ${auth_token}`);
+        expect(response.statusCode).toBe(200);
+      });
 
-      expect(response.statusCode).toBe(200);
-    });
+      it('Should list without deleted direcory', async () => {
+        const response = await supertest(app)
+          .get('/storage/ls/')
+          .set('Authorization', `Bearer ${auth_token}`);
 
-    it('Should list empty directory', async () => {
-      const response = await supertest(app)
-        .get('/storage/ls/')
-        .set('Authorization', `Bearer ${auth_token}`);
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(['dir2']);
+      });
 
-      expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual([]);
+      it('Should delete directory with subdirectories', async () => {
+        const response = await supertest(app)
+          .delete('/storage/rmrf/dir2')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+      });
+
+      it('Should list empty directory', async () => {
+        const response = await supertest(app)
+          .get('/storage/ls/')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual([]);
+      });
     });
   });
 });

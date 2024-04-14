@@ -1,17 +1,15 @@
 #! /usr/bin/env node
-import { program } from 'commander';
+import { OptionValues, program } from 'commander';
 import { configure } from '../../config';
+import { start } from '../server';
 
 program
   .name('lcs')
   .version('0.0.1-beta.1')
-  .description('Local cloud storage server with authentication.');
-
-program
-  .option('-p, --port <port>', 'Tell server which port to use.')
-  .option('-h, --host <host>', 'Tell server which host to use.')
-  .option('-l, --log', 'Log every error to logfile.')
+  .description('Local cloud storage server with authentication.')
   .allowUnknownOption();
+
+program.option('-l, --log', 'Log every error to logfile.');
 
 program
   .command('config')
@@ -21,13 +19,24 @@ program
   .option('--dport <dport>', 'default server port')
   .option('--jwtkey <jwtkey>', 'define jwt key to sign tokens')
   .option('--dbname <dbname>', 'define name for users database')
-  .allowUnknownOption()
   .action(async (options) => {
     await configure(options);
   });
 
-program.action(() => {});
+program
+  .command('server')
+  .alias('run')
+  .description('Start the local cloud storage server.')
+  .option('-p, --port <port>', 'Tell server which port to use.')
+  .option('-h, --host <host>', 'Tell server which host to use.')
+  .action(async (options) => {
+    await start(options);
+  });
+
+program.action(() => {
+  return console.log('Run lcs --help to see usage instructions.');
+});
 
 program.parse(process.argv);
 
-export const options = program.opts();
+export const options: OptionValues = program.opts();

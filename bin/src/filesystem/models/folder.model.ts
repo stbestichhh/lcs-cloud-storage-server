@@ -10,7 +10,7 @@ export class Folder {
   }
 
   async create(dirpath: PathLike): Promise<string | undefined> {
-    return await fs.mkdir(path.join(String(dirpath), this.name), {
+    return await fs.mkdir(path.join(dirpath.toString(), this.name), {
       recursive: true,
     });
   }

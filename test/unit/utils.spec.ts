@@ -2,6 +2,8 @@ import { Response } from 'express';
 import { handleServerError } from '../../bin/src/utils';
 import { extractPath, fsCommand } from '../../bin/src/utils/pathFromUrl';
 import { storageRoot } from '../../bin/config';
+import { isExists } from '../../bin/src/utils/fileExists';
+import path from 'path';
 
 describe('Utils', () => {
   describe('Handle Server Error', () => {
@@ -78,6 +80,18 @@ describe('Utils', () => {
       expect(extractPath('/upload/path/to-dir', 'userDir', fsCommand.mv)).toBe(
         storageRoot + '/userDir' + '/upload/path/to-dir',
       );
+    });
+  });
+
+  describe('Is file exists', () => {
+    const filepath = path.join(__dirname, 'utils.spec.ts');
+
+    it('Should return true if file exists', async () => {
+      expect(await isExists(filepath)).toBeTruthy();
+    });
+
+    it('Should return false if file does not exist', async () => {
+      expect(await isExists('')).toBeFalsy();
     });
   });
 });

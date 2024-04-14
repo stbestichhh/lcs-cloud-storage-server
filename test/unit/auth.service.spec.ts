@@ -36,12 +36,12 @@ describe('Auth service', () => {
     const token = 'superauthtoken';
     const header = `${authTokenType} ${token}`;
 
-    it('Should extract', async () => {
+    it('Should extract', () => {
       const extractedToken = extractToken(header);
       expect(extractedToken).toEqual(token);
     });
 
-    it('Should throw', async () => {
+    it('Should throw', () => {
       expect(() => {
         extractToken(token);
       }).toThrow('Invalid authorization header format.');
