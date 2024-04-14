@@ -31,10 +31,10 @@ export const configure = async (options: OptionValues) => {
 
 export const readConfig = async (configPath: PathLike): Promise<ConfigType> => {
   const data = await fs.readFile(configPath);
-  return JSON.parse(String(data));
+  return JSON.parse(data.toString());
 };
 
-const writeConfig = async (
+export const writeConfig = async (
   configPath: PathLike,
   config: ConfigType | OptionValues,
 ) => {

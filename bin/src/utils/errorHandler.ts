@@ -21,24 +21,24 @@ export const handleServerError = async (
 };
 
 export const handleError = async (error: unknown, message?: string) => {
-  if (error && error instanceof Error) {
-    console.error(colors.red(message ?? 'Unexpected error.'));
-    console.error(error);
-  }
-
   if (options.log) {
     await logError(error);
+  }
+
+  if (error && error instanceof Error) {
+    console.error(colors.red(message ?? 'Unexpected error.'));
+    throw error;
   }
 };
 
 export const handleErrorSync = (error: unknown, message?: string) => {
-  if (error && error instanceof Error) {
-    console.error(colors.red(message ?? 'Unexpected error.'));
-    console.error(error);
-  }
-
   if (options.log) {
     logErrorSyns(error);
+  }
+
+  if (error && error instanceof Error) {
+    console.error(colors.red(message ?? 'Unexpected error.'));
+    throw error;
   }
 }
 

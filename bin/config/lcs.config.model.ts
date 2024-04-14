@@ -7,9 +7,17 @@ export class LcsConfig {
   static get(key: keyof ConfigType) {
     try {
       const config = fs.readFileSync(configPath);
-      return JSON.parse(String(config))[key];
+      const configVar = JSON.parse(config.toString())[key];
+      return checkKey(configVar, key);
     } catch (error) {
-      handleErrorSync(error, 'No config provided. Run lcs help config.');
+      handleErrorSync(error);
     }
   }
+}
+
+const checkKey = (configVar: string, key: keyof ConfigType) => {
+  if (configVar === undefined) {
+    throw new Error(`${key} is missing in config file. Run lcs config --${key}=value to define it.`);
+  }
+  return configVar;
 }
