@@ -97,7 +97,7 @@ describe('App', () => {
             email: 'wrongemail@email.com',
             password: user.password,
           })
-          .expect(404);
+          .expect(403);
       });
 
       it('Should signin', async () => {
@@ -147,7 +147,7 @@ describe('App', () => {
         return supertest(app)
           .post('/storage/md/')
           .set('Authorization', `Bearer ${auth_token}`)
-          .expect(400);
+          .expect(403);
       });
 
       it('Should create directory', async () => {

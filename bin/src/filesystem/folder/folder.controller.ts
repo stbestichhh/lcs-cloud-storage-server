@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
 import { listdir, makedir, move, removedir } from './folder.service';
+import { Request, Response } from 'express';
 
 export const _listdir = async (req: Request, res: Response) => {
   return await listdir(req, res);

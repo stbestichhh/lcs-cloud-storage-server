@@ -1,8 +1,8 @@
-import { Response } from 'express';
-import colors from '@colors/colors/safe';
-import { options } from '../cli';
 import * as fs from 'fs/promises';
 import { logfilePath } from '../../config';
+import { options } from '../cli';
+import { Response } from 'express';
+import colors from '@colors/colors/safe';
 
 export const handleServerError = async (
   error: unknown,

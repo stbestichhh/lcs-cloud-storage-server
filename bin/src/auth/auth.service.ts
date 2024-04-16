@@ -1,14 +1,13 @@
+import path from 'path';
+import { LcsConfig, storageRoot } from '../../config';
+import { handleServerError } from '../utils';
+import { db, tableName } from '../../db';
+import { Folder } from '../filesystem';
+import { UserDto } from './dto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import { db, tableName } from '../../db';
-import { handleServerError } from '../utils';
 import { v4 as uuidv4 } from 'uuid';
-import { UserDto } from './dto';
 import bcrypt from 'bcrypt';
-import path from 'path';
-import { Folder } from '../filesystem';
-import { storageRoot } from '../../config';
-import { LcsConfig } from '../../config/lcs.config.model';
 
 export const getUser = async (req: Request, res: Response) => {
   return res.status(200).json(req.user);
@@ -58,9 +57,10 @@ export const signin = async (req: Request, res: Response) => {
         .status(200)
         .json({ message: 'Successfully signed in.', authentication_token });
     }
-    return res.status(400).json({ Error: 'Credentials are incorrect.' });
+
+    return res.status(403).json({ Error: 'Credentials are incorrect.' });
   } catch (error) {
-    await handleServerError(error, 404, res, 'Not found');
+    await handleServerError(error, 403, res, 'Credentials are incorrect.');
   }
 };
 
@@ -73,7 +73,7 @@ export const signToken = async (user: UserDto): Promise<string> => {
   const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
   if (!jwt_key) {
     throw Error(
-      `No jwt_key for authentication provided. Run lcs config --jwt-key 'Your key'`,
+      `No jwt_key for authentication provided. Run lcs config --jwt-key='Your key'`,
     );
   }
   return jwt.sign(payload, jwt_key, { expiresIn: '30d' });

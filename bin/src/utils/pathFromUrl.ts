@@ -1,17 +1,17 @@
 import path from 'path';
 import { storageRoot } from '../../config';
 
-export enum fsCommand {
-  ls = '/ls/',
-  md = '/md/',
-  mv = '/mv/',
-  rm = '/rm/',
-  rmrf = '/rmrf/',
-  upload = '/upload/',
-  download = '/download/',
+export enum FileSystemCommand {
+  List = '/ls/',
+  MakeDirectory = '/md/',
+  Move = '/mv/',
+  Remove = '/rm/',
+  RemoveRecursive = '/rmrf/',
+  Upload = '/upload/',
+  Download = '/download/',
 }
 
-export type fsCommandType =
+export type FileSystemCommandType =
   | '/ls/'
   | '/md/'
   | '/mv/'
@@ -23,13 +23,7 @@ export type fsCommandType =
 export const extractPath = (
   pathUrl: string,
   userDir: string,
-  command: fsCommandType,
-  name?: string,
+  command: FileSystemCommandType,
 ): string => {
-  return path.join(
-    storageRoot,
-    userDir,
-    pathUrl.replace(command, ''),
-    typeof name === 'string' ? name : '',
-  );
+  return path.join(storageRoot, userDir, pathUrl.replace(command, ''));
 };

@@ -1,7 +1,7 @@
 #! /usr/bin/env node
-import { OptionValues, program } from 'commander';
 import { configure } from '../../config';
 import { start } from '../server';
+import { OptionValues, program } from 'commander';
 
 program
   .name('lcs')
@@ -15,8 +15,8 @@ program
   .command('config')
   .alias('cfg')
   .description('Define a default config for the server.')
-  .option('--dhost <dhost>', 'default server host')
-  .option('--dport <dport>', 'default server port')
+  .option('--dhost <dhost>', 'define default server host')
+  .option('--dport <dport>', 'define default server port')
   .option('--jwtkey <jwtkey>', 'define jwt key to sign tokens')
   .option('--dbname <dbname>', 'define name for users database')
   .action(async (options) => {
@@ -27,8 +27,8 @@ program
   .command('server')
   .alias('run')
   .description('Start the local cloud storage server.')
-  .option('-p, --port <port>', 'Tell server which port to use.')
-  .option('-h, --host <host>', 'Tell server which host to use.')
+  .option('-p, --port <port>', 'tell server which port to use.')
+  .option('-h, --host <host>', 'tell server which host to use.')
   .action(async (options) => {
     await start(options);
   });

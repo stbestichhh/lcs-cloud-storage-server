@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { handleServerError } from '../../utils';
-import { LcsConfig } from '../../../config/lcs.config.model';
+import { LcsConfig } from '../../../config';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { NextFunction, Request, Response } from 'express';
 
 declare module 'express-serve-static-core' {
   interface Request {
