@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 import { configure } from '../../config';
 import { start } from '../server';
 import { OptionValues, program } from 'commander';

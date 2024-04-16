@@ -6,12 +6,14 @@
   "bin": {
     "lcs": "dist/index.js"
   },
+  "keywords": ["Cli", "Cloud storage"],
   "repository": "https://github.com/stbestichhh/cloud-storage.git",
   "author": "Kiril Yakymchuk <stbestich@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "npx tsc",
     "start": "ts-node bin/index.ts",
+    "start:prod": "cross-env NODE_ENV=production node dist/index.js",
     "start:dev": "dotenv -e .env.development.local -- cross-env NODE_ENV=development nodemon bin/index.ts",
     "format": "prettier . --write",
     "lint": "eslint .",
