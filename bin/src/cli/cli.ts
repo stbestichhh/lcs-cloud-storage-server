@@ -4,7 +4,7 @@ import { OptionValues, program } from 'commander';
 
 program
   .name('lcs')
-  .version('0.0.1-rc')
+  .version('0.0.1')
   .description('Local cloud storage server with authentication.')
   .allowUnknownOption();
 

@@ -1,12 +1,15 @@
 {
   "name": "lcs-cloud-storage",
-  "version": "0.0.1-rc",
+  "version": "0.0.1",
   "description": "Local cloud storage with authentication",
   "main": "dist/index.js",
   "bin": {
     "lcs": "dist/index.js"
   },
-  "keywords": ["Cli", "Cloud storage"],
+  "keywords": [
+    "Cli",
+    "Cloud storage"
+  ],
   "repository": "https://github.com/stbestichhh/cloud-storage.git",
   "author": "Kiril Yakymchuk <stbestich@gmail.com>",
   "license": "MIT",
