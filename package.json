@@ -1,6 +1,6 @@
 {
   "name": "lcs-cloud-storage",
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-rc",
   "description": "Local cloud storage with authentication",
   "main": "bin/index.ts",
   "bin": {
