@@ -1,5 +1,5 @@
-import { ConfigType } from './lcs.config';
 import * as fs from 'fs';
+import { ConfigType } from './lcs.config';
 import { configPath } from './lcs.pathes';
 
 export class LcsConfig {

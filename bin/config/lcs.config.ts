@@ -1,9 +1,8 @@
-import * as fs from 'fs/promises';
-import { OptionValues } from 'commander';
-import { handleError } from '../src/utils';
 import { PathLike } from 'node:fs';
-import { isExists } from '../src/utils/fileExists';
+import * as fs from 'fs/promises';
+import { handleError, isExists } from '../src/utils';
 import { configPath } from './index';
+import { OptionValues } from 'commander';
 
 export type ConfigType = {
   dport: string;

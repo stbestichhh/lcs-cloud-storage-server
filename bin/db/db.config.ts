@@ -1,8 +1,8 @@
+import * as os from 'os';
+import path from 'path';
+import { LcsConfig } from '../config';
 import { JsonDB, Config } from 'node-json-db';
 import dotenv from 'dotenv';
-import path from 'path';
-import * as os from 'os';
-import { LcsConfig } from '../config/lcs.config.model';
 
 dotenv.config();
 

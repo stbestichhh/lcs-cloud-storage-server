@@ -1,12 +1,11 @@
+import { handleError, limiter } from '../utils';
+import { loginValidation } from '../middleware';
+import { AuthRouter, _getUser } from '../auth';
+import { FilesystemRouter } from '../filesystem';
+import { LcsConfig } from '../../config';
 import express from 'express';
 import cors from 'cors';
-import { handleError, limiter } from '../utils';
 import dotenv from 'dotenv';
-import { loginValidation } from '../middleware';
-import { _getUser } from '../auth/auth.controller';
-import { AuthRouter } from '../auth/auth.module';
-import { FilesystemRouter } from '../filesystem/filesystem.router';
-import { LcsConfig } from '../../config/lcs.config.model';
 import { OptionValues } from 'commander';
 
 dotenv.config();
@@ -35,6 +34,7 @@ export const start = async (options: OptionValues) => {
       Number(LcsConfig.get('dport')) ||
       process.env.PORT ||
       9110;
+
     const HOST: string =
       options.host || LcsConfig.get('dhost') || process.env.HOST || 'localhost';
 

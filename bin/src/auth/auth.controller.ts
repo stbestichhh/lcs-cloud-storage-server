@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
-import { Request, Response } from 'express';
 import { signin, signup, getUser } from './auth.service';
-
-dotenv.config(); //? Why it that here?
+import { Request, Response } from 'express';
 
 export const _signup = async (req: Request, res: Response) => {
   return await signup(req, res);

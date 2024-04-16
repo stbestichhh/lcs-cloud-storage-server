@@ -1,4 +1,3 @@
-import express from 'express';
 import { loginValidation } from '../middleware';
 import {
   _listdir,
@@ -8,6 +7,7 @@ import {
 } from './folder/folder.controller';
 import { _download, _remove } from './file/file.controller';
 import { upload } from './filesystem.config';
+import express from 'express';
 
 export const FilesystemRouter = express.Router();
 

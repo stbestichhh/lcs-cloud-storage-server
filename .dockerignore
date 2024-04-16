@@ -1,0 +1,21 @@
+# Compiled output
+node_modules
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# OS
+.DS_Store
+
+# IDE
+.idea
+
+# Git
+.gitignore
+.github
+
+# Tests
+coverage
+test
+.env.test
