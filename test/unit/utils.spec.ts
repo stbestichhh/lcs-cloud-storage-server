@@ -1,9 +1,6 @@
 import { Response } from 'express';
 import { handleServerError, isExists } from '../../bin/src/utils';
-import {
-  extractPath,
-  FileSystemCommand,
-} from '../../bin/src/utils/pathFromUrl';
+import { extractPath, FileSystemCommand } from '../../bin/src/utils';
 import { storageRoot } from '../../bin/config';
 import path from 'path';
 

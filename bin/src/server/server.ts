@@ -34,6 +34,7 @@ export const start = async (options: OptionValues) => {
       Number(LcsConfig.get('dport')) ||
       process.env.PORT ||
       9110;
+
     const HOST: string =
       options.host || LcsConfig.get('dhost') || process.env.HOST || 'localhost';
 
