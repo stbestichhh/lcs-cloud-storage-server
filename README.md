@@ -83,6 +83,10 @@ $ docker run -p <port>:9110 lcs-cloud-storage:0.0.1
 $ yarn start:dev
 ```
 
+### Usage
+
+See the usage instruction in the lcs-cloud-storage [Wiki's](https://github.com/stbestichhh/lcs-cloud-storage-server/wiki)
+
 ### Running tests
 
 #### Unit tests
