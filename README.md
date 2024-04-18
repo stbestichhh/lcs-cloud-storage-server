@@ -65,25 +65,35 @@ $ npm i -g lcs-cloud-storage
 
 * From cli
 
-See [usage instructions](#usage) to find out how to use cli
+  See [usage instructions](#usage) to find out how to use cli
 
-```shell
-$ lcs [options] server|run [options]
-```
+  ```shell
+  $ lcs [options] server|run [options]
+  ```
 
 * From source code
 
-```shell
-$ yarn build
-$ yarn start:prod
-```
+  ```shell
+  $ yarn build
+  $ yarn start:prod
+  ```
 
 * Without installing
 
-```shell
-$ docker build -t lcs-cloud-storage:0.0.1 .
-$ docker run -p <port>:9110 lcs-cloud-storage:0.0.1
-```
+  Run default configuration
+
+  ```shell
+  $ docker build -t lcs-cloud-storage:0.0.1 .
+  $ docker run -p <port>:9110 lcs-cloud-storage:0.0.1
+  ```
+
+  Override configuration
+  ```shell
+  $ docker build -t lcs-cloud-storage:0.0.1 .
+  $ docker run -e PORT=<port> -e HOST=<host> -e SECRET_KEY=<jwtkey> -e DB_NAME=<dbname> -p <port>:<port> lcs-cloud-storage:0.0.1 node dist/index.js [options] [command]
+  ```
+  
+  Overriding every enviroment variable is not necessary. Options and command see in [usage](#usage) section. 
 
 #### Start server locally
 
