@@ -53,7 +53,7 @@ $ git clone https://github.com/stbestichhh/lcs-cloud-storage-server.git
 $ yarn install
 ```
 
-#### Install as NPM package
+#### Or install as NPM package
 
 ```shell
 $ npm i -g lcs-cloud-storage
@@ -71,14 +71,14 @@ See [usage instructions](#usage) to find out how to use cli
 $ lcs [options] server|run [options]
 ```
 
-* With installing dependencies
+* From source code
 
 ```shell
 $ yarn build
 $ yarn start:prod
 ```
 
-* Without installing dependencies
+* Without installing
 
 ```shell
 $ docker build -t lcs-cloud-storage:0.0.1 .
