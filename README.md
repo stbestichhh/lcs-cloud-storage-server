@@ -63,6 +63,14 @@ $ npm i -g lcs-cloud-storage
 
 #### Start the server to production
 
+* From cli
+
+See [usage instructions](#usage) to find out how to use cli
+
+```shell
+$ lcs [options] server|run [options]
+```
+
 * With installing dependencies
 
 ```shell
