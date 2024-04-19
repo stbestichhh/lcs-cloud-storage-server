@@ -2,7 +2,6 @@ import * as fs from 'fs/promises';
 import { logfilePath } from '../../config';
 import { options } from '../cli';
 import { Response } from 'express';
-import colors from '@colors/colors/safe';
 
 export const handleServerError = async (
   error: unknown,
@@ -11,7 +10,7 @@ export const handleServerError = async (
   message?: string,
 ) => {
   if (error && error instanceof Error) {
-    console.error(colors.red(message ?? 'Internal server error.'));
+    console.error(message ?? 'Internal server error.');
     console.error(error);
     return res
       .status(code)
@@ -25,7 +24,7 @@ export const handleError = async (error: unknown, message?: string) => {
   }
 
   if (error && error instanceof Error) {
-    console.error(colors.red(message ?? 'Unexpected error.'));
+    console.error(message ?? 'Unexpected error.');
     throw error;
   }
 };
