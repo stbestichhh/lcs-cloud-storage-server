@@ -11,6 +11,12 @@
     "Cloud storage",
     "Express.js"
   ],
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
   "repository": "https://github.com/stbestichhh/cloud-storage.git",
   "author": "Kiril Yakymchuk <stbestich@gmail.com>",
   "license": "MIT",
