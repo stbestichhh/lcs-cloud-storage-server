@@ -56,6 +56,6 @@ export const loginValidation = async (
     req.user = await verifyToken(token, jwt_key);
     next();
   } catch (error) {
-    await handleServerError(error, 403, res, 'Forbidden.');
+    await handleServerError(error, 403, res, 'Login session expired.');
   }
 };
