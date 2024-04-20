@@ -73,7 +73,7 @@ export const signToken = async (user: UserDto): Promise<string> => {
   const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
   if (!jwt_key) {
     throw Error(
-      `No jwt_key for authentication provided. Run lcs config --jwt-key='Your key'`,
+      `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }
   return jwt.sign(payload, jwt_key, { expiresIn: '30d' });
