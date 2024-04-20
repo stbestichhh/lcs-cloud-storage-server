@@ -12,6 +12,7 @@
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
   * [Deployment](#deployment)
+  * [Usage](#usage)
   * [Running tests](#running-tests)
 * [Contributing](#contributing)
 * [Changelog](#changelog)
