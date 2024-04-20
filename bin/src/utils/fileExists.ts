@@ -1,6 +1,6 @@
 import { PathLike } from 'node:fs';
 import * as fs from 'fs/promises';
-import * as node_path from 'path'
+import * as node_path from 'path';
 
 export const isExists = async (
   path: PathLike,
@@ -12,9 +12,11 @@ export const isExists = async (
     return true;
   } catch (error) {
     if (create) {
-      return await fs.mkdir(node_path.dirname(path.toString()), { recursive: true }).then(async () => {
-        await fs.writeFile(path, content || '');
-      });
+      return await fs
+        .mkdir(node_path.dirname(path.toString()), { recursive: true })
+        .then(async () => {
+          await fs.writeFile(path, content || '');
+        });
     }
     return false;
   }
