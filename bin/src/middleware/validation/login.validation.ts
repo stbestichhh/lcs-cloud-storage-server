@@ -41,7 +41,7 @@ export const loginValidation = async (
   const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
   if (!jwt_key) {
     throw new Error(
-      `No jwt_key for authentication provided. Run lcs --config SECRET_KEY=""`,
+      `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }
 
@@ -56,6 +56,6 @@ export const loginValidation = async (
     req.user = await verifyToken(token, jwt_key);
     next();
   } catch (error) {
-    await handleServerError(error, 500, res);
+    await handleServerError(error, 403, res, 'Login session expired.');
   }
 };
