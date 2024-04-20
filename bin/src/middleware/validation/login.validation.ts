@@ -41,7 +41,7 @@ export const loginValidation = async (
   const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
   if (!jwt_key) {
     throw new Error(
-      `No jwt_key for authentication provided. Run lcs --config SECRET_KEY=""`,
+      `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }
 
