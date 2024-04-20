@@ -56,6 +56,6 @@ export const loginValidation = async (
     req.user = await verifyToken(token, jwt_key);
     next();
   } catch (error) {
-    await handleServerError(error, 500, res);
+    await handleServerError(error, 403, res, 'Forbidden.');
   }
 };
