@@ -57,7 +57,7 @@ export const signin = async (req: Request, res: Response) => {
       const loginData: LoginData = {
         jti,
         lastLogin: Date.now().toString().slice(0, -3),
-      }
+      };
 
       await db.push(userRow, loginData, false);
 
@@ -85,7 +85,10 @@ export const signToken = async (user: UserDto) => {
       `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }
-  return { authentication_token: jwt.sign(payload, jwt_key, { expiresIn: '30d' }), jti: payload.jti };
+  return {
+    authentication_token: jwt.sign(payload, jwt_key, { expiresIn: '30d' }),
+    jti: payload.jti,
+  };
 };
 
 export const hashPassword = async (password: string): Promise<string> => {

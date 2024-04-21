@@ -26,7 +26,13 @@ describe('App', () => {
   afterAll(async () => {
     await db.delete(tableName);
     await Folder.remove(path.join(storageRoot, userUuid));
-    await Folder.remove(path.join(os.homedir(), '.lcs-cloud-storage', 'lcs_user_repository_test.json'));
+    await Folder.remove(
+      path.join(
+        os.homedir(),
+        '.lcs-cloud-storage',
+        'lcs_user_repository_test.json',
+      ),
+    );
   });
 
   describe('GET /', () => {

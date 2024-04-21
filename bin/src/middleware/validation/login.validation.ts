@@ -43,19 +43,19 @@ const checkLastlogin = async (user: JwtPayload) => {
   const jti = user.jti;
   const userJti = userDB.jti;
 
-  if(jti === userJti) {
+  if (jti === userJti) {
     const jwt_iat = user.iat?.toString();
     const lastLogin = userDB.lastLogin;
 
-    if(jwt_iat !== lastLogin) {
-      throw new Error()
+    if (jwt_iat !== lastLogin) {
+      throw new Error();
     }
 
     return true;
   }
 
   throw Error();
-}
+};
 
 export const loginValidation = async (
   req: Request,
