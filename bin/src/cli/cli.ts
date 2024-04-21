@@ -5,7 +5,7 @@ import { serverPrune } from './cli-functions';
 
 program
   .name('lcs')
-  .version('0.0.3')
+  .version('0.0.4')
   .description('Local cloud storage server with authentication')
   .allowUnknownOption();
 
