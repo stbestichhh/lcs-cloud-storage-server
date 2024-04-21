@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const dbName = LcsConfig.get('dbname') || process.env.DB_NAME || 'lcs_db';
-const dbPath = path.join(os.homedir(), '.lcs', dbName);
+const dbPath = path.join(os.homedir(), '.lcs-cloud-storage', dbName);
 const saveOnPush = true;
 
 const config = new Config(dbPath, saveOnPush);

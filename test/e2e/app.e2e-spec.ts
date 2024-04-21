@@ -246,7 +246,14 @@ describe('App', () => {
     });
 
     describe('Delete', () => {
-      it('Should throw if target path does not exist', async () => {
+      it('Should throw if target path does not exist for rm', async () => {
+        return supertest(app)
+          .delete('/storage/rm/wrong/path')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      });
+
+      it('Should throw if target path does not exist for rmrf', async () => {
         return supertest(app)
           .delete('/storage/rmrf/wrong/path')
           .set('Authorization', `Bearer ${auth_token}`)
@@ -295,6 +302,17 @@ describe('App', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual([]);
       });
+    });
+
+    describe('Download', () => {
+      it('Should throw if download path not exists', async () => {
+        return supertest(app)
+          .get('/storage/download/wrong/path/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      });
+
+      it('Should download file', async () => {});
     });
   });
 });
