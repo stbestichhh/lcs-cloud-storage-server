@@ -3,7 +3,7 @@ import { LcsConfig, storageRoot } from '../../config';
 import { handleServerError } from '../utils';
 import { db, tableName } from '../../db';
 import { Folder } from '../filesystem';
-import { UserDto } from './dto';
+import { LoginData, UserDto } from './dto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -52,7 +52,15 @@ export const signin = async (req: Request, res: Response) => {
     const match = await bcrypt.compare(password, user.password);
 
     if (match) {
-      const authentication_token = await signToken(user);
+      const { authentication_token, jti } = await signToken(user);
+
+      const loginData: LoginData = {
+        jti,
+        lastLogin: Date.now().toString().slice(0, -3),
+      };
+
+      await db.push(userRow, loginData, false);
+
       return res
         .status(200)
         .json({ message: 'Successfully signed in.', authentication_token });
@@ -64,10 +72,11 @@ export const signin = async (req: Request, res: Response) => {
   }
 };
 
-export const signToken = async (user: UserDto): Promise<string> => {
+export const signToken = async (user: UserDto) => {
   const payload: JwtPayload = {
     sub: user.uuid,
     email: user.email,
+    jti: uuidv4(),
   };
 
   const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
@@ -76,7 +85,10 @@ export const signToken = async (user: UserDto): Promise<string> => {
       `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }
-  return jwt.sign(payload, jwt_key, { expiresIn: '30d' });
+  return {
+    authentication_token: jwt.sign(payload, jwt_key, { expiresIn: '30d' }),
+    jti: payload.jti,
+  };
 };
 
 export const hashPassword = async (password: string): Promise<string> => {

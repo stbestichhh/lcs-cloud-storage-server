@@ -2,6 +2,9 @@ import { handleServerError } from '../../utils';
 import { LcsConfig } from '../../../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
+import { db, tableName } from '../../../db';
+import { UserDto } from '../../auth/dto';
+import path from 'path';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -33,6 +36,26 @@ const verifyToken = async (
   });
 };
 
+const checkLastlogin = async (user: JwtPayload) => {
+  const userRow = path.join(tableName, user.email);
+  const userDB: UserDto = await db.getObject<UserDto>(userRow);
+
+  const jti = user.jti;
+  const userJti = userDB.jti;
+
+  if (jti === userJti) {
+    const jwt_iat = user.iat?.toString();
+    const lastLogin = userDB.lastLogin;
+
+    if (jwt_iat !== lastLogin) {
+      throw new Error();
+    }
+    return;
+  }
+
+  throw Error();
+};
+
 export const loginValidation = async (
   req: Request,
   res: Response,
@@ -54,6 +77,9 @@ export const loginValidation = async (
     const token = extractToken(header);
 
     req.user = await verifyToken(token, jwt_key);
+
+    await checkLastlogin(req.user);
+
     next();
   } catch (error) {
     await handleServerError(error, 403, res, 'Login session expired.');

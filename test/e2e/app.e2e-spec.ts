@@ -7,11 +7,13 @@ import path from 'path';
 import { Folder } from '../../bin/src/filesystem';
 import { app } from '../../bin/src/server';
 import { storageRoot } from '../../bin/config';
+import os from 'os';
 
 dotenv.config();
 
 describe('App', () => {
   let auth_token = '';
+  let reserved_auth_token = '';
   let userUuid: string;
 
   const user: UserDto = {
@@ -24,6 +26,13 @@ describe('App', () => {
   afterAll(async () => {
     await db.delete(tableName);
     await Folder.remove(path.join(storageRoot, userUuid));
+    await Folder.remove(
+      path.join(
+        os.homedir(),
+        '.lcs-cloud-storage',
+        'lcs_user_repository_test.json',
+      ),
+    );
   });
 
   describe('GET /', () => {
@@ -107,6 +116,7 @@ describe('App', () => {
         });
 
         auth_token = response.body.authentication_token;
+        reserved_auth_token = auth_token;
 
         expect(response.statusCode).toBe(200);
       });
@@ -115,7 +125,7 @@ describe('App', () => {
         const resUser = await supertest(app)
           .get('/me')
           .set('Authorization', `Bearer ${auth_token}`);
-        userUuid = String(resUser.body.sub);
+        userUuid = resUser.body.sub;
         expect(resUser.statusCode).toBe(200);
         return expect(
           fs.existsSync(path.join(storageRoot, userUuid)),
@@ -133,6 +143,25 @@ describe('App', () => {
           .get('/protected')
           .set('Authorization', `Bearer ${auth_token}`)
           .expect(200);
+      });
+
+      it('Should signin and update last login timestamp', async () => {
+        const response = await supertest(app).post('/auth/signin').send({
+          email: user.email,
+          password: user.password,
+        });
+
+        auth_token = response.body.authentication_token;
+
+        expect(auth_token).not.toBe(reserved_auth_token);
+        expect(response.statusCode).toBe(200);
+      });
+
+      it('Should throw if user logged in with old auth token', async () => {
+        return supertest(app)
+          .get('/protected')
+          .set('Authorization', `Bearer ${reserved_auth_token}`)
+          .expect(403);
       });
     });
   });
