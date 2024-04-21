@@ -1,4 +1,9 @@
-import { handleServerError, extractPath, FileSystemCommand, isExists } from '../../utils';
+import {
+  handleServerError,
+  extractPath,
+  FileSystemCommand,
+  isExists,
+} from '../../utils';
 import { File } from '../models/file.model';
 import { Request, Response } from 'express';
 
