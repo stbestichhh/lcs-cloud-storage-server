@@ -50,8 +50,7 @@ const checkLastlogin = async (user: JwtPayload) => {
     if (jwt_iat !== lastLogin) {
       throw new Error();
     }
-
-    return true;
+    return;
   }
 
   throw Error();
