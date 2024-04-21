@@ -7,7 +7,7 @@ import { LoginData, UserDto } from './dto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcrypt';
+import * as argon from 'argon2';
 
 export const getUser = async (req: Request, res: Response) => {
   return res.status(200).json(req.user);
@@ -49,7 +49,7 @@ export const signin = async (req: Request, res: Response) => {
     const userRow = path.join(tableName, email);
     const user: UserDto = await db.getObject<UserDto>(userRow);
 
-    const match = await bcrypt.compare(password, user.password);
+    const match = await argon.verify(user.password, password);
 
     if (match) {
       const { authentication_token, jti } = await signToken(user);
@@ -92,9 +92,12 @@ export const signToken = async (user: UserDto) => {
 };
 
 export const hashPassword = async (password: string): Promise<string> => {
-  const saltRounds = 10;
-  const salt = await bcrypt.genSalt(saltRounds);
-  return await bcrypt.hash(password, salt);
+  const hashConfig: argon.Options = {
+    timeCost: 10,
+    type: argon.argon2id,
+  }
+
+  return await argon.hash(password, hashConfig);
 };
 
 export const createUserDirectory = async (
