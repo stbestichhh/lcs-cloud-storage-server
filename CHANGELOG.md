@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Server internal error thrown if remove file path not exists
 * Updated app config file path
 
+`21-04-2024`
+
 ## Patch 0.0.3
 
 This patch is hot fix for 0.0.2 version. 
