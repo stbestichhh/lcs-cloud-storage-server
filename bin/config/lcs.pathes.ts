@@ -1,7 +1,7 @@
 import path from 'path';
 import os from 'os';
 
-export const storageRoot = path.join(
+export const storagePath = path.join(
   os.homedir(),
   '.lcs-cloud-storage',
   'storage',

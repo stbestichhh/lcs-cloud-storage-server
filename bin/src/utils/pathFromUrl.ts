@@ -1,5 +1,5 @@
 import path from 'path';
-import { storageRoot } from '../../config';
+import { storagePath } from '../../config';
 
 export enum FileSystemCommand {
   List = '/ls/',
@@ -25,5 +25,5 @@ export const extractPath = (
   userDir: string,
   command: FileSystemCommandType,
 ): string => {
-  return path.join(storageRoot, userDir, pathUrl.replace(command, ''));
+  return path.join(storagePath, userDir, pathUrl.replace(command, ''));
 };
