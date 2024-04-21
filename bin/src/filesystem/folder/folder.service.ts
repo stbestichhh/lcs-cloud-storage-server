@@ -6,7 +6,7 @@ import {
   isExists,
 } from '../../utils';
 import { Folder } from '../models/folder.model';
-import { storageRoot } from '../../../config';
+import { storagePath } from '../../../config';
 import { Request, Response } from 'express';
 
 export const listdir = async (req: Request, res: Response) => {
@@ -61,7 +61,7 @@ export const move = async (req: Request, res: Response) => {
     }
 
     const dirpath = extractPath(req.path, userDir, FileSystemCommand.Move);
-    const newDirpath = path.join(storageRoot, userDir, req.body.newDirpath);
+    const newDirpath = path.join(storagePath, userDir, req.body.newDirpath);
     await Folder.move(dirpath, newDirpath);
 
     return res.status(200).json({ oldDirpath: dirpath, newDirpath });

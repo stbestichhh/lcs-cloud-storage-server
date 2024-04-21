@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { handleServerError, isExists } from '../../bin/src/utils';
 import { extractPath, FileSystemCommand } from '../../bin/src/utils';
-import { storageRoot } from '../../bin/config';
+import { storagePath } from '../../bin/config';
 import path from 'path';
 
 describe('Utils', () => {
@@ -42,7 +42,7 @@ describe('Utils', () => {
     it('LS Should return extracted path', async () => {
       expect(
         extractPath('/ls/path/to-dir', 'userDir', FileSystemCommand.List),
-      ).toBe(storageRoot + '/userDir' + '/path/to-dir');
+      ).toBe(storagePath + '/userDir' + '/path/to-dir');
     });
 
     it('RMRF Should return extracted path', async () => {
@@ -52,13 +52,13 @@ describe('Utils', () => {
           'userDir',
           FileSystemCommand.RemoveRecursive,
         ),
-      ).toBe(storageRoot + '/userDir' + '/path/to-dir');
+      ).toBe(storagePath + '/userDir' + '/path/to-dir');
     });
 
     it('UPLOAD Should return extracted path', async () => {
       expect(
         extractPath('/upload/path/to-dir', 'userDir', FileSystemCommand.Upload),
-      ).toBe(storageRoot + '/userDir' + '/path/to-dir');
+      ).toBe(storagePath + '/userDir' + '/path/to-dir');
     });
 
     it('MD Should return extracted path', async () => {
@@ -68,25 +68,25 @@ describe('Utils', () => {
           'userDir',
           FileSystemCommand.MakeDirectory,
         ),
-      ).toBe(storageRoot + '/userDir' + '/path/to-dir');
+      ).toBe(storagePath + '/userDir' + '/path/to-dir');
     });
 
     it('RM Should return extracted path', async () => {
       expect(
         extractPath('/rm/path/to-dir', 'userDir', FileSystemCommand.Remove),
-      ).toBe(storageRoot + '/userDir' + '/path/to-dir');
+      ).toBe(storagePath + '/userDir' + '/path/to-dir');
     });
 
     it('MV Should return extracted path', async () => {
       expect(
         extractPath('/mv/path/to-dir', 'userDir', FileSystemCommand.Move),
-      ).toBe(storageRoot + '/userDir' + '/path/to-dir');
+      ).toBe(storagePath + '/userDir' + '/path/to-dir');
     });
 
     it('Should return wrong path', async () => {
       expect(
         extractPath('/upload/path/to-dir', 'userDir', FileSystemCommand.Move),
-      ).toBe(storageRoot + '/userDir' + '/upload/path/to-dir');
+      ).toBe(storagePath + '/userDir' + '/upload/path/to-dir');
     });
   });
 

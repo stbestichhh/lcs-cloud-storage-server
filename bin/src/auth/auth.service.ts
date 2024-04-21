@@ -1,5 +1,5 @@
 import path from 'path';
-import { LcsConfig, storageRoot } from '../../config';
+import { LcsConfig, storagePath } from '../../config';
 import { handleServerError } from '../utils';
 import { db, tableName } from '../../db';
 import { Folder } from '../filesystem';
@@ -95,7 +95,7 @@ export const hashPassword = async (password: string): Promise<string> => {
   const hashConfig: argon.Options = {
     timeCost: 10,
     type: argon.argon2id,
-  }
+  };
 
   return await argon.hash(password, hashConfig);
 };
@@ -103,5 +103,5 @@ export const hashPassword = async (password: string): Promise<string> => {
 export const createUserDirectory = async (
   name: string,
 ): Promise<string | undefined> => {
-  return await new Folder(name).create(storageRoot);
+  return await new Folder(name).create(storagePath);
 };

@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Patch 0.0.4
+
+### Added:
+
+* New command `lcs prune` which allows to remove server data from os
+
+### Changed:
+
+* Increased security level with auth sessions and auth tokens
+* Changed password hashing algorithm to argon2
+
+### Fixed:
+
+* Server internal error thrown if download path not exists
+* Server internal error thrown if remove file path not exists
+* Updated app config file path
+
 ## Patch 0.0.3
 
 This patch is hot fix for 0.0.2 version. 

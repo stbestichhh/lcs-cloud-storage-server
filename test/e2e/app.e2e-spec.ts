@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import path from 'path';
 import { Folder } from '../../bin/src/filesystem';
 import { app } from '../../bin/src/server';
-import { storageRoot } from '../../bin/config';
+import { storagePath } from '../../bin/config';
 import os from 'os';
 
 dotenv.config();
@@ -25,7 +25,7 @@ describe('App', () => {
 
   afterAll(async () => {
     await db.delete(tableName);
-    await Folder.remove(path.join(storageRoot, userUuid));
+    await Folder.remove(path.join(storagePath, userUuid));
     await Folder.remove(
       path.join(
         os.homedir(),
@@ -128,7 +128,7 @@ describe('App', () => {
         userUuid = resUser.body.sub;
         expect(resUser.statusCode).toBe(200);
         return expect(
-          fs.existsSync(path.join(storageRoot, userUuid)),
+          fs.existsSync(path.join(storagePath, userUuid)),
         ).toBeTruthy();
       });
     });
