@@ -333,6 +333,22 @@ describe('App', () => {
       });
     });
 
+    describe('Touch', () => {
+      it('Should throw if path to create file not exists', async () => {
+        return supertest(app)
+          .post('/storage/touch/wrong/path/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      });
+
+      it('Should create file', async () => {
+        return supertest(app)
+          .post('/storage/touch/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(201);
+      })
+    })
+
     describe('Download', () => {
       it('Should throw if download path not exists', async () => {
         return supertest(app)
@@ -341,7 +357,12 @@ describe('App', () => {
           .expect(403);
       });
 
-      it('Should download file', async () => {});
+      it('Should download file', async () => {
+        return supertest(app)
+          .get('/storage/download/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(200);
+      });
     });
   });
 });
