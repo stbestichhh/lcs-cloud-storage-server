@@ -52,9 +52,9 @@ export const makedir = async (req: Request, res: Response) => {
       FileSystemCommand.MakeDirectory,
     );
     const dir = new Folder(dirname);
-    const directory = await dir.create(dirpath);
+    await dir.create(dirpath);
 
-    return res.status(201).json({ directory });
+    return res.status(201).json({ message: 'Directory created.' });
   } catch (error) {
     await handleServerError(error, 500, res);
   }
@@ -84,7 +84,7 @@ export const move = async (req: Request, res: Response) => {
 
     await Folder.move(dirpath, newDirpath);
 
-    return res.status(200).json({ oldDirpath: dirpath, newDirpath });
+    return res.status(200).json({ message: 'Directory moved.' });
   } catch (error) {
     await handleServerError(error, 500, res);
   }

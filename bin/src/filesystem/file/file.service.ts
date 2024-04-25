@@ -57,7 +57,7 @@ export const create = async (req: Request, res: Response) => {
     const file = new File(content);
     await file.create(filepath);
 
-    return res.status(201).json({ message: 'File created.', path: filepath });
+    return res.status(201).json({ message: 'File created.' });
   } catch (error) {
     await handleServerError(error, 500, res);
   }

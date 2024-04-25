@@ -260,8 +260,6 @@ describe('App', () => {
           });
 
         expect(response.statusCode).toBe(200);
-        expect(response.body).toHaveProperty('oldDirpath');
-        expect(response.body).toHaveProperty('newDirpath');
       });
 
       it('Should list with new dir name', async () => {
