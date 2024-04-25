@@ -363,19 +363,30 @@ describe('App', () => {
     describe('Read file', () => {
       it('Should throw if file path not exists', async () => {
         return supertest(app)
-          .post('/storage/read/wrong/path/file.txt')
+          .get('/storage/cat/wrong/path/file.txt')
           .set('Authorization', `Bearer ${auth_token}`)
           .expect(403);
       })
 
-      it('Should read file', async () => {
+      it('Should read file with content', async () => {
         const response = await supertest(app)
-          .post('/storage/read/content_file.txt')
+          .get('/storage/cat/content_file.txt')
           .set('Authorization', `Bearer ${auth_token}`);
 
         expect(response.statusCode).toBe(200);
-        expect(response.body).toBe({
+        expect(response.body).toEqual({
           content: "It is file with some content",
+        });
+      })
+
+      it('Should read file without contetn', async () => {
+        const response = await supertest(app)
+          .get('/storage/cat/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual({
+          content: "",
         });
       })
     })

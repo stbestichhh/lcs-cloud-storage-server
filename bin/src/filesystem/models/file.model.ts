@@ -12,8 +12,8 @@ export class File {
     return await fs.writeFile(filePath, this.content || '');
   }
 
-  static async read(filePath: PathLike): Promise<Buffer> {
-    return await fs.readFile(filePath);
+  static async read(filePath: PathLike): Promise<string> {
+    return await fs.readFile(filePath, { encoding: 'utf-8' });
   }
 
   static async remove(dirpath: PathLike): Promise<void> {

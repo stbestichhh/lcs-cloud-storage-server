@@ -8,6 +8,28 @@ import { File } from '../models';
 import { Request, Response } from 'express';
 import path from 'path';
 
+export const read = async (req: Request, res: Response) => {
+  try {
+    const userDir = req.user.sub;
+    if (!userDir) {
+      return res.status(403).json({ error: 'Forbidden.' });
+    }
+
+    const filepath = extractPath(req.path, userDir, FileSystemCommand.Read);
+    const fileExists = await isExists(filepath);
+
+    if(!fileExists) {
+      return res.status(403).json({ error: `cat: ${filepath}: No such file or directory`})
+    }
+
+    const content = await File.read(filepath);
+
+    return res.status(200).json({ content });
+  } catch (error) {
+    await handleServerError(error, 403, res, 'Path does not exist.');
+  }
+}
+
 export const create = async (req: Request, res: Response) => {
   try {
     const { content } = req.body;
