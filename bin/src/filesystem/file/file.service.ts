@@ -18,7 +18,7 @@ export const read = async (req: Request, res: Response) => {
     const filepath = extractPath(req.path, userDir, FileSystemCommand.Read);
     const fileExists = await isExists(filepath);
 
-    if (!fileExists) {
+    if (!fileExists || req.path === FileSystemCommand.Read) {
       return res
         .status(403)
         .json({ error: `cat: ${filepath}: No such file or directory` });
@@ -50,7 +50,7 @@ export const create = async (req: Request, res: Response) => {
     const cuttedFilepath = filepath.slice(0, -path.basename(filepath).length);
     const pathExists = await isExists(cuttedFilepath);
 
-    if (!pathExists) {
+    if (!pathExists || req.path === FileSystemCommand.TouchFile) {
       return res
         .status(403)
         .json({ error: `touch: ${filepath}: No such file or directory` });
