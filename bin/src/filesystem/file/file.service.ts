@@ -4,8 +4,66 @@ import {
   FileSystemCommand,
   isExists,
 } from '../../utils';
-import { File } from '../models/file.model';
+import { File } from '../models';
 import { Request, Response } from 'express';
+import path from 'path';
+
+export const read = async (req: Request, res: Response) => {
+  try {
+    const userDir = req.user.sub;
+    if (!userDir) {
+      return res.status(403).json({ error: 'Forbidden.' });
+    }
+
+    const filepath = extractPath(req.path, userDir, FileSystemCommand.Read);
+    const fileExists = await isExists(filepath);
+
+    if (!fileExists) {
+      return res
+        .status(403)
+        .json({ error: `cat: ${filepath}: No such file or directory` });
+    }
+
+    const content = await File.read(filepath);
+
+    return res.status(200).json({ content });
+  } catch (error) {
+    await handleServerError(error, 403, res, 'Path does not exist.');
+  }
+};
+
+export const create = async (req: Request, res: Response) => {
+  try {
+    const { content } = req.body;
+    const userDir = req.user.sub;
+
+    if (!userDir) {
+      return res.status(403).json({ error: 'Forbidden.' });
+    }
+
+    const filepath = extractPath(
+      req.path,
+      userDir,
+      FileSystemCommand.TouchFile,
+    );
+
+    const cuttedFilepath = filepath.slice(0, -path.basename(filepath).length);
+    const pathExists = await isExists(cuttedFilepath);
+
+    if (!pathExists) {
+      return res
+        .status(403)
+        .json({ error: `touch: ${filepath}: No such file or directory` });
+    }
+
+    const file = new File(content);
+    await file.create(filepath);
+
+    return res.status(201).json({ message: 'File created.', path: filepath });
+  } catch (error) {
+    await handleServerError(error, 500, res);
+  }
+};
 
 export const remove = async (req: Request, res: Response) => {
   try {

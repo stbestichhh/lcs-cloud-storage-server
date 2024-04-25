@@ -2,8 +2,10 @@ import path from 'path';
 import { storagePath } from '../../config';
 
 export enum FileSystemCommand {
+  Read = '/cat/',
   List = '/ls/',
   MakeDirectory = '/md/',
+  TouchFile = '/touch/',
   Move = '/mv/',
   Remove = '/rm/',
   RemoveRecursive = '/rmrf/',
@@ -12,8 +14,10 @@ export enum FileSystemCommand {
 }
 
 export type FileSystemCommandType =
+  | '/cat/'
   | '/ls/'
   | '/md/'
+  | '/touch/'
   | '/mv/'
   | '/rm/'
   | '/rmrf/'

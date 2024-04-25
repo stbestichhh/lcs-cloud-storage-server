@@ -333,6 +333,63 @@ describe('App', () => {
       });
     });
 
+    describe('Touch', () => {
+      it('Should throw if path to create file not exists', async () => {
+        return supertest(app)
+          .post('/storage/touch/wrong/path/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      });
+
+      it('Should create file', async () => {
+        return supertest(app)
+          .post('/storage/touch/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(201);
+      });
+
+      it('Should create file with some content', async () => {
+        return supertest(app)
+          .post('/storage/touch/content_file.txt')
+          .send({
+            content: 'It is file with some content',
+          })
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(201);
+      });
+    });
+
+    describe('Read file', () => {
+      it('Should throw if file path not exists', async () => {
+        return supertest(app)
+          .get('/storage/cat/wrong/path/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      });
+
+      it('Should read file with content', async () => {
+        const response = await supertest(app)
+          .get('/storage/cat/content_file.txt')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual({
+          content: 'It is file with some content',
+        });
+      });
+
+      it('Should read file without contetn', async () => {
+        const response = await supertest(app)
+          .get('/storage/cat/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual({
+          content: '',
+        });
+      });
+    });
+
     describe('Download', () => {
       it('Should throw if download path not exists', async () => {
         return supertest(app)
@@ -341,7 +398,12 @@ describe('App', () => {
           .expect(403);
       });
 
-      it('Should download file', async () => {});
+      it('Should download file', async () => {
+        return supertest(app)
+          .get('/storage/download/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(200);
+      });
     });
   });
 });
