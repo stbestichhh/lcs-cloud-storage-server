@@ -19,16 +19,14 @@ export const read = async (req: Request, res: Response) => {
     const fileExists = await isExists(filepath);
 
     if (!fileExists || req.path === FileSystemCommand.Read) {
-      return res
-        .status(403)
-        .json({ error: `cat: ${filepath}: No such file or directory` });
+      return res.status(403).json({ error: `cat: No such file or directory` });
     }
 
     const content = await File.read(filepath);
 
     return res.status(200).json({ content });
   } catch (error) {
-    await handleServerError(error, 403, res, 'Path does not exist.');
+    await handleServerError(error, 500, res);
   }
 };
 
@@ -53,7 +51,7 @@ export const create = async (req: Request, res: Response) => {
     if (!pathExists || req.path === FileSystemCommand.TouchFile) {
       return res
         .status(403)
-        .json({ error: `touch: ${filepath}: No such file or directory` });
+        .json({ error: `touch: No such file or directory` });
     }
 
     const file = new File(content);
@@ -99,7 +97,9 @@ export const download = async (req: Request, res: Response) => {
   const dirExists = await isExists(filePath);
 
   if (!dirExists || req.path === FileSystemCommand.Download) {
-    return res.status(403).json({ error: 'The path does not exist.' });
+    return res
+      .status(403)
+      .json({ error: 'download: No such file or directory' });
   }
 
   return res.download(filePath, async (error) => {

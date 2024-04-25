@@ -240,7 +240,7 @@ describe('App', () => {
 
     describe('Move file', () => {
       it('Should throw if the target path does not exist.', async () => {
-        jest.spyOn(Folder, 'move').mockRejectedValue(new Error());
+        //jest.spyOn(Folder, 'move').mockRejectedValue(new Error());
 
         return supertest(app)
           .put('/storage/mv/dir1')
