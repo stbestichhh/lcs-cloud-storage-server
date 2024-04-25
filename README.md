@@ -88,14 +88,14 @@ $ npm i -g lcs-cloud-storage
   Run default configuration
 
   ```shell
-  $ docker build -t lcs-cloud-storage:0.0.2 .
-  $ docker run -p <port>:9110 lcs-cloud-storage:0.0.2
+  $ docker build -t lcs-cloud-storage:0.0.5 .
+  $ docker run -p <port>:9110 lcs-cloud-storage:0.0.5
   ```
 
   Override configuration
   ```shell
-  $ docker build -t lcs-cloud-storage:0.0.2 .
-  $ docker run -e PORT=<port> -e HOST=<host> -e SECRET_KEY=<jwtkey> -e DB_NAME=<dbname> -p <port>:<port> lcs-cloud-storage:0.0.2 node dist/index.js [options] [command]
+  $ docker build -t lcs-cloud-storage:0.0.5 .
+  $ docker run -e PORT=<port> -e HOST=<host> -e SECRET_KEY=<jwtkey> -e DB_NAME=<dbname> -p <port>:<port> lcs-cloud-storage:0.0.5 node dist/index.js [options] [command]
   ```
   
   Overriding every enviroment variable is not necessary. Options and command see in [usage](#usage) section. 
