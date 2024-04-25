@@ -8,7 +8,6 @@ import { Folder } from '../../bin/src/filesystem';
 import { app } from '../../bin/src/server';
 import { storagePath } from '../../bin/config';
 import os from 'os';
-import exp = require('node:constants');
 
 dotenv.config();
 
@@ -353,12 +352,12 @@ describe('App', () => {
         return supertest(app)
           .post('/storage/touch/content_file.txt')
           .send({
-            content: "It is file with some content",
+            content: 'It is file with some content',
           })
           .set('Authorization', `Bearer ${auth_token}`)
           .expect(201);
-      })
-    })
+      });
+    });
 
     describe('Read file', () => {
       it('Should throw if file path not exists', async () => {
@@ -366,7 +365,7 @@ describe('App', () => {
           .get('/storage/cat/wrong/path/file.txt')
           .set('Authorization', `Bearer ${auth_token}`)
           .expect(403);
-      })
+      });
 
       it('Should read file with content', async () => {
         const response = await supertest(app)
@@ -375,9 +374,9 @@ describe('App', () => {
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
-          content: "It is file with some content",
+          content: 'It is file with some content',
         });
-      })
+      });
 
       it('Should read file without contetn', async () => {
         const response = await supertest(app)
@@ -386,10 +385,10 @@ describe('App', () => {
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
-          content: "",
+          content: '',
         });
-      })
-    })
+      });
+    });
 
     describe('Download', () => {
       it('Should throw if download path not exists', async () => {

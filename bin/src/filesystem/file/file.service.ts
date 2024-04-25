@@ -18,8 +18,10 @@ export const read = async (req: Request, res: Response) => {
     const filepath = extractPath(req.path, userDir, FileSystemCommand.Read);
     const fileExists = await isExists(filepath);
 
-    if(!fileExists) {
-      return res.status(403).json({ error: `cat: ${filepath}: No such file or directory`})
+    if (!fileExists) {
+      return res
+        .status(403)
+        .json({ error: `cat: ${filepath}: No such file or directory` });
     }
 
     const content = await File.read(filepath);
@@ -28,7 +30,7 @@ export const read = async (req: Request, res: Response) => {
   } catch (error) {
     await handleServerError(error, 403, res, 'Path does not exist.');
   }
-}
+};
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -48,8 +50,10 @@ export const create = async (req: Request, res: Response) => {
     const cuttedFilepath = filepath.slice(0, -path.basename(filepath).length);
     const pathExists = await isExists(cuttedFilepath);
 
-    if(!pathExists) {
-      return res.status(403).json({ error: `touch: ${filepath}: No such file or directory`})
+    if (!pathExists) {
+      return res
+        .status(403)
+        .json({ error: `touch: ${filepath}: No such file or directory` });
     }
 
     const file = new File(content);
@@ -59,7 +63,7 @@ export const create = async (req: Request, res: Response) => {
   } catch (error) {
     await handleServerError(error, 500, res);
   }
-}
+};
 
 export const remove = async (req: Request, res: Response) => {
   try {
