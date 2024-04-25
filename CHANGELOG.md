@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added:
 
-* Now filesystem can create files and read their content.
+* Now filesystem can create files and read their content
+
+### Fixed:
+
+* Fixed error handling
+* Added more conditions which throws error
 
 `Unknown`
 
