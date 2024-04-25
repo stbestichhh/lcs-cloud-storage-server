@@ -6,6 +6,7 @@ import {
 } from '../../utils';
 import { File } from '../models';
 import { Request, Response } from 'express';
+import path from 'path';
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -21,6 +22,13 @@ export const create = async (req: Request, res: Response) => {
       userDir,
       FileSystemCommand.TouchFile,
     );
+
+    const cuttedFilepath = filepath.slice(0, -path.basename(filepath).length);
+    const pathExists = await isExists(cuttedFilepath);
+
+    if(!pathExists) {
+      return res.status(403).json({ error: `touch: ${filepath}: No such file or directory`})
+    }
 
     const file = new File(content);
     await file.create(filepath);
