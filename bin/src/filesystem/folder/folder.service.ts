@@ -5,7 +5,7 @@ import {
   handleServerError,
   isExists,
 } from '../../utils';
-import { Folder } from '../models/folder.model';
+import { Folder } from '../models';
 import { storagePath } from '../../../config';
 import { Request, Response } from 'express';
 
@@ -17,11 +17,17 @@ export const listdir = async (req: Request, res: Response) => {
     }
 
     const dirpath = extractPath(req.path, userDir, FileSystemCommand.List);
+    const dirExists = await isExists(dirpath);
+
+    if (!dirExists) {
+      return res.status(403).json({ error: `ls: No such file or directory` });
+    }
+
     const files = await Folder.list(dirpath);
 
     return res.status(200).json(files);
   } catch (error) {
-    await handleServerError(error, 403, res, 'Path does not exist.');
+    await handleServerError(error, 500, res);
   }
 };
 
@@ -35,7 +41,9 @@ export const makedir = async (req: Request, res: Response) => {
     }
 
     if (!dirname || dirname === '') {
-      return res.status(403).json({ error: 'Provide a directory name.' });
+      return res
+        .status(403)
+        .json({ error: 'mkdir: Provide a directory name.' });
     }
 
     const dirpath = extractPath(
@@ -62,16 +70,23 @@ export const move = async (req: Request, res: Response) => {
 
     const dirpath = extractPath(req.path, userDir, FileSystemCommand.Move);
     const newDirpath = path.join(storagePath, userDir, req.body.newDirpath);
+
+    if (req.body.newDirpath === '' || req.path === FileSystemCommand.Move) {
+      return res.status(403).json({ error: `mv: No such file or directory` });
+    }
+
+    const oldpathExists = await isExists(dirpath);
+    const newpathExists = await isExists(path.dirname(newDirpath));
+
+    if (!oldpathExists || !newpathExists) {
+      return res.status(403).json({ error: `mv: No such file or directory` });
+    }
+
     await Folder.move(dirpath, newDirpath);
 
     return res.status(200).json({ oldDirpath: dirpath, newDirpath });
   } catch (error) {
-    await handleServerError(
-      error,
-      403,
-      res,
-      'The path to move in does not exist.',
-    );
+    await handleServerError(error, 500, res);
   }
 };
 
@@ -91,7 +106,9 @@ export const removedir = async (req: Request, res: Response) => {
     const dirExists = await isExists(dirPath);
 
     if (!dirExists || req.path === FileSystemCommand.RemoveRecursive) {
-      return res.status(403).json({ error: 'The path does not exist.' });
+      return res
+        .status(403)
+        .json({ error: 'rmdir: No such file or directory' });
     }
 
     await Folder.remove(dirPath);
