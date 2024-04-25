@@ -8,6 +8,7 @@ import { Folder } from '../../bin/src/filesystem';
 import { app } from '../../bin/src/server';
 import { storagePath } from '../../bin/config';
 import os from 'os';
+import exp = require('node:constants');
 
 dotenv.config();
 
@@ -356,6 +357,26 @@ describe('App', () => {
           })
           .set('Authorization', `Bearer ${auth_token}`)
           .expect(201);
+      })
+    })
+
+    describe('Read file', () => {
+      it('Should throw if file path not exists', async () => {
+        return supertest(app)
+          .post('/storage/read/wrong/path/file.txt')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(403);
+      })
+
+      it('Should read file', async () => {
+        const response = await supertest(app)
+          .post('/storage/read/content_file.txt')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toBe({
+          content: "It is file with some content",
+        });
       })
     })
 
