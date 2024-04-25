@@ -346,6 +346,16 @@ describe('App', () => {
           .post('/storage/touch/file.txt')
           .set('Authorization', `Bearer ${auth_token}`)
           .expect(201);
+      });
+
+      it('Should create file with some content', async () => {
+        return supertest(app)
+          .post('/storage/touch/content_file.txt')
+          .send({
+            content: "It is file with some content",
+          })
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(201);
       })
     })
 
