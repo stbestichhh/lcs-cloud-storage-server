@@ -5,7 +5,7 @@ import {
   _removedir,
   _move,
 } from './folder/folder.controller';
-import { _download, _remove } from './file/file.controller';
+import { _create, _download, _remove } from './file/file.controller';
 import { upload } from './filesystem.config';
 import express from 'express';
 
@@ -24,4 +24,5 @@ FilesystemRouter.post('/upload/*', upload.any(), (_req, res) => {
   return res.status(200).json({ message: 'Uploaded.' });
 });
 FilesystemRouter.get('/download/*', _download);
+FilesystemRouter.post('/touch/*', _create);
 FilesystemRouter.delete('/rm/*', _remove);

@@ -4,8 +4,32 @@ import {
   FileSystemCommand,
   isExists,
 } from '../../utils';
-import { File } from '../models/file.model';
+import { File } from '../models';
 import { Request, Response } from 'express';
+
+export const create = async (req: Request, res: Response) => {
+  try {
+    const { content } = req.body;
+    const userDir = req.user.sub;
+
+    if (!userDir) {
+      return res.status(403).json({ error: 'Forbidden.' });
+    }
+
+    const filepath = extractPath(
+      req.path,
+      userDir,
+      FileSystemCommand.TouchFile,
+    );
+
+    const file = new File(content);
+    await file.create(filepath);
+
+    return res.status(201).json({ message: 'File created.', path: filepath });
+  } catch (error) {
+    await handleServerError(error, 500, res);
+  }
+}
 
 export const remove = async (req: Request, res: Response) => {
   try {
