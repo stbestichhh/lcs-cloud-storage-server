@@ -8,8 +8,12 @@ export class File {
     this.content = content;
   }
 
-  async create(filePath: string): Promise<void> {
+  async create(filePath: PathLike): Promise<void> {
     return await fs.writeFile(filePath, this.content || '');
+  }
+
+  static async read(filePath: PathLike): Promise<Buffer> {
+    return await fs.readFile(filePath);
   }
 
   static async remove(dirpath: PathLike): Promise<void> {
