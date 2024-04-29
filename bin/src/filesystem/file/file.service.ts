@@ -7,6 +7,7 @@ import {
 import { File } from '../models';
 import { Request, Response } from 'express';
 import path from 'path';
+import * as fs from 'fs/promises';
 
 export const read = async (req: Request, res: Response) => {
   try {
@@ -20,6 +21,12 @@ export const read = async (req: Request, res: Response) => {
 
     if (!fileExists || req.path === FileSystemCommand.Read) {
       return res.status(403).json({ error: `cat: No such file or directory` });
+    }
+
+    const stats = await fs.stat(filepath);
+
+    if (stats.isDirectory()) {
+      return res.status(403).json({ error: `cat: Is a directory` });
     }
 
     const content = await File.read(filepath);
