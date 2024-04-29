@@ -8,6 +8,7 @@ import {
 import { Folder } from '../models';
 import { storagePath } from '../../../config';
 import { Request, Response } from 'express';
+import fs from 'fs/promises';
 
 export const listdir = async (req: Request, res: Response) => {
   try {
@@ -21,6 +22,12 @@ export const listdir = async (req: Request, res: Response) => {
 
     if (!dirExists) {
       return res.status(403).json({ error: `ls: No such file or directory` });
+    }
+
+    const stats = await fs.stat(dirpath);
+
+    if (stats.isFile()) {
+      return res.status(403).json({ error: `ls: Is a file` });
     }
 
     const files = await Folder.list(dirpath);
