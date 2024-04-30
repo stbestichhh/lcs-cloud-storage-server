@@ -27,8 +27,9 @@ program
   .command('server')
   .alias('run')
   .description('Start the local cloud storage server')
-  .option('-p, --port <port>', 'tell server which port to use.')
-  .option('-h, --host <host>', 'tell server which host to use.')
+  .option('-p, --port <port>', 'tell server which port to use')
+  .option('-h, --host <host>', 'tell server which host to use')
+  .option('--https [days]', 'tell server to use https protocol')
   .action(async (options) => {
     await start(options);
   });
