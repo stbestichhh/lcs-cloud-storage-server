@@ -1,14 +1,13 @@
-import { handleError, isExists, limiter } from '../utils';
+import { handleError, limiter } from '../utils';
 import { loginValidation } from '../middleware';
 import { AuthRouter, _getUser } from '../auth';
 import { FilesystemRouter } from '../filesystem';
-import { certDirectory, LcsConfig } from '../../config';
+import { LcsConfig } from '../../config';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { OptionValues } from 'commander';
 import * as pem from 'pem'
-import path from 'path';
 import * as https from 'https';
 
 dotenv.config();
