@@ -12,11 +12,13 @@ export const isExists = async (
     return true;
   } catch (error) {
     if (create) {
-      return await fs
+      await fs
         .mkdir(node_path.dirname(path.toString()), { recursive: true })
         .then(async () => {
           await fs.writeFile(path, content || '');
         });
+
+      return true;
     }
     return false;
   }
