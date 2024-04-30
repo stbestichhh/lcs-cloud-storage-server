@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added:
+
+* Added new flag for server command, which tells server to srart with ssl. 
+
 ### Fixed:
 
 * Fixed bug with status code 500 while performing ls or cat operations with wrong object 
