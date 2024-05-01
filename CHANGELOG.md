@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Fixed bug with status code 500 while performing ls or cat operations with wrong object 
 
-## 0.0.5
+## Patch 0.0.5
 
 ### Added:
 
