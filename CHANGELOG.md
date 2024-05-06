@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added:
 
-* Added new flag for server command, which tells server to srart with ssl. 
+* Added new flag for server command, which tells server to srart with ssl.
+* Added [Code of Conduct](CODE_OF_CONDUCT.md)
+* Added [Security](SECURITY.md) file of supported versions
 
 ### Fixed:
 
