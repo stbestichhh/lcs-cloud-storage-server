@@ -149,6 +149,8 @@ Project changes are writen in changelog, see the [CHANGELOG.md](CHANGELOG.md).
 We use [SemVer](https://semver.org/) for versioning. 
 For the versions available, see the [tags](https://github.com/stbestichhh/lcs-cloud-storage-server/tags) on this repository.
 
+For the supported and unsupported versions, see the [SECURITY.md](SECURITY.md).
+
 ## Authors
 
 - [@stbestichhh](https://www.github.com/stbestichhh)
