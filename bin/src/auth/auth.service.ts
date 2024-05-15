@@ -1,74 +1,83 @@
-import path from 'path';
-import { LcsConfig, storagePath } from '../../config';
-import { handleServerError } from '../utils';
-import { db, tableName } from '../../db';
 import { Folder } from '../filesystem';
-import { LoginData, UserDto } from './dto';
+import { LoginData, SigninDto, SignupDto, UserDto } from './dto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon from 'argon2';
-
-export const getUser = async (req: Request, res: Response) => {
-  return res.status(200).json(req.user);
-};
+import { UserEntity } from '../../lib/db/entity/user.entity';
+import { config, storagePath } from '../../lib/config';
+import { handleError } from '@stlib/utils';
 
 export const signup = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
-    const hash = await hashPassword(password);
+    const dto: SignupDto = req.body;
+    const hash = await hashPassword(dto.password);
+
+    const users = await UserEntity.findAll({
+      where: {
+        email: dto.email
+      }
+    });
+
+    if (users.length !== 0) {
+      return res.status(403).json({ error: 'Forbidden.' });
+    }
 
     const userDto: UserDto = {
       uuid: uuidv4(),
-      name,
-      email,
+      username: dto.username,
+      email: dto.email,
       password: hash,
-    };
-
-    const userRow = path.join(tableName, userDto.email);
-    const user: UserDto | boolean = await db.getObjectDefault<
-      UserDto | boolean
-    >(userRow, false);
-
-    if (!user) {
-      await db.push(userRow, userDto);
-      await createUserDirectory(userDto.uuid);
-      return res.status(201).json({ message: 'Successfully signed up.' });
     }
 
-    return res.status(403).json({ error: 'Email already registered.' });
+    const user = await UserEntity.create(userDto);
+    await createUserDirectory(userDto.uuid);
+
+    return res.status(201).json({ user });
   } catch (error) {
-    await handleServerError(error, 500, res);
+    await handleError(error, () => {
+      res.status(500).json({ error: 'Internal server error.' });
+    });
   }
 };
 
 export const signin = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const dto: SigninDto = req.body;
 
-    const userRow = path.join(tableName, email);
-    const user: UserDto = await db.getObject<UserDto>(userRow);
+    const [user] = await UserEntity.findAll({
+      where: {
+        email: dto.email
+      }
+    });
 
-    const match = await argon.verify(user.password, password);
-
-    if (match) {
-      const { authentication_token, jti } = await signToken(user);
-
-      const loginData: LoginData = {
-        jti,
-        lastLogin: Date.now().toString().slice(0, -3),
-      };
-
-      await db.push(userRow, loginData, false);
-
-      return res
-        .status(200)
-        .json({ message: 'Successfully signed in.', authentication_token });
+    if (!user) {
+      return res.status(400).json({ error: 'Credentials are incorrect.' });
     }
 
-    return res.status(403).json({ Error: 'Credentials are incorrect.' });
+    const pwMatch = await argon.verify(user.password, dto.password);
+
+    if (!pwMatch) {
+      return res.status(400).json({ error: 'Credentials are incorrect.' });
+    }
+
+    const { authentication_token, jti } = await signToken(user);
+
+    const loginData: LoginData = {
+      jti,
+      lastLogin: Date.now().toString().slice(0, -3),
+    };
+
+    user.set(loginData);
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ authentication_token });
   } catch (error) {
-    await handleServerError(error, 403, res, 'Credentials are incorrect.');
+    await handleError(error, () => {
+      res.status(500).json({ error: 'Internal server error.' });
+    });
   }
 };
 
@@ -79,12 +88,14 @@ export const signToken = async (user: UserDto) => {
     jti: uuidv4(),
   };
 
-  const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
+  const jwt_key = config.get('jwtkey').toString() || process.env.SECRET_KEY;
+
   if (!jwt_key) {
     throw Error(
       `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }
+
   return {
     authentication_token: jwt.sign(payload, jwt_key, { expiresIn: '30d' }),
     jti: payload.jti,

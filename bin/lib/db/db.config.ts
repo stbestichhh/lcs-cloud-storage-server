@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { config, dbPath } from '../config';
 import { UserEntity } from './entity/user.entity';
+import { handleErrorSync } from '@stlib/utils';
 
 export const dbName = (
   config.get('dbname') ||
@@ -15,5 +16,10 @@ export const sequelize = new Sequelize({
 });
 
 (async () => {
-  await UserEntity.sync({ alter: true });
+  try {
+    await sequelize.authenticate();
+    await UserEntity.sync({ alter: true });
+  } catch (error) {
+    handleErrorSync(error, { throw: true });
+  }
 })();
