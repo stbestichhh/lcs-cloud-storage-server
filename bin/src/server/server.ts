@@ -1,7 +1,7 @@
 import { handleError, limiter } from '../utils';
 import { loginValidation } from '../middleware';
 import { AuthRouter, _getUser } from '../auth';
-import { FilesystemRouter } from '../filesystem';
+import { FileRouter } from '../filesystem';
 import { LcsConfig } from '../../config';
 import express from 'express';
 import cors from 'cors';
@@ -31,7 +31,7 @@ app.get('/protected', loginValidation, (_req, res) => {
 
 app.get('/me', loginValidation, _getUser);
 app.use('/auth', AuthRouter);
-app.use('/storage', FilesystemRouter);
+app.use('/storage', FileRouter);
 
 export const start = async (options: OptionValues) => {
   try {
