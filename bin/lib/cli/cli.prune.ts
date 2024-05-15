@@ -1,9 +1,9 @@
 import { OptionValues } from 'commander';
-import { configPath, storagePath } from '../../../config';
+import { configPath, storagePath } from '../config';
 import path from 'path';
 import os from 'os';
-import { handleError } from '../../utils';
-import { File, Folder } from '../../filesystem';
+import { File, Folder } from '../../src/filesystem';
+import { handleErrorSync } from '@stlib/utils';
 
 export const serverPrune = async (options: OptionValues) => {
   try {
@@ -13,7 +13,7 @@ export const serverPrune = async (options: OptionValues) => {
 
     return console.log('Data has been cleared.');
   } catch (error) {
-    await handleError(error);
+    handleErrorSync(error, { throw: true });
   }
 };
 
