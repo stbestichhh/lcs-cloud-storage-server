@@ -1,5 +1,6 @@
 import path from 'path';
 import os from 'os';
+import { dbName } from '../db';
 
 export const storagePath = path.join(
   os.homedir(),
@@ -19,3 +20,5 @@ export const logfilePath = path.join(
   '.lcs-cloud-storage',
   'lcs.logs',
 );
+
+export const dbPath = path.join(os.homedir(), '.lcs-cloud-storage', dbName);

@@ -1,16 +1,10 @@
-import * as os from 'os';
-import path from 'path';
-import { LcsConfig } from '../config';
-import { JsonDB, Config } from 'node-json-db';
-import dotenv from 'dotenv';
+import { Sequelize } from 'sequelize';
+import { config, dbPath } from '../config';
 
-dotenv.config();
+export const dbName = (config.get('dbname') || process.env.DB_NAME || 'lcs_db.sql').toString();
 
-const dbName = LcsConfig.get('dbname') || process.env.DB_NAME || 'lcs_db';
-const dbPath = path.join(os.homedir(), '.lcs-cloud-storage', dbName);
-const saveOnPush = true;
-
-const config = new Config(dbPath, saveOnPush);
-
-export const db = new JsonDB(config);
-export const tableName = '/users';
+export const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: dbPath,
+  logging: false,
+});
