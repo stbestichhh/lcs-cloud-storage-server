@@ -11,7 +11,7 @@ export const configPath = path.join(
   os.homedir(),
   '.config',
   'lcs-cloud-storage',
-  'lcs.config',
+  'lcs.config.json',
 );
 
 export const logfilePath = path.join(

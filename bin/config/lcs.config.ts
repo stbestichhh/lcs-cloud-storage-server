@@ -1,41 +1,20 @@
-import { PathLike } from 'node:fs';
-import * as fs from 'fs/promises';
-import { handleError, isExists } from '../src/utils';
 import { configPath } from './index';
 import { OptionValues } from 'commander';
+import { Config, handleErrorSync } from '@stlib/utils';
 
 export type ConfigType = {
-  dport: string;
-  dhost: string;
-  jwtkey: string;
-  dbname: string;
+  dport: string | number;
+  dhost: string | number;
+  jwtkey: string | number;
+  dbname: string | number;
 };
+
+export const config = new Config(configPath, {});
 
 export const configure = async (options: OptionValues) => {
   try {
-    const configFileExists = await isExists(
-      configPath,
-      true,
-      JSON.stringify(options),
-    );
-    if (configFileExists) {
-      const config: ConfigType = await readConfig(configPath);
-      Object.assign(config, options);
-      return await writeConfig(configPath, config);
-    }
+    await config.write(options);
   } catch (error) {
-    await handleError(error);
+    handleErrorSync(error, { throw: true });
   }
-};
-
-export const readConfig = async (configPath: PathLike): Promise<ConfigType> => {
-  const data = await fs.readFile(configPath);
-  return JSON.parse(data.toString());
-};
-
-export const writeConfig = async (
-  configPath: PathLike,
-  config: ConfigType | OptionValues,
-) => {
-  return await fs.writeFile(configPath, JSON.stringify(config));
 };
