@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { config, dbPath } from '../config';
+import { UserEntity } from './entity/user.entity';
 
 export const dbName = (
   config.get('dbname') ||
@@ -12,3 +13,7 @@ export const sequelize = new Sequelize({
   storage: dbPath,
   logging: false,
 });
+
+(async () => {
+  await UserEntity.sync({ alter: true });
+})();
