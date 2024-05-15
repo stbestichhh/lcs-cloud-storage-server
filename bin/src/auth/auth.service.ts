@@ -1,12 +1,10 @@
-import { Folder } from '../filesystem';
 import { LoginData, SigninDto, SignupDto, UserDto } from './dto';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon from 'argon2';
 import { UserEntity } from '../../lib/db/entity/user.entity';
-import { config, storagePath } from '../../lib/config';
 import { handleError } from '@stlib/utils';
+import { createUserDirectory, hashPassword, signToken } from '../utils';
 
 export const signup = async (req: Request, res: Response) => {
   try {
@@ -79,40 +77,4 @@ export const signin = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Internal server error.' });
     });
   }
-};
-
-export const signToken = async (user: UserDto) => {
-  const payload: JwtPayload = {
-    sub: user.uuid,
-    email: user.email,
-    jti: uuidv4(),
-  };
-
-  const jwt_key = config.get('jwtkey').toString() || process.env.SECRET_KEY;
-
-  if (!jwt_key) {
-    throw Error(
-      `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
-    );
-  }
-
-  return {
-    authentication_token: jwt.sign(payload, jwt_key, { expiresIn: '30d' }),
-    jti: payload.jti,
-  };
-};
-
-export const hashPassword = async (password: string): Promise<string> => {
-  const hashConfig: argon.Options = {
-    timeCost: 10,
-    type: argon.argon2id,
-  };
-
-  return await argon.hash(password, hashConfig);
-};
-
-export const createUserDirectory = async (
-  name: string,
-): Promise<string | undefined> => {
-  return await new Folder(name).create(storagePath);
 };
