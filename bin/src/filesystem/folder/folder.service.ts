@@ -79,9 +79,9 @@ export const move = async (req: Request, res: Response) => {
     }
 
     const oldpathExists = await isExists(dirpath);
-    const newpathExists = await isExists(path.dirname(newdirpath));
+    // const newpathExists = await isExists(path.dirname(newdirpath));
 
-    if (!oldpathExists || !newpathExists) {
+    if (!oldpathExists /* || !newpathExists */) {
       return res.status(400).json({ error: `mv: No such file or directory` });
     }
 
@@ -106,7 +106,7 @@ export const removedir = async (req: Request, res: Response) => {
     const dirpath = node_path.join(storagePath, uuid, path)
     const dirExists = await isExists(dirpath);
 
-    if (!dirExists || req.path === '/rmrf') {
+    if (!dirExists) {
       return res
         .status(400)
         .json({ error: 'rmdir: No such file or directory' });
