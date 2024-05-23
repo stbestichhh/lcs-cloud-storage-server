@@ -11,10 +11,6 @@ export const signupValidation = [
     .isString()
     .isLength({ min: 6 })
     .withMessage('Pussword must be 6 or more characters length.'),
-  body('password_repeat')
-    .isString()
-    .custom((value, { req }) => value === req.body.password)
-    .withMessage('Pusswords must math.'),
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
