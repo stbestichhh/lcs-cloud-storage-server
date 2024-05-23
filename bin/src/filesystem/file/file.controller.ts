@@ -1,6 +1,6 @@
 import { loginValidation } from '../../middleware';
 import { create, download, read, remove } from './file.service';
-import { upload } from '../filesystem.config';
+import { upload } from '../multer.config';
 import express from 'express';
 
 export const FileRouter = express.Router();
