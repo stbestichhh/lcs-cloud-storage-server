@@ -98,8 +98,10 @@ export const loginValidation = async (
     if(check) {
       next();
     }
+
+    return res.status(403).json({ error: 'Lolgin session expired.' });
   } catch (error) {
     handleErrorSync(error);
-    return res.status(403).json({ error: 'Lolgin session expired.' });
+    return res.status(500).json({ error: 'Internal server error.' });
   }
 };
