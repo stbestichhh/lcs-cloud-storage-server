@@ -1,30 +1,30 @@
 import dotenv from 'dotenv';
 import supertest from 'supertest';
 import { UserDto } from '../../bin/src/auth/dto';
-import { db, tableName } from '../../bin/db';
 import * as fs from 'fs';
 import path from 'path';
 import { Folder } from '../../bin/src/filesystem';
 import { app } from '../../bin/src/server';
-import { storagePath } from '../../bin/config';
 import os from 'os';
+import { sequelize } from '../../bin/lib/db';
+import { storagePath } from '../../bin/lib/config';
 
 dotenv.config();
 
 describe('App', () => {
-  let auth_token = '';
-  let reserved_auth_token = '';
+  let auth_token: string;
+  let reserved_auth_token: string;
   let userUuid: string;
 
   const user: UserDto = {
     uuid: 'uuid',
-    name: 'username',
+    username: 'username',
     email: 'email@email.com',
     password: 'userpass',
   };
 
   afterAll(async () => {
-    await db.delete(tableName);
+    await sequelize.drop();
     await Folder.remove(path.join(storagePath, userUuid));
     await Folder.remove(
       path.join(
@@ -51,7 +51,7 @@ describe('App', () => {
         return supertest(app)
           .post('/auth/signup')
           .send({
-            name: user.name,
+            name: user.username,
             email: 'wrongemailformat.com',
             password: user.password,
             password_repeat: user.password,
@@ -63,7 +63,7 @@ describe('App', () => {
         return supertest(app)
           .post('/auth/signup')
           .send({
-            name: user.name,
+            name: user.username,
             email: user.email,
             password: user.password,
             password_repeat: user.password,
@@ -75,7 +75,7 @@ describe('App', () => {
         return supertest(app)
           .post('/auth/signup')
           .send({
-            name: user.name,
+            name: user.username,
             email: user.email,
             password: user.password,
             password_repeat: user.password,
