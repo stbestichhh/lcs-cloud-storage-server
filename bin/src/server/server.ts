@@ -1,5 +1,5 @@
 import { AuthRouter } from '../auth';
-import { FileRouter } from '../filesystem';
+import { FileRouter, FolderRouter } from '../filesystem';
 import express from 'express';
 import cors from 'cors';
 import { OptionValues } from 'commander';
@@ -16,6 +16,7 @@ app.use(cors());
 app.use(limiter);
 
 app.use('/auth', AuthRouter);
+app.use('/storage', FolderRouter);
 app.use('/storage', FileRouter);
 
 export const start = async (options: OptionValues) => {
