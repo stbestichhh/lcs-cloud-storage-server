@@ -8,17 +8,22 @@ import * as https from 'https';
 import { config } from '../../lib/config';
 import { handleErrorSync } from '@stlib/utils';
 import { limiter } from '../middleware';
+import { connectDb } from '../../lib/db';
 
 export const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(limiter);
 
+app.route('/api/v2');
+
 app.use('/auth', AuthRouter);
 app.use('/storage', FileRouter);
 
 export const start = async (options: OptionValues) => {
   try {
+    await connectDb();
+
     const PORT: number =
       options.port ||
       config.get('dport') ||

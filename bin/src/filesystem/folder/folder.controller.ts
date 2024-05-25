@@ -10,7 +10,7 @@ import express from 'express';
 export const FolderRouter = express.Router();
 
 FolderRouter.use(loginValidation);
-FolderRouter.use('/$cmd')
+FolderRouter.route('/$cmd')
 FolderRouter.get('/ls', listdir);
 FolderRouter.post('/md', makedir);
 FolderRouter.put('/mv', move);

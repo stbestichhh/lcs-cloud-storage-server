@@ -2,7 +2,7 @@ import { LoginData, SigninDto, SignupDto, UserDto } from './dto';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon from 'argon2';
-import { UserEntity } from '../../lib/db/entity/user.entity';
+import { UserEntity } from '../../lib/db';
 import { handleError } from '@stlib/utils';
 import { createUserDirectory, hashPassword, signToken } from '../utils';
 

@@ -1,7 +1,7 @@
 import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../lib/config';
-import { UserEntity } from '../../../lib/db/entity/user.entity';
+import { UserEntity } from '../../../lib/db';
 import { handleErrorSync } from '@stlib/utils';
 
 declare module 'express-serve-static-core' {
