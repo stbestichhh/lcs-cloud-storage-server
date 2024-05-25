@@ -15,8 +15,6 @@ app.use(express.json());
 app.use(cors());
 app.use(limiter);
 
-app.route('/api/v2');
-
 app.use('/auth', AuthRouter);
 app.use('/storage', FileRouter);
 

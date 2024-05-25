@@ -96,7 +96,7 @@ export const loginValidation = async (
     const check = await checkLastlogin(req.user);
 
     if (check) {
-      next();
+      return next();
     }
 
     return res.status(403).json({ error: 'Lolgin session expired.' });

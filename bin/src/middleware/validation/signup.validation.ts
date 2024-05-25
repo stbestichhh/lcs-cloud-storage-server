@@ -2,7 +2,7 @@ import { body, validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
 
 export const signupValidation = [
-  body('name')
+  body('username')
     .isString()
     .isLength({ min: 3 })
     .withMessage('Name must be 3 or more characters length.'),
