@@ -12,7 +12,7 @@ export const signToken = async (user: UserDto) => {
     jti: uuidv4(),
   };
 
-  const jwt_key = config.get('jwtkey').toString() || process.env.SECRET_KEY;
+  const jwt_key = config.get('jwtkey') || process.env.SECRET_KEY;
 
   if (!jwt_key) {
     throw Error(
@@ -21,7 +21,7 @@ export const signToken = async (user: UserDto) => {
   }
 
   return {
-    authentication_token: jwt.sign(payload, jwt_key, { expiresIn: '30d' }),
+    authentication_token: jwt.sign(payload, jwt_key.toString(), { expiresIn: '30d' }),
     jti: payload.jti,
   };
 };

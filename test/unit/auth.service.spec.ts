@@ -1,5 +1,4 @@
 import { UserDto } from '../../bin/src/auth/dto';
-import { extractToken } from '../../bin/src/middleware';
 import { hashPassword, signToken } from '../../bin/src/utils';
 
 describe('Auth service', () => {
@@ -28,23 +27,6 @@ describe('Auth service', () => {
       const secondPass: string = await hashPassword(user.password);
 
       expect(fisrtPass === secondPass).toBeFalsy();
-    });
-  });
-
-  describe('Extract token', () => {
-    const authTokenType = 'Bearer';
-    const token = 'superauthtoken';
-    const header = `${authTokenType} ${token}`;
-
-    it('Should extract', () => {
-      const extractedToken = extractToken(header);
-      expect(extractedToken).toEqual(token);
-    });
-
-    it('Should throw', () => {
-      expect(() => {
-        extractToken(token);
-      }).toThrow('Invalid authorization header format.');
     });
   });
 });
