@@ -1,4 +1,3 @@
-import { limiter } from '../utils';
 import { AuthRouter } from '../auth';
 import { FileRouter } from '../filesystem';
 import express from 'express';
@@ -8,6 +7,7 @@ import * as pem from 'pem';
 import * as https from 'https';
 import { config } from '../../lib/config';
 import { handleErrorSync } from '@stlib/utils';
+import { limiter } from '../middleware';
 
 export const app = express();
 app.use(express.json());
