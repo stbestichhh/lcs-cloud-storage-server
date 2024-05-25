@@ -6,7 +6,7 @@ import express from 'express';
 export const FileRouter = express.Router();
 
 FileRouter.use(loginValidation);
-FileRouter.route('/$cmd')
+FileRouter.route('/$cmd');
 FileRouter.get('/cat', read);
 FileRouter.post('/touch', create);
 FileRouter.delete('/rm', remove);

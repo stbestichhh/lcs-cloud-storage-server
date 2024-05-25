@@ -38,12 +38,12 @@ export const UserEntity = sequelize.define<UserType>(
     jti: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: null
+      defaultValue: null,
     },
     lastLogin: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: null
+      defaultValue: null,
     },
   },
   {

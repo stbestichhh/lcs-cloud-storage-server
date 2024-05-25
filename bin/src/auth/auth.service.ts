@@ -13,8 +13,8 @@ export const signup = async (req: Request, res: Response) => {
 
     const users = await UserEntity.findAll({
       where: {
-        email: dto.email
-      }
+        email: dto.email,
+      },
     });
 
     if (users.length !== 0) {
@@ -26,7 +26,7 @@ export const signup = async (req: Request, res: Response) => {
       username: dto.username,
       email: dto.email,
       password: hash,
-    }
+    };
 
     const user = await UserEntity.create(userDto);
     await createUserDirectory(userDto.uuid);
@@ -45,8 +45,8 @@ export const signin = async (req: Request, res: Response) => {
 
     const [user] = await UserEntity.findAll({
       where: {
-        email: dto.email
-      }
+        email: dto.email,
+      },
     });
 
     if (!user) {
@@ -69,9 +69,7 @@ export const signin = async (req: Request, res: Response) => {
     user.set(loginData);
     await user.save();
 
-    return res
-      .status(200)
-      .json({ authentication_token });
+    return res.status(200).json({ authentication_token });
   } catch (error) {
     await handleError(error, () => {
       res.status(500).json({ error: 'Internal server error.' });

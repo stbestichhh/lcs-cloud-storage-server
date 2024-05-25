@@ -110,7 +110,7 @@ export const download = async (req: Request, res: Response) => {
 
     return res.download(filePath, async (error) => {
       return await handleError(error, () => {
-        res.status(500).json({ error: 'Internal server error '});
+        res.status(500).json({ error: 'Internal server error ' });
       });
     });
   } catch (error) {

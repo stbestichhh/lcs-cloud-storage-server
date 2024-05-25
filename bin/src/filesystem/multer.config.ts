@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
       throw Error('Empty user.sub in request.');
     }
 
-    const uploaddir = node_path.join(storagePath, uuid, path)
+    const uploaddir = node_path.join(storagePath, uuid, path);
 
     await fs.mkdir(uploaddir, { recursive: true });
     callback(null, uploaddir);

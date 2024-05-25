@@ -20,7 +20,7 @@ export const extractToken = (header: string): Promise<string> => {
     }
 
     resolve(parts[1]);
-  })
+  });
 };
 
 const verifyToken = async (
@@ -41,11 +41,11 @@ const checkLastlogin = async (user: JwtPayload) => {
   try {
     const user_entity = await UserEntity.findOne({
       where: {
-        uuid: user.sub
-      }
-    })
+        uuid: user.sub,
+      },
+    });
 
-    if(!user_entity) {
+    if (!user_entity) {
       return undefined;
     }
 
@@ -95,7 +95,7 @@ export const loginValidation = async (
 
     const check = await checkLastlogin(req.user);
 
-    if(check) {
+    if (check) {
       next();
     }
 

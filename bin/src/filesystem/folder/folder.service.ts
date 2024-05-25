@@ -103,7 +103,7 @@ export const removedir = async (req: Request, res: Response) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const dirpath = node_path.join(storagePath, uuid, path)
+    const dirpath = node_path.join(storagePath, uuid, path);
     const dirExists = await isExists(dirpath);
 
     if (!dirExists) {

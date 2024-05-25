@@ -25,10 +25,7 @@ export const start = async (options: OptionValues) => {
     await connectDb();
 
     const PORT: number =
-      options.port ||
-      config.get('dport') ||
-      process.env.PORT ||
-      9110;
+      options.port || config.get('dport') || process.env.PORT || 9110;
 
     const HOST: string =
       options.host || config.get('dhost') || process.env.HOST || 'localhost';
@@ -39,7 +36,7 @@ export const start = async (options: OptionValues) => {
       return pem.createCertificate(
         { days, selfSigned: true },
         async (error, keys) => {
-          handleErrorSync(error, {throw: true});
+          handleErrorSync(error, { throw: true });
 
           https
             .createServer({ key: keys.clientKey, cert: keys.certificate }, app)
@@ -54,6 +51,6 @@ export const start = async (options: OptionValues) => {
       console.log(`Server listening on http://${HOST}:${PORT}`);
     });
   } catch (error) {
-    handleErrorSync(error, {throw: true});
+    handleErrorSync(error, { throw: true });
   }
 };
