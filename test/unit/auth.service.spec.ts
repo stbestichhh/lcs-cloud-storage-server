@@ -1,11 +1,11 @@
-import { hashPassword, signToken } from '../../bin/src/auth/auth.service';
 import { UserDto } from '../../bin/src/auth/dto';
 import { extractToken } from '../../bin/src/middleware';
+import { hashPassword, signToken } from '../../bin/src/utils';
 
 describe('Auth service', () => {
   const user: UserDto = {
     uuid: 'uuid',
-    name: 'username',
+    username: 'username',
     email: 'useremail@email.com',
     password: 'userpass',
   };
