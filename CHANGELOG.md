@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [Security](SECURITY.md) file of supported versions
 * Now users can update their data and change passwords
 * Tree command 
+* New flag for prune command, to drop user database
 
 ### Fixed:
 
