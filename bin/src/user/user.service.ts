@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserEntity } from '../../lib/db';
 import { EditUserDto } from './dto';
 import { handleErrorSync } from '@stlib/utils';
 import { hashPassword } from '../utils';
+import { ForbiddenException } from '../../lib/error';
 
-export const getUser = async (req: Request, res: Response) => {
-  try {
-    const uuid = req.user.sub;
+export const getUser = async (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.user.sub!;
 
     const user = await UserEntity.findOne({
       where: {
@@ -15,19 +15,14 @@ export const getUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ error: 'Forbidden.' });
+      return next(new ForbiddenException())
     }
 
     return res.status(200).json({ user });
-  } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error.' });
-  }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
-  try {
-    const uuid = req.user.sub;
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.user.sub!;
     const dto: EditUserDto = req.body;
 
     const user = await UserEntity.findOne({
@@ -37,7 +32,7 @@ export const updateUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ error: 'Forbidden.' });
+      return next(new ForbiddenException())
     }
 
     const hash = dto.password
@@ -54,8 +49,4 @@ export const updateUser = async (req: Request, res: Response) => {
     await user.save();
 
     return res.status(200).json({ user });
-  } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error.' });
-  }
 };
