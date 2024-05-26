@@ -38,35 +38,31 @@ const verifyToken = async (
 };
 
 const checkLastlogin = async (user: JwtPayload) => {
-  try {
-    const user_entity = await UserEntity.findOne({
-      where: {
-        uuid: user.sub,
-      },
-    });
+  const user_entity = await UserEntity.findOne({
+    where: {
+      uuid: user.sub,
+    },
+  });
 
-    if (!user_entity) {
+  if (!user_entity) {
+    return undefined;
+  }
+
+  const jti = user.jti;
+  const userJti = user_entity.jti;
+
+  if (jti === userJti) {
+    const jwt_iat = user.iat?.toString();
+    const lastLogin = user_entity.lastLogin;
+
+    if (jwt_iat !== lastLogin) {
       return undefined;
     }
 
-    const jti = user.jti;
-    const userJti = user_entity.jti;
-
-    if (jti === userJti) {
-      const jwt_iat = user.iat?.toString();
-      const lastLogin = user_entity.lastLogin;
-
-      if (jwt_iat !== lastLogin) {
-        return undefined;
-      }
-
-      return true;
-    }
-
-    return undefined;
-  } catch (error) {
-    return handleErrorSync(error);
+    return true;
   }
+
+  return undefined;
 };
 
 export const loginValidation = async (
@@ -102,6 +98,6 @@ export const loginValidation = async (
     return res.status(403).json({ error: 'Login session expired.' });
   } catch (error) {
     handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error.' });
+    return res.status(500).json({ error });
   }
 };

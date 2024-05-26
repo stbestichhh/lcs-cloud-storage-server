@@ -1,5 +1,3 @@
 describe('App', () => {
-  it('Should be defined', () => {
-
-  })
-})
+  it('Should be defined', () => {});
+});

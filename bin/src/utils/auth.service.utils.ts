@@ -21,7 +21,9 @@ export const signToken = async (user: UserDto) => {
   }
 
   return {
-    authentication_token: jwt.sign(payload, jwt_key.toString(), { expiresIn: '30d' }),
+    authentication_token: jwt.sign(payload, jwt_key.toString(), {
+      expiresIn: '30d',
+    }),
     jti: payload.jti,
   };
 };
