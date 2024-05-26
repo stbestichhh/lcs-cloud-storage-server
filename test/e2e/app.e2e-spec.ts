@@ -348,6 +348,22 @@ describe('App', () => {
           .expect(200);
       });
     });
+
+    describe('Tree directory', () => {
+      it('Should output tree from home directory', async () => {
+        const response = await supertest(app)
+          .get('/storage/cmd/tree')
+          .set('Authorization', `Bearer ${auth_token}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual({
+          tree: {
+            'content_file.txt': null,
+            'file.txt': null,
+          },
+        });
+      });
+    });
   });
 
   describe('User', () => {
@@ -398,7 +414,7 @@ describe('App', () => {
             .get('/user/me')
             .set('Authorization', `Bearer ${auth_token}`)
             .expect(401);
-        }, 1000).unref()
+        }, 1000).unref();
       });
     });
   });

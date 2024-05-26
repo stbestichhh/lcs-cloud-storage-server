@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * New flag for server command, which tells server to srart with ssl.
 * [Code of Conduct](CODE_OF_CONDUCT.md)
 * [Security](SECURITY.md) file of supported versions
+* Now users can update their data and change passwords
+* Tree command 
 
 ### Fixed:
 

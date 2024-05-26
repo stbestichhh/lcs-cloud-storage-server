@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import node_path from 'path';
 import { storagePath } from '../../../lib/config';
 import { handleErrorSync, isExists } from '@stlib/utils';
+import { buildDirectoryTree } from '../../utils/tree.util';
 
 export const listdir = async (req: Request, res: Response) => {
   try {
@@ -30,6 +31,37 @@ export const listdir = async (req: Request, res: Response) => {
     const files = await Folder.list(dirpath);
 
     return res.status(200).json({ files });
+  } catch (error) {
+    handleErrorSync(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const listTree = async (req: Request, res: Response) => {
+  try {
+    const uuid = req.user.sub;
+    const { path } = req.body;
+
+    if (!uuid) {
+      return res.status(403).json({ error: 'Forbidden.' });
+    }
+
+    const dirpath = node_path.join(storagePath, uuid, path ?? '');
+    const dirExists = await isExists(dirpath);
+
+    if (!dirExists) {
+      return res.status(400).json({ error: `tree: No such file or directory` });
+    }
+
+    const stats = await fs.stat(dirpath);
+
+    if (stats.isFile()) {
+      return res.status(400).json({ error: `tree: Is a file` });
+    }
+
+    const tree = buildDirectoryTree(dirpath);
+
+    return res.status(200).json({ tree });
   } catch (error) {
     handleErrorSync(error);
     return res.status(500).json({ error: 'Internal server error' });
