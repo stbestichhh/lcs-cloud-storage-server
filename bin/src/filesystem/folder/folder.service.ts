@@ -51,7 +51,7 @@ export const makedir = async (req: Request, res: Response) => {
         .json({ error: 'mkdir: Provide a directory name.' });
     }
 
-    const dirpath = node_path.join(storagePath, uuid, path);
+    const dirpath = node_path.join(storagePath, uuid, path ?? '');
     const dir = new Folder(dirname);
     await dir.create(dirpath);
 
@@ -74,14 +74,13 @@ export const move = async (req: Request, res: Response) => {
     const dirpath = node_path.join(storagePath, uuid, path);
     const newdirpath = node_path.join(storagePath, uuid, newpath);
 
-    if (path === '' || req.path === '/mv') {
+    if (path === '' || newpath === '') {
       return res.status(403).json({ error: `mv: No such file or directory` });
     }
 
     const oldpathExists = await isExists(dirpath);
-    // const newpathExists = await isExists(path.dirname(newdirpath));
 
-    if (!oldpathExists /* || !newpathExists */) {
+    if (!oldpathExists) {
       return res.status(400).json({ error: `mv: No such file or directory` });
     }
 
@@ -105,6 +104,10 @@ export const removedir = async (req: Request, res: Response) => {
 
     const dirpath = node_path.join(storagePath, uuid, path);
     const dirExists = await isExists(dirpath);
+
+    if (path === '') {
+      return res.status(403).json({ error: `rm: No such file or directory` });
+    }
 
     if (!dirExists) {
       return res
