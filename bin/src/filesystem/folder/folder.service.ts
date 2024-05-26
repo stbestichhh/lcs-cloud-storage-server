@@ -79,8 +79,9 @@ export const move = async (req: Request, res: Response) => {
     }
 
     const oldpathExists = await isExists(dirpath);
+    const newpathExists = await isExists(node_path.dirname(newdirpath));
 
-    if (!oldpathExists) {
+    if (!oldpathExists || !newpathExists) {
       return res.status(400).json({ error: `mv: No such file or directory` });
     }
 

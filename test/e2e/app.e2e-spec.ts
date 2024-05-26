@@ -1,3 +1,354 @@
+import supertest from 'supertest';
+import { UserDto } from '../../bin/src/auth/dto';
+import path from 'path';
+import { Folder } from '../../bin/src/filesystem';
+import { app } from '../../bin/src/server';
+import { sequelize } from '../../bin/lib/db';
+import { storagePath } from '../../bin/lib/config';
+
 describe('App', () => {
-  it('Should be defined', () => {});
+  let auth_token = '';
+  let userUuid = '';
+
+  const user: UserDto = {
+    uuid: 'uuid',
+    username: 'username',
+    email: 'email@email.com',
+    password: 'userpass',
+  };
+
+  afterAll(async () => {
+    await sequelize.drop();
+    await Folder.remove(path.join(storagePath, userUuid));
+  });
+
+  describe('Auth', () => {
+    describe('Signup', () => {
+      it('Should throw if no data provided', async () => {
+        return supertest(app).post('/auth/signup').expect(400);
+      });
+
+      it('Should throw if email is in wrong format', async () => {
+        return supertest(app)
+          .post('/auth/signup')
+          .send({
+            name: user.username,
+            email: 'wrongemailformat.com',
+            password: user.password,
+            password_repeat: user.password,
+          })
+          .expect(400);
+      });
+
+      it('Should signup', async () => {
+        const response = await supertest(app)
+          .post('/auth/signup')
+          .send({
+            name: user.username,
+            email: user.email,
+            password: user.password,
+            password_repeat: user.password,
+          })
+          .expect(201);
+
+        userUuid = response.body.user.uuid;
+      });
+
+      it('Should throw if user with the same email already exists', async () => {
+        return supertest(app)
+          .post('/auth/signup')
+          .send({
+            name: user.username,
+            email: user.email,
+            password: user.password,
+            password_repeat: user.password,
+          })
+          .expect(403);
+      });
+    });
+
+    describe('Signin', () => {
+      it('Should throw if no data provided', async () => {
+        return supertest(app).post('/auth/signin').expect(400);
+      });
+
+      it('Should throw if email is wrong format', async () => {
+        return supertest(app)
+          .post('/auth/signin')
+          .send({
+            email: 'wrongemailformat.com',
+            password: user.password,
+          })
+          .expect(400);
+      });
+
+      it('Should throw if email not exists in database', async () => {
+        return supertest(app)
+          .post('/auth/signin')
+          .send({
+            email: 'wrongemail@email.com',
+            password: user.password,
+          })
+          .expect(403);
+      });
+
+      it('Should signin', async () => {
+        const response = await supertest(app).post('/auth/signin').send({
+          email: user.email,
+          password: user.password,
+        });
+
+        auth_token = response.body.authentication_token;
+
+        expect(response.statusCode).toBe(200);
+      });
+    });
+
+    describe('File System', () => {
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+
+      describe('Create directory', () => {
+        it('Should throw if no directory name provided', async () => {
+          return supertest(app)
+            .post('/storage/cmd/md')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(403);
+        });
+
+        it('Should create directory', async () => {
+          return supertest(app)
+            .post('/storage/cmd/md')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({
+              dirname: 'dir1',
+            })
+            .expect(201);
+        });
+
+        it('Should create directory recursively', async () => {
+          return supertest(app)
+            .post('/storage/cmd/md')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({
+              dirname: 'dir2/dir3',
+            })
+            .expect(201);
+        });
+      });
+
+      describe('List directory', () => {
+        it('Should list root', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/ls/')
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual(['dir1', 'dir2']);
+        });
+
+        it('Should list dir1', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/ls')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({ path: 'dir1' });
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual([]);
+        });
+
+        it('Should list dir2', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/ls')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({ path: 'dir2' });
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual(['dir3']);
+        });
+
+        it('Should throw if path does not exist', async () => {
+          jest.spyOn(Folder, 'list').mockRejectedValue(new Error());
+
+          return supertest(app)
+            .get('/storage/cmd/ls')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({ paht: 'wrong/path' })
+            .expect(403);
+        });
+      });
+
+      describe('Move file', () => {
+        it('Should throw if the target path does not exist.', async () => {
+          //jest.spyOn(Folder, 'move').mockRejectedValue(new Error());
+
+          return supertest(app)
+            .put('/storage/cmd/mv')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({
+              path: 'dir1',
+              newpath: 'dir10',
+            })
+            .expect(400);
+        });
+
+        it('Should rename directory', async () => {
+          const response = await supertest(app)
+            .put('/storage/cmd/mv')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({
+              path: 'dir1',
+              newpath: 'newname',
+            });
+
+          expect(response.statusCode).toBe(200);
+        });
+
+        it('Should list with new dir name', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/ls')
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual(['dir2', 'newname']);
+        });
+      });
+
+      describe('Delete', () => {
+        it('Should throw if target path does not exist for rm', async () => {
+          return supertest(app)
+            .delete('/storage/cmd/rm')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({ path: 'wrong/path' })
+            .expect(403);
+        });
+
+        it('Should throw if target path does not exist for rmrf', async () => {
+          return supertest(app)
+            .delete('/storage/cmd/rmrf')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .send({ path: 'wrong/path' })
+            .expect(403);
+        });
+
+        it('Should delete directory', async () => {
+          const response = await supertest(app)
+            .delete('/storage/cmd/rmrf')
+            .send({ path: 'newname' })
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+        });
+
+        it('Should list without deleted direcory', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/ls')
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual(['dir2']);
+        });
+
+        it('Should delete directory with subdirectories', async () => {
+          const response = await supertest(app)
+            .delete('/storage/cmd/rmrf')
+            .send({ path: 'dir2' })
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+        });
+
+        it('Should list empty directory', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/ls')
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual([]);
+        });
+      });
+
+      describe('Touch', () => {
+        it('Should throw if path to create file not exists', async () => {
+          return supertest(app)
+            .post('/storage/cmd/touch')
+            .send({ path: 'wrong/path/file.txt' })
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(403);
+        });
+
+        it('Should create file', async () => {
+          return supertest(app)
+            .post('/storage/cmd/touch')
+            .send({ path: 'file.txt' })
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(201);
+        });
+
+        it('Should create file with some content', async () => {
+          return supertest(app)
+            .post('/storage/cmd/touch')
+            .send({
+              content: 'It is file with some content',
+              path: 'content_file.txt',
+            })
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(201);
+        });
+      });
+
+      describe('Read file', () => {
+        it('Should throw if file path not exists', async () => {
+          return supertest(app)
+            .get('/storage/cmd/cat')
+            .send({ path: 'wrong/path' })
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(403);
+        });
+
+        it('Should read file with content', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/cat/content_file.txt')
+            .send({ path: 'content_file.txt' })
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual({
+            content: 'It is file with some content',
+          });
+        });
+
+        it('Should read file without content', async () => {
+          const response = await supertest(app)
+            .get('/storage/cmd/cat')
+            .send({ path: 'file.txt' })
+            .set('Authorization', `Bearer ${auth_token}`);
+
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toEqual({
+            content: '',
+          });
+        });
+      });
+
+      describe('Download', () => {
+        it('Should throw if download path not exists', async () => {
+          return supertest(app)
+            .get('/storage/cmd/dl')
+            .send({ path: 'wrong/path' })
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(403);
+        });
+
+        it('Should download file', async () => {
+          return supertest(app)
+            .get('/storage/cmd/dl')
+            .send({ path: 'file.txt' })
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(200);
+        });
+      });
+    });
+  });
 });
