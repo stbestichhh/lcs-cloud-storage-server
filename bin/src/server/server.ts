@@ -9,6 +9,7 @@ import { config } from '../../lib/config';
 import { handleErrorSync } from '@stlib/utils';
 import { limiter } from '../middleware';
 import { connectDb } from '../../lib/db';
+import { UserRouter } from '../user';
 
 export const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use(limiter);
 app.use('/auth', AuthRouter);
 app.use('/storage', FolderRouter);
 app.use('/storage', FileRouter);
+app.use('/user', UserRouter);
 
 export const start = async (options: OptionValues) => {
   try {
