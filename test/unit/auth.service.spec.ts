@@ -11,7 +11,7 @@ describe('Auth service', () => {
 
   describe('Sign token', () => {
     it('Should sign token', async () => {
-      const { authentication_token } = await signToken(user);
+      const authentication_token = await signToken(user);
       expect(authentication_token.length).toBeGreaterThan(10);
     });
   });
