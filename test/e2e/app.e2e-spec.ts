@@ -106,6 +106,7 @@ describe('App', () => {
       });
     });
   });
+
   describe('File System', () => {
     afterEach(() => {
       jest.restoreAllMocks();
@@ -345,6 +346,59 @@ describe('App', () => {
           .send({ path: 'file.txt' })
           .set('Authorization', `Bearer ${auth_token}`)
           .expect(200);
+      });
+    });
+  });
+
+  describe('User', () => {
+    describe('Get user', () => {
+      it('Should return user', () => {
+        return supertest(app)
+          .get('/user/me')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .expect(200);
+      });
+    });
+
+    describe('Edit user', () => {
+      it('Should throw if username is wrong format', () => {
+        return supertest(app)
+          .patch('/user/me')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .send({
+            username: 'nw',
+          })
+          .expect(400);
+      });
+
+      it('Should throw if password is wrong format', () => {
+        return supertest(app)
+          .patch('/user/me')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .send({
+            password: 'pass',
+          })
+          .expect(400);
+      });
+
+      it('Should edit user', () => {
+        return supertest(app)
+          .patch('/user/me')
+          .set('Authorization', `Bearer ${auth_token}`)
+          .send({
+            username: 'new username',
+            password: 'newpassword',
+          })
+          .expect(200);
+      });
+
+      it('Should throw if try to log in with old auth token', () => {
+        setTimeout(() => {
+          return supertest(app)
+            .get('/user/me')
+            .set('Authorization', `Bearer ${auth_token}`)
+            .expect(401);
+        }, 1000).unref()
       });
     });
   });
