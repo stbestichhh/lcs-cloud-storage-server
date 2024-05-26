@@ -1,5 +1,5 @@
 import { LoginData, SigninDto, SignupDto, UserDto } from './dto';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon from 'argon2';
 import { UserEntity } from '../../lib/db';
@@ -7,7 +7,6 @@ import { handleError } from '@stlib/utils';
 import { createUserDirectory, hashPassword, signToken } from '../utils';
 
 export const signup = async (req: Request, res: Response) => {
-  try {
     const dto: SignupDto = req.body;
     const hash = await hashPassword(dto.password);
 
@@ -15,7 +14,7 @@ export const signup = async (req: Request, res: Response) => {
       where: {
         email: dto.email,
       },
-    });
+    })
 
     if (users.length !== 0) {
       return res.status(403).json({ error: 'Forbidden.' });
@@ -32,18 +31,13 @@ export const signup = async (req: Request, res: Response) => {
     await createUserDirectory(userDto.uuid);
 
     return res.status(201).json({ user });
-  } catch (error) {
-    await handleError(error, () => {
-      res.status(500).json({ error: 'Internal server error.' });
-    });
-  }
 };
 
 export const signin = async (req: Request, res: Response) => {
   try {
     const dto: SigninDto = req.body;
 
-    const [user] = await UserEntity.findAll({
+    const user = await UserEntity.findOne({
       where: {
         email: dto.email,
       },
