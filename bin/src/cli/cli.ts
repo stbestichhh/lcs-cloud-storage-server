@@ -39,6 +39,7 @@ program
   .description('Clear server data and delete it')
   .option('-c, --config', 'clear server config')
   .option('-s, --storage', 'clear server storage')
+  .option('-db, --database', 'drop user database')
   .option('-a, --all', 'clear all server data from system')
   .action(async (options) => {
     await serverPrune(options);
