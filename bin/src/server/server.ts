@@ -1,69 +1,55 @@
-import { handleError, limiter } from '../utils';
-import { loginValidation } from '../middleware';
-import { AuthRouter, _getUser } from '../auth';
-import { FilesystemRouter } from '../filesystem';
-import { LcsConfig } from '../../config';
+import { AuthRouter } from '../auth';
+import { FileRouter, FolderRouter } from '../filesystem';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { OptionValues } from 'commander';
 import * as pem from 'pem';
 import * as https from 'https';
-
-dotenv.config();
-
-// pem.config({
-//   pathOpenSSL: certDirectory,
-// });
+import { config } from '../../lib/config';
+import { handleErrorSync } from '@stlib/utils';
+import { limiter } from '../middleware';
+import { connectDb } from '../../lib/db';
 
 export const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(limiter);
 
-app.get('/', (_req, res) => {
-  res.sendStatus(200);
-});
-
-app.get('/protected', loginValidation, (_req, res) => {
-  res.sendStatus(200);
-});
-
-app.get('/me', loginValidation, _getUser);
 app.use('/auth', AuthRouter);
-app.use('/storage', FilesystemRouter);
+app.use('/storage', FolderRouter);
+app.use('/storage', FileRouter);
 
 export const start = async (options: OptionValues) => {
   try {
+    await connectDb();
+
     const PORT: number =
-      options.port ||
-      Number(LcsConfig.get('dport')) ||
-      process.env.PORT ||
-      9110;
+      options.port || config.get('dport') || process.env.PORT || 9110;
 
     const HOST: string =
-      options.host || LcsConfig.get('dhost') || process.env.HOST || 'localhost';
+      options.host || config.get('dhost') || process.env.HOST || 'localhost';
 
     if (options.https) {
-      const days: number = Number(options.https);
+      const days: number = options.https;
+
       return pem.createCertificate(
         { days, selfSigned: true },
         async (error, keys) => {
-          await handleError(error);
+          handleErrorSync(error, { throw: true });
 
           https
             .createServer({ key: keys.clientKey, cert: keys.certificate }, app)
-            .listen(PORT, () => {
+            .listen(PORT, HOST, () => {
               console.log(`Server listening on https://${HOST}:${PORT}`);
             });
         },
       );
     }
 
-    app.listen(PORT, () => {
+    app.listen(PORT, HOST, () => {
       console.log(`Server listening on http://${HOST}:${PORT}`);
     });
   } catch (error) {
-    await handleError(error);
+    handleErrorSync(error, { throw: true });
   }
 };

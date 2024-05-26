@@ -15,7 +15,7 @@ RUN yarn build
 FROM node:21-alpine3.18
 
 # App env
-ENV PORT=9110
+ENV PORT=9180
 ENV HOST="localhost"
 ENV SECRET_KEY="supersecret"
 ENV DB_NAME="lcs_user_repository"

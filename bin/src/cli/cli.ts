@@ -1,7 +1,7 @@
-import { configure } from '../../config';
 import { start } from '../server';
 import { OptionValues, program } from 'commander';
-import { serverPrune } from './cli-functions';
+import { serverPrune } from '../../lib/cli';
+import { configure } from '../../lib/cli';
 
 program
   .name('lcs')

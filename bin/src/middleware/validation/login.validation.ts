@@ -1,10 +1,8 @@
-import { handleServerError } from '../../utils';
-import { LcsConfig } from '../../../config';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
-import { db, tableName } from '../../../db';
-import { UserDto } from '../../auth/dto';
-import path from 'path';
+import { config } from '../../../lib/config';
+import { UserEntity } from '../../../lib/db';
+import { handleErrorSync } from '@stlib/utils';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -12,14 +10,17 @@ declare module 'express-serve-static-core' {
   }
 }
 
-export const extractToken = (header: string): string => {
-  const parts = header.split(' ');
+export const extractToken = (header: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const parts = header.split(' ');
 
-  if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    throw new Error('Invalid authorization header format.');
-  }
+    if (parts.length !== 2 || parts[0] !== 'Bearer') {
+      const error = new Error('Invalid authorization header format.');
+      reject(error);
+    }
 
-  return parts[1];
+    resolve(parts[1]);
+  });
 };
 
 const verifyToken = async (
@@ -37,23 +38,31 @@ const verifyToken = async (
 };
 
 const checkLastlogin = async (user: JwtPayload) => {
-  const userRow = path.join(tableName, user.email);
-  const userDB: UserDto = await db.getObject<UserDto>(userRow);
+  const user_entity = await UserEntity.findOne({
+    where: {
+      uuid: user.sub,
+    },
+  });
+
+  if (!user_entity) {
+    return undefined;
+  }
 
   const jti = user.jti;
-  const userJti = userDB.jti;
+  const userJti = user_entity.jti;
 
   if (jti === userJti) {
     const jwt_iat = user.iat?.toString();
-    const lastLogin = userDB.lastLogin;
+    const lastLogin = user_entity.lastLogin;
 
     if (jwt_iat !== lastLogin) {
-      throw new Error();
+      return undefined;
     }
-    return;
+
+    return true;
   }
 
-  throw Error();
+  return undefined;
 };
 
 export const loginValidation = async (
@@ -61,27 +70,34 @@ export const loginValidation = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const jwt_key = LcsConfig.get('jwtkey') || process.env.SECRET_KEY;
+  const jwt_key = (config.get('jwtkey') || process.env.SECRET_KEY)?.toString();
+
   if (!jwt_key) {
-    throw new Error(
+    throw new JsonWebTokenError(
       `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }
 
   try {
-    const header = req.headers.authorization;
-    if (!header) {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
       return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    const token = extractToken(header);
+    const token = await extractToken(authorization);
 
     req.user = await verifyToken(token, jwt_key);
 
-    await checkLastlogin(req.user);
+    const check = await checkLastlogin(req.user);
 
-    next();
+    if (check) {
+      return next();
+    }
+
+    return res.status(403).json({ error: 'Login session expired.' });
   } catch (error) {
-    await handleServerError(error, 403, res, 'Login session expired.');
+    handleErrorSync(error);
+    return res.status(500).json({ error });
   }
 };

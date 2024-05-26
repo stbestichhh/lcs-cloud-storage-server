@@ -1,31 +1,31 @@
 import { OptionValues } from 'commander';
-import { configPath, storagePath } from '../../../config';
+import { configPath, storagePath } from '../config';
 import path from 'path';
 import os from 'os';
-import { handleError } from '../../utils';
-import { File, Folder } from '../../filesystem';
+import { File, Folder } from '../../src/filesystem';
+import { handleErrorSync } from '@stlib/utils';
 
 export const serverPrune = async (options: OptionValues) => {
   try {
     await clearConfig(options);
     await clearStorage(options);
     await clearAllData(options);
-
-    return console.log('Data has been cleared.');
   } catch (error) {
-    await handleError(error);
+    handleErrorSync(error, { throw: true });
   }
 };
 
 const clearConfig = async (options: OptionValues) => {
   if (options.config) {
     await File.remove(configPath);
+    return console.log('Config has been cleared.');
   }
 };
 
 const clearStorage = async (options: OptionValues) => {
   if (options.storage) {
     await Folder.remove(storagePath);
+    return console.log('Storage has been cleared.');
   }
 };
 
@@ -37,5 +37,6 @@ const clearAllData = async (options: OptionValues) => {
     await Folder.remove(rootDir).then(() => {
       Folder.remove(configDir);
     });
+    return console.log('All data has been cleared.');
   }
 };

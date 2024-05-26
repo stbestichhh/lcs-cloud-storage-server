@@ -1,18 +1,15 @@
-import { remove, download, create, read } from './file.service';
-import { Request, Response } from 'express';
+import { loginValidation } from '../../middleware';
+import { create, download, read, remove } from './file.service';
+import { upload } from '../multer.config';
+import express from 'express';
 
-export const _read = async (req: Request, res: Response) => {
-  return await read(req, res);
-};
+export const FileRouter = express.Router();
 
-export const _create = async (req: Request, res: Response) => {
-  return await create(req, res);
-};
-
-export const _remove = async (req: Request, res: Response) => {
-  return await remove(req, res);
-};
-
-export const _download = async (req: Request, res: Response) => {
-  return await download(req, res);
-};
+FileRouter.use(loginValidation);
+FileRouter.get('/cmd/cat', read);
+FileRouter.post('/cmd/touch', create);
+FileRouter.delete('/cmd/rm', remove);
+FileRouter.get('/cmd/dl', download);
+FileRouter.post('/cmd/ul', upload.any(), (_req, res) => {
+  return res.status(200).json({ message: 'Uploaded.' });
+});
