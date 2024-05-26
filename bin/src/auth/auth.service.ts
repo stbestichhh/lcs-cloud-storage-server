@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon from 'argon2';
 import { UserEntity } from '../../lib/db';
-import { handleError } from '@stlib/utils';
 import { createUserDirectory, hashPassword, signToken } from '../utils';
+import { ForbiddenException, NotFoundException } from '../../lib/error';
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (req: Request, res: Response, next: NextFunction) => {
     const dto: SignupDto = req.body;
     const hash = await hashPassword(dto.password);
 
@@ -17,7 +17,7 @@ export const signup = async (req: Request, res: Response) => {
     })
 
     if (users.length !== 0) {
-      return res.status(403).json({ error: 'Forbidden.' });
+      return next(new ForbiddenException());
     }
 
     const userDto: UserDto = {
@@ -33,8 +33,7 @@ export const signup = async (req: Request, res: Response) => {
     return res.status(201).json({ user });
 };
 
-export const signin = async (req: Request, res: Response) => {
-  try {
+export const signin = async (req: Request, res: Response, next: NextFunction) => {
     const dto: SigninDto = req.body;
 
     const user = await UserEntity.findOne({
@@ -44,13 +43,13 @@ export const signin = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'Credentials are incorrect.' });
+      return next(new NotFoundException());
     }
 
     const pwMatch = await argon.verify(user.password, dto.password);
 
     if (!pwMatch) {
-      return res.status(404).json({ error: 'Credentials are incorrect.' });
+      return next(new NotFoundException());
     }
 
     const { authentication_token, jti } = await signToken(user);
@@ -64,9 +63,4 @@ export const signin = async (req: Request, res: Response) => {
     await user.save();
 
     return res.status(200).json({ authentication_token });
-  } catch (error) {
-    await handleError(error, () => {
-      res.status(500).json({ error: 'Internal server error.' });
-    });
-  }
 };
