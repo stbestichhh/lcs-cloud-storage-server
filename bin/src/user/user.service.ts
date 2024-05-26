@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserEntity } from '../../lib/db';
 import { EditUserDto } from './dto';
-import { handleErrorSync } from '@stlib/utils';
 import { hashPassword } from '../utils';
 import { ForbiddenException } from '../../lib/error';
 
