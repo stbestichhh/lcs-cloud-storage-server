@@ -50,13 +50,13 @@ export const signin = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ error: 'Credentials are incorrect.' });
+      return res.status(404).json({ error: 'Credentials are incorrect.' });
     }
 
     const pwMatch = await argon.verify(user.password, dto.password);
 
     if (!pwMatch) {
-      return res.status(400).json({ error: 'Credentials are incorrect.' });
+      return res.status(404).json({ error: 'Credentials are incorrect.' });
     }
 
     const { authentication_token, jti } = await signToken(user);

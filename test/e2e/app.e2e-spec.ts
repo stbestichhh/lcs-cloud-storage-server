@@ -17,6 +17,11 @@ describe('App', () => {
     password: 'userpass',
   };
 
+  beforeAll(async () => {
+    await sequelize.authenticate();
+    await sequelize.sync({ force: true });
+  });
+
   afterAll(async () => {
     await sequelize.drop();
     await Folder.remove(path.join(storagePath, userUuid));
@@ -32,10 +37,9 @@ describe('App', () => {
         return supertest(app)
           .post('/auth/signup')
           .send({
-            name: user.username,
+            username: user.username,
             email: 'wrongemailformat.com',
             password: user.password,
-            password_repeat: user.password,
           })
           .expect(400);
       });
@@ -44,10 +48,9 @@ describe('App', () => {
         const response = await supertest(app)
           .post('/auth/signup')
           .send({
-            name: user.username,
+            username: user.username,
             email: user.email,
             password: user.password,
-            password_repeat: user.password,
           })
           .expect(201);
 
@@ -58,10 +61,9 @@ describe('App', () => {
         return supertest(app)
           .post('/auth/signup')
           .send({
-            name: user.username,
+            username: user.username,
             email: user.email,
             password: user.password,
-            password_repeat: user.password,
           })
           .expect(403);
       });
@@ -89,7 +91,7 @@ describe('App', () => {
             email: 'wrongemail@email.com',
             password: user.password,
           })
-          .expect(403);
+          .expect(404);
       });
 
       it('Should signin', async () => {
@@ -114,7 +116,7 @@ describe('App', () => {
           return supertest(app)
             .post('/storage/cmd/md')
             .set('Authorization', `Bearer ${auth_token}`)
-            .expect(403);
+            .expect(400);
         });
 
         it('Should create directory', async () => {
@@ -145,7 +147,7 @@ describe('App', () => {
             .set('Authorization', `Bearer ${auth_token}`);
 
           expect(response.statusCode).toBe(200);
-          expect(response.body).toEqual(['dir1', 'dir2']);
+          expect(response.body).toEqual({ files: ['dir1', 'dir2'] });
         });
 
         it('Should list dir1', async () => {
@@ -155,7 +157,7 @@ describe('App', () => {
             .send({ path: 'dir1' });
 
           expect(response.statusCode).toBe(200);
-          expect(response.body).toEqual([]);
+          expect(response.body).toEqual({ files: [] });
         });
 
         it('Should list dir2', async () => {
@@ -165,30 +167,26 @@ describe('App', () => {
             .send({ path: 'dir2' });
 
           expect(response.statusCode).toBe(200);
-          expect(response.body).toEqual(['dir3']);
+          expect(response.body).toEqual({ files: ['dir3'] });
         });
 
         it('Should throw if path does not exist', async () => {
-          jest.spyOn(Folder, 'list').mockRejectedValue(new Error());
-
           return supertest(app)
             .get('/storage/cmd/ls')
             .set('Authorization', `Bearer ${auth_token}`)
-            .send({ paht: 'wrong/path' })
-            .expect(403);
+            .send({ path: 'wrong/path' })
+            .expect(400);
         });
       });
 
       describe('Move file', () => {
         it('Should throw if the target path does not exist.', async () => {
-          //jest.spyOn(Folder, 'move').mockRejectedValue(new Error());
-
           return supertest(app)
             .put('/storage/cmd/mv')
             .set('Authorization', `Bearer ${auth_token}`)
             .send({
               path: 'dir1',
-              newpath: 'dir10',
+              newpath: 'wrong/path/dir10',
             })
             .expect(400);
         });
@@ -211,7 +209,7 @@ describe('App', () => {
             .set('Authorization', `Bearer ${auth_token}`);
 
           expect(response.statusCode).toBe(200);
-          expect(response.body).toEqual(['dir2', 'newname']);
+          expect(response.body).toEqual({ files: ['dir2', 'newname'] });
         });
       });
 
@@ -221,7 +219,7 @@ describe('App', () => {
             .delete('/storage/cmd/rm')
             .set('Authorization', `Bearer ${auth_token}`)
             .send({ path: 'wrong/path' })
-            .expect(403);
+            .expect(400);
         });
 
         it('Should throw if target path does not exist for rmrf', async () => {
@@ -229,7 +227,7 @@ describe('App', () => {
             .delete('/storage/cmd/rmrf')
             .set('Authorization', `Bearer ${auth_token}`)
             .send({ path: 'wrong/path' })
-            .expect(403);
+            .expect(400);
         });
 
         it('Should delete directory', async () => {
@@ -247,7 +245,7 @@ describe('App', () => {
             .set('Authorization', `Bearer ${auth_token}`);
 
           expect(response.statusCode).toBe(200);
-          expect(response.body).toEqual(['dir2']);
+          expect(response.body).toEqual({ files: ['dir2'] });
         });
 
         it('Should delete directory with subdirectories', async () => {
@@ -265,7 +263,7 @@ describe('App', () => {
             .set('Authorization', `Bearer ${auth_token}`);
 
           expect(response.statusCode).toBe(200);
-          expect(response.body).toEqual([]);
+          expect(response.body).toEqual({ files: [] });
         });
       });
 
@@ -275,7 +273,7 @@ describe('App', () => {
             .post('/storage/cmd/touch')
             .send({ path: 'wrong/path/file.txt' })
             .set('Authorization', `Bearer ${auth_token}`)
-            .expect(403);
+            .expect(400);
         });
 
         it('Should create file', async () => {
@@ -304,12 +302,12 @@ describe('App', () => {
             .get('/storage/cmd/cat')
             .send({ path: 'wrong/path' })
             .set('Authorization', `Bearer ${auth_token}`)
-            .expect(403);
+            .expect(400);
         });
 
         it('Should read file with content', async () => {
           const response = await supertest(app)
-            .get('/storage/cmd/cat/content_file.txt')
+            .get('/storage/cmd/cat')
             .send({ path: 'content_file.txt' })
             .set('Authorization', `Bearer ${auth_token}`);
 
@@ -338,7 +336,7 @@ describe('App', () => {
             .get('/storage/cmd/dl')
             .send({ path: 'wrong/path' })
             .set('Authorization', `Bearer ${auth_token}`)
-            .expect(403);
+            .expect(400);
         });
 
         it('Should download file', async () => {
