@@ -4,15 +4,11 @@ import node_path from 'path';
 import * as fs from 'fs/promises';
 import { storagePath } from '../../../lib/config';
 import { handleErrorSync, isExists } from '@stlib/utils';
-import { BadRequestException, ForbiddenException } from '../../../lib/error';
+import { BadRequestException } from '../../../lib/error';
 
 export const read = async (req: Request, res: Response, next: NextFunction) => {
-    const uuid = req.user.sub;
+    const uuid = req.user.sub!;
     const { path } = req.body;
-
-    if (!uuid) {
-      return next(new ForbiddenException())
-    }
 
     const filepath = node_path.join(storagePath, uuid, path);
     const fileExists = await isExists(filepath);
@@ -33,12 +29,8 @@ export const read = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
-    const uuid = req.user.sub;
+    const uuid = req.user.sub!;
     const { content, path } = req.body;
-
-    if (!uuid) {
-      return next(new ForbiddenException())
-    }
 
     const filepath = node_path.join(storagePath, uuid, path);
     const cuttedFilepath = filepath.slice(
@@ -58,12 +50,8 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
-    const uuid = req.user.sub;
+    const uuid = req.user.sub!;
     const { path } = req.body;
-
-    if (!uuid) {
-      return next(new ForbiddenException())
-    }
 
     const filePath = node_path.join(storagePath, uuid, path);
     const fileExists = await isExists(filePath);
@@ -78,12 +66,8 @@ export const remove = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 export const download = async (req: Request, res: Response, next: NextFunction) => {
-    const uuid = req.user.sub;
+    const uuid = req.user.sub!;
     const { path } = req.body;
-
-    if (!uuid) {
-      return next(new ForbiddenException())
-    }
 
     const filePath = node_path.join(storagePath, uuid, path);
     const fileExists = await isExists(filePath);

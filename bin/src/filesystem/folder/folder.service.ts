@@ -1,86 +1,62 @@
 import { Folder } from '../models';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import fs from 'fs/promises';
 import node_path from 'path';
 import { storagePath } from '../../../lib/config';
-import { handleErrorSync, isExists } from '@stlib/utils';
-import { buildDirectoryTree } from '../../utils/tree.util';
+import { isExists } from '@stlib/utils';
+import { buildDirectoryTree } from '../../utils';
+import { BadRequestException } from '../../../lib/error';
 
-export const listdir = async (req: Request, res: Response) => {
-  try {
-    const uuid = req.user.sub;
+export const listdir = async (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.user.sub!;
     const { path } = req.body;
-
-    if (!uuid) {
-      return res.status(403).json({ error: 'Forbidden.' });
-    }
 
     const dirpath = node_path.join(storagePath, uuid, path ?? '');
     const dirExists = await isExists(dirpath);
 
     if (!dirExists) {
-      return res.status(400).json({ error: `ls: No such file or directory` });
+      return next(new BadRequestException('ls: No such file or directory'))
     }
 
     const stats = await fs.stat(dirpath);
 
     if (stats.isFile()) {
-      return res.status(400).json({ error: `ls: Is a file` });
+      return next(new BadRequestException('ls: Target path is a file'))
     }
 
     const files = await Folder.list(dirpath);
 
     return res.status(200).json({ files });
-  } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 };
 
-export const listTree = async (req: Request, res: Response) => {
-  try {
-    const uuid = req.user.sub;
+export const listTree = async (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.user.sub!;
     const { path } = req.body;
-
-    if (!uuid) {
-      return res.status(403).json({ error: 'Forbidden.' });
-    }
 
     const dirpath = node_path.join(storagePath, uuid, path ?? '');
     const dirExists = await isExists(dirpath);
 
     if (!dirExists) {
-      return res.status(400).json({ error: `tree: No such file or directory` });
+      return next(new BadRequestException('tree: No such file or directory'))
     }
 
     const stats = await fs.stat(dirpath);
 
     if (stats.isFile()) {
-      return res.status(400).json({ error: `tree: Is a file` });
+      return next(new BadRequestException('tree: target path is a file'));
     }
 
     const tree = buildDirectoryTree(dirpath);
 
     return res.status(200).json({ tree });
-  } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 };
 
-export const makedir = async (req: Request, res: Response) => {
-  try {
-    const uuid = req.user.sub;
+export const makedir = async (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.user.sub!;
     const { dirname, path } = req.body;
 
-    if (!uuid) {
-      return res.status(403).json({ error: 'Forbidden.' });
-    }
-
     if (!dirname || dirname === '') {
-      return res
-        .status(400)
-        .json({ error: 'mkdir: Provide a directory name.' });
+      return next(new BadRequestException('mkdir: Provide a directory name.'))
     }
 
     const dirpath = node_path.join(storagePath, uuid, path ?? '');
@@ -88,71 +64,39 @@ export const makedir = async (req: Request, res: Response) => {
     await dir.create(dirpath);
 
     return res.status(201).json({ message: 'Directory created.' });
-  } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 };
 
-export const move = async (req: Request, res: Response) => {
-  try {
-    const uuid = req.user.sub;
+export const move = async (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.user.sub!;
     const { path, newpath } = req.body;
-
-    if (!uuid) {
-      return res.status(404).json({ error: 'Forbidden' });
-    }
 
     const dirpath = node_path.join(storagePath, uuid, path);
     const newdirpath = node_path.join(storagePath, uuid, newpath);
 
-    if (path === '' || newpath === '') {
-      return res.status(403).json({ error: `mv: No such file or directory` });
-    }
-
     const oldpathExists = await isExists(dirpath);
     const newpathExists = await isExists(node_path.dirname(newdirpath));
 
-    if (!oldpathExists || !newpathExists) {
-      return res.status(400).json({ error: `mv: No such file or directory` });
+    if (!oldpathExists || !newpathExists || path === '' || newpath === '') {
+      return next(new BadRequestException('mv: No such file or directory'))
     }
 
     await Folder.move(dirpath, newdirpath);
 
     return res.status(200).json({ message: 'File moved.' });
-  } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 };
 
-export const removedir = async (req: Request, res: Response) => {
-  try {
-    const uuid = req.user.sub;
+export const removedir = async (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.user.sub!;
     const { path } = req.body;
-
-    if (!uuid) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
 
     const dirpath = node_path.join(storagePath, uuid, path);
     const dirExists = await isExists(dirpath);
 
-    if (path === '') {
-      return res.status(403).json({ error: `rm: No such file or directory` });
-    }
-
-    if (!dirExists) {
-      return res
-        .status(400)
-        .json({ error: 'rmdir: No such file or directory' });
+    if (path === '' || !dirExists) {
+      return next(new BadRequestException('rmdir: No such file or directory'))
     }
 
     await Folder.remove(dirpath);
 
     return res.status(200).json({ message: 'Directory removed.' });
-  } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
 };
