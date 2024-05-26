@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserEntity } from '../../lib/db';
+import { BlackList, UserEntity } from '../../lib/db';
 import { EditUserDto } from './dto';
 import { hashPassword } from '../utils';
 import { ForbiddenException } from '../../lib/error';
@@ -47,11 +47,14 @@ export const updateUser = async (
   const updateData = {
     username: dto.username ? dto.username : user.username,
     password: hash,
-    lastLogin: Date.now().toString().slice(0, -3),
   };
 
   user.set(updateData);
   await user.save();
+
+  await BlackList.create({
+    token: req.headers.authorization!,
+  });
 
   return res.status(200).json({ user });
 };

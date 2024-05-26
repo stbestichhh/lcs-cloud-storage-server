@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Changed database from json to sqlite3
 * Updated security while working with storage
 * Fixed error response codes in api, improved error handling
+* New login sessions logic
 
 ### Added:
 
@@ -19,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [Security](SECURITY.md) file of supported versions
 * Now users can update their data and change passwords
 * Tree command 
+* New flag for prune command, to drop user database
+* New config flag to define login sessions lifetime
 
 ### Fixed:
 

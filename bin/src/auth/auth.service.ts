@@ -1,8 +1,8 @@
-import { LoginData, SigninDto, SignupDto, UserDto } from './dto';
+import { SigninDto, SignupDto, UserDto } from './dto';
 import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon from 'argon2';
-import { UserEntity } from '../../lib/db';
+import { BlackList, UserEntity } from '../../lib/db';
 import { createUserDirectory, hashPassword, signToken } from '../utils';
 import { ForbiddenException, NotFoundException } from '../../lib/error';
 
@@ -60,15 +60,21 @@ export const signin = async (
     return next(new NotFoundException());
   }
 
-  const { authentication_token, jti } = await signToken(user);
+  const expToken = user.token;
 
-  const loginData: LoginData = {
-    jti,
-    lastLogin: Date.now().toString().slice(0, -3),
-  };
+  if (expToken) {
+    await BlackList.create({
+      token: `Bearer ${expToken.toString()}`,
+    });
+  }
 
-  user.set(loginData);
-  await user.save();
+  const authentication_token = await signToken(user);
+
+  await user
+    .set({
+      token: authentication_token,
+    })
+    .save();
 
   return res.status(200).json({ authentication_token });
 };
