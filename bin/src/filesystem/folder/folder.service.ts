@@ -66,7 +66,7 @@ export const listTree = async (req: Request, res: Response) => {
     handleErrorSync(error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
 
 export const makedir = async (req: Request, res: Response) => {
   try {
