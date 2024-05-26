@@ -12,8 +12,7 @@ export interface UserType
   username: string;
   email: string;
   password: string;
-  jti?: string;
-  lastLogin?: string;
+  token?: string;
 }
 
 export const UserEntity = sequelize.define<UserType>(
@@ -35,16 +34,10 @@ export const UserEntity = sequelize.define<UserType>(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    jti: {
+    token: {
       type: DataTypes.STRING,
-      allowNull: true,
-      defaultValue: null,
-    },
-    lastLogin: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      defaultValue: null,
-    },
+      allowNull: true
+    }
   },
   {
     tableName: 'users',

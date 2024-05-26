@@ -11,7 +11,7 @@ export interface BalckListType
   token: string;
 }
 
-export const BalckList = sequelize.define<BalckListType>(
+export const BlackList = sequelize.define<BalckListType>(
   'BalckList',
   {
     token: {

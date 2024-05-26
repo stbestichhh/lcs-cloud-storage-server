@@ -13,6 +13,7 @@ export const signToken = async (user: UserDto) => {
   };
 
   const jwt_key = (config.get('jwtkey') || process.env.SECRET_KEY)?.toString();
+  const lifeTime = config.get('authexp')?.toString();
 
   if (!jwt_key) {
     throw new JsonWebTokenError(
@@ -20,12 +21,8 @@ export const signToken = async (user: UserDto) => {
     );
   }
 
-  return {
-    authentication_token: jwt.sign(payload, jwt_key.toString(), {
-      expiresIn: '30d',
-    }),
-    jti: payload.jti,
-  };
+  return jwt.sign(payload, jwt_key, {
+      expiresIn: lifeTime ?? '30d', })
 };
 
 export const hashPassword = async (password: string): Promise<string> => {

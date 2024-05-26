@@ -1,7 +1,7 @@
 import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../lib/config';
-import { UserEntity } from '../../../lib/db';
+import { BlackList } from '../../../lib/db';
 import { UnauthorizedExceptions } from '../../../lib/error';
 
 declare module 'express-serve-static-core' {
@@ -25,8 +25,15 @@ export const extractToken = (header: string): Promise<string> => {
 
 const verifyToken = async (
   token: string,
-  jwt_key: string,
 ): Promise<JwtPayload> => {
+  const jwt_key = (config.get('jwtkey') || process.env.SECRET_KEY)?.toString();
+
+  if (!jwt_key) {
+    throw new JsonWebTokenError(
+      `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
+    );
+  }
+
   return new Promise((resolve, reject) => {
     jwt.verify(token, jwt_key, (error, decoded) => {
       if (error) {
@@ -37,25 +44,12 @@ const verifyToken = async (
   });
 };
 
-const checkLastlogin = async (user: JwtPayload) => {
-  const user_entity = await UserEntity.findOne({
+const checkToken = async (header: string) => {
+  return await BlackList.findOne({
     where: {
-      uuid: user.sub,
-    },
+      token: header
+    }
   });
-
-  if (!user_entity) {
-    return undefined;
-  }
-
-  const { jti, iat } = user;
-  const { jti: userJti, lastLogin } = user_entity;
-
-  if (jti !== userJti || iat?.toString() !== lastLogin) {
-    return undefined;
-  }
-
-  return true;
 };
 
 export const loginValidation = async (
@@ -63,14 +57,6 @@ export const loginValidation = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const jwt_key = (config.get('jwtkey') || process.env.SECRET_KEY)?.toString();
-
-  if (!jwt_key) {
-    throw new JsonWebTokenError(
-      `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
-    );
-  }
-
   try {
     const { authorization } = req.headers;
 
@@ -80,11 +66,11 @@ export const loginValidation = async (
 
     const token = await extractToken(authorization);
 
-    req.user = await verifyToken(token, jwt_key);
+    req.user = await verifyToken(token);
 
-    const check = await checkLastlogin(req.user);
+    const isBlacklisted = await checkToken(authorization);
 
-    if (check) {
+    if (!isBlacklisted) {
       return next();
     }
 

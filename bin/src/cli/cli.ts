@@ -19,6 +19,7 @@ program
   .option('--dport <dport>', 'define default server port')
   .option('--jwtkey <jwtkey>', 'define jwt key to sign tokens')
   .option('--dbname <dbname>', 'define name for users database')
+  .option('--authexp <time>', 'define a life time for login sessions. Format: "2 days", "10h", "7d"')
   .action(async (options) => {
     await configure(options);
   });
