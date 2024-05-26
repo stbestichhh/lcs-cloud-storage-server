@@ -1,5 +1,5 @@
 import { UserDto } from '../auth/dto';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { config, storagePath } from '../../lib/config';
 import * as argon from 'argon2';
@@ -12,10 +12,10 @@ export const signToken = async (user: UserDto) => {
     jti: uuidv4(),
   };
 
-  const jwt_key = config.get('jwtkey') || process.env.SECRET_KEY;
+  const jwt_key = (config.get('jwtkey') || process.env.SECRET_KEY)?.toString();
 
   if (!jwt_key) {
-    throw Error(
+    throw new JsonWebTokenError(
       `No jwt_key for authentication provided. Run lcs config --jwtkey=<key>`,
     );
   }

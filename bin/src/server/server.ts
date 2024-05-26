@@ -7,19 +7,20 @@ import * as pem from 'pem';
 import * as https from 'https';
 import { config } from '../../lib/config';
 import { handleErrorSync } from '@stlib/utils';
-import { limiter } from '../middleware';
+import { errorHandler, limiter } from '../middleware';
 import { connectDb } from '../../lib/db';
 import { UserRouter } from '../user';
 
 export const app = express();
+
 app.use(express.json());
 app.use(cors());
 app.use(limiter);
-
 app.use('/auth', AuthRouter);
 app.use('/storage', FolderRouter);
 app.use('/storage', FileRouter);
 app.use('/user', UserRouter);
+app.use(errorHandler);
 
 export const start = async (options: OptionValues) => {
   try {
@@ -52,6 +53,9 @@ export const start = async (options: OptionValues) => {
       console.log(`Server listening on http://${HOST}:${PORT}`);
     });
   } catch (error) {
-    handleErrorSync(error, { throw: true });
+    handleErrorSync(error, {
+      throw: true,
+      message: 'Server crashed on startup.',
+    });
   }
 };

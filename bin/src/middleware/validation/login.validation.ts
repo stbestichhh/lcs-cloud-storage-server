@@ -2,7 +2,7 @@ import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../../../lib/config';
 import { UserEntity } from '../../../lib/db';
-import { handleErrorSync } from '@stlib/utils';
+import { UnauthorizedExceptions } from '../../../lib/error';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -48,21 +48,14 @@ const checkLastlogin = async (user: JwtPayload) => {
     return undefined;
   }
 
-  const jti = user.jti;
-  const userJti = user_entity.jti;
+  const { jti, iat } = user;
+  const { jti: userJti, lastLogin } = user_entity;
 
-  if (jti === userJti) {
-    const jwt_iat = user.iat?.toString();
-    const lastLogin = user_entity.lastLogin;
-
-    if (jwt_iat !== lastLogin) {
-      return undefined;
-    }
-
-    return true;
+  if (jti !== userJti || iat?.toString() !== lastLogin) {
+    return undefined;
   }
 
-  return undefined;
+  return true;
 };
 
 export const loginValidation = async (
@@ -82,7 +75,7 @@ export const loginValidation = async (
     const { authorization } = req.headers;
 
     if (!authorization) {
-      return res.status(401).json({ error: 'Unauthorized.' });
+      return next(new UnauthorizedExceptions());
     }
 
     const token = await extractToken(authorization);
@@ -95,9 +88,8 @@ export const loginValidation = async (
       return next();
     }
 
-    return res.status(401).json({ error: 'Login session expired.' });
+    return next(new UnauthorizedExceptions());
   } catch (error) {
-    handleErrorSync(error);
-    return res.status(500).json({ error });
+    return next(error);
   }
 };

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * New, better and easier api v2.
 * Changed database from json to sqlite3
 * Updated security while working with storage
+* Fixed error response codes in api, improved error handling
 
 ### Added:
 
