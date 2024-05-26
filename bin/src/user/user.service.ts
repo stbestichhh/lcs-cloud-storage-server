@@ -3,7 +3,6 @@ import { BlackList, UserEntity } from '../../lib/db';
 import { EditUserDto } from './dto';
 import { hashPassword } from '../utils';
 import { ForbiddenException } from '../../lib/error';
-import { extractToken } from '../middleware';
 
 export const getUser = async (
   req: Request,
@@ -54,7 +53,7 @@ export const updateUser = async (
   await user.save();
 
   await BlackList.create({
-    token: req.headers.authorization!
+    token: req.headers.authorization!,
   });
 
   return res.status(200).json({ user });

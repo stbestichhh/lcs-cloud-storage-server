@@ -23,9 +23,7 @@ export const extractToken = (header: string): Promise<string> => {
   });
 };
 
-const verifyToken = async (
-  token: string,
-): Promise<JwtPayload> => {
+const verifyToken = async (token: string): Promise<JwtPayload> => {
   const jwt_key = (config.get('jwtkey') || process.env.SECRET_KEY)?.toString();
 
   if (!jwt_key) {
@@ -47,8 +45,8 @@ const verifyToken = async (
 const checkToken = async (header: string) => {
   return await BlackList.findOne({
     where: {
-      token: header
-    }
+      token: header,
+    },
   });
 };
 

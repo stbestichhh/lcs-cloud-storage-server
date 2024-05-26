@@ -36,8 +36,8 @@ export const UserEntity = sequelize.define<UserType>(
     },
     token: {
       type: DataTypes.STRING,
-      allowNull: true
-    }
+      allowNull: true,
+    },
   },
   {
     tableName: 'users',

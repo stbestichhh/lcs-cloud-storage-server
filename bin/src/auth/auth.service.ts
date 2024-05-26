@@ -62,17 +62,19 @@ export const signin = async (
 
   const expToken = user.token;
 
-  if(expToken) {
+  if (expToken) {
     await BlackList.create({
-      token: `Bearer ${expToken.toString()}`
-    })
+      token: `Bearer ${expToken.toString()}`,
+    });
   }
 
   const authentication_token = await signToken(user);
 
-  await user.set({
-    token: authentication_token
-  }).save();
+  await user
+    .set({
+      token: authentication_token,
+    })
+    .save();
 
   return res.status(200).json({ authentication_token });
 };

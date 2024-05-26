@@ -7,7 +7,10 @@ import {
 import { sequelize } from '../db.config';
 
 export interface BalckListType
-  extends Model<InferCreationAttributes<BalckListType>, InferAttributes<BalckListType>> {
+  extends Model<
+    InferCreationAttributes<BalckListType>,
+    InferAttributes<BalckListType>
+  > {
   token: string;
 }
 
@@ -16,8 +19,8 @@ export const BlackList = sequelize.define<BalckListType>(
   {
     token: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
     tableName: 'blacklist',

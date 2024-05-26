@@ -32,11 +32,11 @@ const clearStorage = async (options: OptionValues) => {
 };
 
 const clearDatabase = async (options: OptionValues) => {
-  if(options.database) {
+  if (options.database) {
     await sequelize.drop();
     return console.log('User database has been cleared');
   }
-}
+};
 
 const clearAllData = async (options: OptionValues) => {
   const rootDir = path.join(os.homedir(), '.lcs-cloud-storage');

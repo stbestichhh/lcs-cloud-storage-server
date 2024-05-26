@@ -22,7 +22,8 @@ export const signToken = async (user: UserDto) => {
   }
 
   return jwt.sign(payload, jwt_key, {
-      expiresIn: lifeTime ?? '30d', })
+    expiresIn: lifeTime ?? '30d',
+  });
 };
 
 export const hashPassword = async (password: string): Promise<string> => {
