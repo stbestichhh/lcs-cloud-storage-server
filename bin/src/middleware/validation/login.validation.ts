@@ -95,7 +95,7 @@ export const loginValidation = async (
       return next();
     }
 
-    return res.status(403).json({ error: 'Login session expired.' });
+    return res.status(401).json({ error: 'Login session expired.' });
   } catch (error) {
     handleErrorSync(error);
     return res.status(500).json({ error });
