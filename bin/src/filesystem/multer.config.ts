@@ -5,12 +5,8 @@ import { storagePath } from '../../lib/config';
 
 const storage = multer.diskStorage({
   destination: async (req, _file, callback) => {
-    const uuid = req.user.sub;
+    const uuid = req.user.sub!;
     const { path } = req.body;
-
-    if (!uuid) {
-      throw Error('Empty user.sub in request.');
-    }
 
     const uploaddir = node_path.join(storagePath, uuid, path ?? '');
 
