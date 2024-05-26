@@ -53,6 +53,9 @@ export const start = async (options: OptionValues) => {
       console.log(`Server listening on http://${HOST}:${PORT}`);
     });
   } catch (error) {
-    handleErrorSync(error, { throw: true, message: 'Server crashed on startup.' });
+    handleErrorSync(error, {
+      throw: true,
+      message: 'Server crashed on startup.',
+    });
   }
 };

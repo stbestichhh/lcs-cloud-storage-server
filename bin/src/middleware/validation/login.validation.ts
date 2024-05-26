@@ -75,7 +75,7 @@ export const loginValidation = async (
     const { authorization } = req.headers;
 
     if (!authorization) {
-      return next(new UnauthorizedExceptions())
+      return next(new UnauthorizedExceptions());
     }
 
     const token = await extractToken(authorization);
@@ -88,8 +88,8 @@ export const loginValidation = async (
       return next();
     }
 
-    return next(new UnauthorizedExceptions())
+    return next(new UnauthorizedExceptions());
   } catch (error) {
-    return next(error)
+    return next(error);
   }
 };
