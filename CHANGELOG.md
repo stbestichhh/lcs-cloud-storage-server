@@ -6,12 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Updated:
+* New, better and easier api v2.
+* Changed database from json to sqlite3
+* Updated security while working with storage
 
 ### Added:
 
-* Added new flag for server command, which tells server to srart with ssl.
-* Added [Code of Conduct](CODE_OF_CONDUCT.md)
-* Added [Security](SECURITY.md) file of supported versions
+* New flag for server command, which tells server to srart with ssl.
+* [Code of Conduct](CODE_OF_CONDUCT.md)
+* [Security](SECURITY.md) file of supported versions
 
 ### Fixed:
 
