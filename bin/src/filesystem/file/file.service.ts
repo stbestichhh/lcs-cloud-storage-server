@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import node_path from 'path';
 import * as fs from 'fs/promises';
 import { storagePath } from '../../../lib/config';
-import { handleError, handleErrorSync, isExists } from '@stlib/utils';
+import { handleErrorSync, isExists } from '@stlib/utils';
 
 export const read = async (req: Request, res: Response) => {
   try {
@@ -46,7 +46,10 @@ export const create = async (req: Request, res: Response) => {
     }
 
     const filepath = node_path.join(storagePath, uuid, path);
-    const cuttedFilepath = filepath.slice(0, -path.basename(filepath).length);
+    const cuttedFilepath = filepath.slice(
+      0,
+      -node_path.basename(filepath).length,
+    );
     const pathExists = await isExists(cuttedFilepath);
 
     if (!pathExists) {
@@ -99,7 +102,7 @@ export const download = async (req: Request, res: Response) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const filePath = path.join(storagePath, uuid, path);
+    const filePath = node_path.join(storagePath, uuid, path);
     const fileExists = await isExists(filePath);
 
     if (!fileExists) {
@@ -108,10 +111,8 @@ export const download = async (req: Request, res: Response) => {
         .json({ error: 'download: No such file or directory' });
     }
 
-    return res.download(filePath, async (error) => {
-      return await handleError(error, () => {
-        res.status(500).json({ error: 'Internal server error ' });
-      });
+    return res.download(filePath, (error) => {
+      handleErrorSync(error);
     });
   } catch (error) {
     handleErrorSync(error);

@@ -86,7 +86,7 @@ export const move = async (req: Request, res: Response) => {
 
     await Folder.move(dirpath, newdirpath);
 
-    return res.status(200).json({ message: 'Directory moved.' });
+    return res.status(200).json({ message: 'File moved.' });
   } catch (error) {
     handleErrorSync(error);
     return res.status(500).json({ error: 'Internal server error' });
