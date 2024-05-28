@@ -1,4 +1,4 @@
-import { loginValidation } from '../../middleware';
+import { loginValidation } from '../../../middleware';
 import { listdir, makedir, removedir, move, listTree } from './folder.service';
 import express from 'express';
 

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { BlackList, UserEntity } from '../../lib/db';
+import { BlackList, UserEntity } from '../../../lib/db';
 import { EditUserDto } from './dto';
-import { hashPassword } from '../utils';
-import { ForbiddenException } from '../../lib/error';
+import { hashPassword } from '../../utils';
+import { ForbiddenException } from '../../../lib/error';
 
 export const getUser = async (
   req: Request,

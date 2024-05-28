@@ -1,5 +1,5 @@
-import { AuthRouter } from '../auth';
-import { FileRouter, FolderRouter } from '../filesystem';
+import { AuthRouter } from '../api';
+import { FileRouter, FolderRouter } from '../api';
 import express from 'express';
 import cors from 'cors';
 import { OptionValues } from 'commander';
@@ -9,7 +9,7 @@ import { config } from '../../lib/config';
 import { handleErrorSync } from '@stlib/utils';
 import { errorHandler, limiter } from '../middleware';
 import { connectDb } from '../../lib/db';
-import { UserRouter } from '../user';
+import { UserRouter } from '../api';
 
 export const app = express();
 

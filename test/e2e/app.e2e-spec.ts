@@ -1,7 +1,7 @@
 import supertest from 'supertest';
-import { UserDto } from '../../bin/src/auth/dto';
+import { UserDto } from '../../bin/src/api/auth/dto';
 import path from 'path';
-import { Folder } from '../../bin/src/filesystem';
+import { Folder } from '../../bin/src/api';
 import { app } from '../../bin/src/server';
 import { sequelize } from '../../bin/lib/db';
 import { storagePath } from '../../bin/lib/config';

@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import multer from 'multer';
 import node_path from 'path';
-import { storagePath } from '../../lib/config';
+import { storagePath } from '../../../lib/config';
 
 const storage = multer.diskStorage({
   destination: async (req, _file, callback) => {

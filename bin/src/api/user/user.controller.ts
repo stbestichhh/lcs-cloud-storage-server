@@ -1,5 +1,5 @@
 import express from 'express';
-import { editUserValidation, loginValidation } from '../middleware';
+import { editUserValidation, loginValidation } from '../../middleware';
 import { getUser, updateUser } from './user.service';
 
 export const UserRouter = express.Router();

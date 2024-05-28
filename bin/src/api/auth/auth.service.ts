@@ -2,9 +2,9 @@ import { SigninDto, SignupDto, UserDto } from './dto';
 import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon from 'argon2';
-import { BlackList, UserEntity } from '../../lib/db';
-import { createUserDirectory, hashPassword, signToken } from '../utils';
-import { ForbiddenException, NotFoundException } from '../../lib/error';
+import { BlackList, UserEntity } from '../../../lib/db';
+import { createUserDirectory, hashPassword, signToken } from '../../utils';
+import { ForbiddenException, NotFoundException } from '../../../lib/error';
 
 export const signup = async (
   req: Request,

@@ -1,4 +1,4 @@
-import { signinValidation, signupValidation } from '../middleware';
+import { signinValidation, signupValidation } from '../../middleware';
 import express from 'express';
 import { signin, signup } from './auth.service';
 

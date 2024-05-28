@@ -2,9 +2,9 @@ import { File } from '../models';
 import { NextFunction, Request, Response } from 'express';
 import node_path from 'path';
 import * as fs from 'fs/promises';
-import { storagePath } from '../../../lib/config';
+import { storagePath } from '../../../../lib/config';
 import { handleErrorSync, isExists } from '@stlib/utils';
-import { BadRequestException } from '../../../lib/error';
+import { BadRequestException } from '../../../../lib/error';
 
 export const read = async (req: Request, res: Response, next: NextFunction) => {
   const uuid = req.user.sub!;

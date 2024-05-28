@@ -1,4 +1,4 @@
-import { loginValidation } from '../../middleware';
+import { loginValidation } from '../../../middleware';
 import { create, download, read, remove } from './file.service';
 import { upload } from '../multer.config';
 import express from 'express';

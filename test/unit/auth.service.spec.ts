@@ -1,4 +1,4 @@
-import { UserDto } from '../../bin/src/auth/dto';
+import { UserDto } from '../../bin/src/api/auth/dto';
 import { hashPassword, signToken } from '../../bin/src/utils';
 
 describe('Auth service', () => {

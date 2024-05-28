@@ -2,10 +2,10 @@ import { Folder } from '../models';
 import { NextFunction, Request, Response } from 'express';
 import fs from 'fs/promises';
 import node_path from 'path';
-import { storagePath } from '../../../lib/config';
+import { storagePath } from '../../../../lib/config';
 import { isExists } from '@stlib/utils';
-import { buildDirectoryTree } from '../../utils';
-import { BadRequestException } from '../../../lib/error';
+import { buildDirectoryTree } from '../../../utils';
+import { BadRequestException } from '../../../../lib/error';
 
 export const listdir = async (
   req: Request,
