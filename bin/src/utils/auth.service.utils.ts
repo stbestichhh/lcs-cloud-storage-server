@@ -3,7 +3,7 @@ import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { config, storagePath } from '../../lib/config';
 import * as argon from 'argon2';
-import { Folder } from '../api/filesystem';
+import { Folder } from '../api';
 
 export const signToken = async (user: UserDto) => {
   const payload: JwtPayload = {

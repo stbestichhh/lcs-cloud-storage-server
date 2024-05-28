@@ -2,7 +2,7 @@ import { OptionValues } from 'commander';
 import { configPath, storagePath } from '../config';
 import path from 'path';
 import os from 'os';
-import { File, Folder } from '../../src/api/filesystem';
+import { File, Folder } from '../../src/api';
 import { handleErrorSync } from '@stlib/utils';
 import { sequelize } from '../db';
 
