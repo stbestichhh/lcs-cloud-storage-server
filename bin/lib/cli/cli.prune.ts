@@ -40,10 +40,14 @@ const clearDatabase = async (options: OptionValues) => {
 
 const clearAllData = async (options: OptionValues) => {
   const rootDir = path.join(os.homedir(), appNames.rootdir);
-  const configDir = path.join(os.homedir(), appNames.configdir, appNames.rootcfgdir);
+  const configDir = path.join(
+    os.homedir(),
+    appNames.configdir,
+    appNames.rootcfgdir,
+  );
 
   if (options.all) {
-    await Folder.remove(rootDir)
+    await Folder.remove(rootDir);
     await Folder.remove(configDir);
 
     return console.log('All data has been cleared.');

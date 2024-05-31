@@ -26,7 +26,7 @@ export const BlackList = sequelize.define<BalckListType>(
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: DataTypes.NOW,
-    }
+    },
   },
   {
     tableName: 'blacklist',

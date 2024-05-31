@@ -8,8 +8,8 @@ export const appNames = {
   storagedir: 'storage',
   configfile: 'lcs.config',
   logsfile: 'lcs.log',
-  dbname: 'lcs_db.sql'
-}
+  dbname: 'lcs_db.sql',
+};
 
 export const storagePath = path.join(
   os.homedir(),
@@ -30,4 +30,8 @@ export const logfilePath = path.join(
   appNames.logsfile,
 );
 
-export const dbPath = path.join(os.homedir(), appNames.rootdir, appNames.dbname);
+export const dbPath = path.join(
+  os.homedir(),
+  appNames.rootdir,
+  appNames.dbname,
+);

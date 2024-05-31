@@ -7,7 +7,7 @@ const deleteTime = 30;
 
 const isValid = cron.validate(time);
 
-if(!isValid) {
+if (!isValid) {
   throw new RangeError('Wrong schedule time.');
 }
 
@@ -19,7 +19,7 @@ export const clearBlacklistJob = cron.schedule(time, async () => {
     where: {
       created: {
         [Op.lte]: lte,
-      }
-    }
-  })
-})
+      },
+    },
+  });
+});
