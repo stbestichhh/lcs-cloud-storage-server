@@ -5,6 +5,7 @@ import { Folder } from '../../bin/src/api';
 import { app } from '../../bin/src/server';
 import { sequelize } from '../../bin/lib/db';
 import { storagePath } from '../../bin/lib/config';
+import { clearBlacklistJob } from '../../bin/src/scheduler';
 
 describe('App', () => {
   let auth_token = '';
@@ -25,6 +26,7 @@ describe('App', () => {
   afterAll(async () => {
     await sequelize.drop();
     await Folder.remove(path.join(storagePath, userUuid));
+    clearBlacklistJob.stop();
   });
 
   describe('Auth', () => {

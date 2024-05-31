@@ -8,6 +8,7 @@ import { config } from '../../lib/config';
 import { handleErrorSync } from '@stlib/utils';
 import { errorHandler, limiter } from '../middleware';
 import { connectDb } from '../../lib/db';
+import { clearBlacklistJob } from '../scheduler';
 
 export const app = express();
 
@@ -23,6 +24,7 @@ app.use(errorHandler);
 export const start = async (options: OptionValues) => {
   try {
     await connectDb();
+    clearBlacklistJob.start();
 
     const PORT: number =
       options.port || config.get('dport') || process.env.PORT || 9110;
