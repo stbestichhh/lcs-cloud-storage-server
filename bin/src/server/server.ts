@@ -32,7 +32,7 @@ export const start = async (options: OptionValues) => {
     const HOST: string =
       options.host || config.get('dhost') || process.env.HOST || 'localhost';
 
-    if (options.https) {
+    if (options.secure) {
       const days: number = options.https;
 
       return pem.createCertificate(
