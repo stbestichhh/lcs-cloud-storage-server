@@ -1,12 +1,9 @@
 import { loginValidation } from '../../../middleware';
-import { listdir, makedir, removedir, move, listTree } from './folder.service';
+import { FolderService } from './folder.service';
 import express from 'express';
+import { directoryServiceValidation } from '../../../middleware/validation/folder.validation';
 
 export const FolderRouter = express.Router();
 
 FolderRouter.use(loginValidation);
-FolderRouter.get('/cmd/ls', listdir);
-FolderRouter.get('/cmd/tree', listTree);
-FolderRouter.post('/cmd/md', makedir);
-FolderRouter.put('/cmd/mv', move);
-FolderRouter.delete('/cmd/rmrf', removedir);
+FolderRouter.post('', directoryServiceValidation, FolderService.handleCommand)

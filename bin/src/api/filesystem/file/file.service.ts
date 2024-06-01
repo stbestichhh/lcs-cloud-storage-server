@@ -1,12 +1,12 @@
 import { File } from '../models';
 import { NextFunction, Request, Response } from 'express';
 import * as fs from 'fs/promises';
-import { handleErrorSync, isExists } from '@stlib/utils';
+import { isExists } from '@stlib/utils';
 import { BadRequestException } from '../../../../lib/error';
 import { getFilePath } from '../../../utils/getFilePath';
 import path from 'path';
 
-type DataType = { uuid: string, relativePath: string, filePath: string, content: string };
+type DataType = { filePath: string, content: string };
 type CommandFunctionType = (req: Request, res: Response, next: NextFunction, data: DataType) => unknown;
 
 export class FileService {
@@ -29,10 +29,10 @@ export class FileService {
     const filePath = getFilePath(uuid, relativePath);
 
     if(!command) {
-      throw new BadRequestException('No command provided.');
+      return next(new BadRequestException('No command provided.'));
     }
 
-    const data: DataType = { uuid, relativePath, filePath, content };
+    const data: DataType = { filePath, content };
     return await serviceInstance.cmd[command](req, res, next, data);
   }
 

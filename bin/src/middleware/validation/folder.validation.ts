@@ -1,11 +1,11 @@
 import { body, validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
 
-export const fileServiceValidation = [
+export const directoryServiceValidation = [
   body('path')
     .isString()
     .withMessage('Target pass is missing.'),
-  body('content')
+  body('newPath')
     .optional()
     .isString(),
 
