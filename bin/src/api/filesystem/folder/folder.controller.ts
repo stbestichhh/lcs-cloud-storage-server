@@ -6,4 +6,4 @@ import { directoryServiceValidation } from '../../../middleware/validation/folde
 export const FolderRouter = express.Router();
 
 FolderRouter.use(loginValidation);
-FolderRouter.post('', directoryServiceValidation, FolderService.handleCommand)
+FolderRouter.post('', directoryServiceValidation, FolderService.handleCommand);

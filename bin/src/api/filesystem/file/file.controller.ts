@@ -10,4 +10,4 @@ FileRouter.use(loginValidation);
 FileRouter.post('', fileServiceValidation, FileService.handleCommand);
 FileRouter.post('/upload', upload.any(), (req: Request, res: Response) => {
   return res.status(200).json({ message: 'Uploaded.' });
-})
+});

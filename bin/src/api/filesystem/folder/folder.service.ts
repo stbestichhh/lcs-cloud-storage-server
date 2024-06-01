@@ -8,8 +8,17 @@ import { getFilePath } from '../../../utils/getFilePath';
 import path from 'path';
 import { storagePath } from '../../../../lib/config';
 
-type DataType = { directoryPath: string, newDirectoryPath: string, directoryName: string };
-type CommandFunctionType = (req: Request, res: Response, next: NextFunction, data: DataType) => unknown;
+type DataType = {
+  directoryPath: string;
+  newDirectoryPath: string;
+  directoryName: string;
+};
+type CommandFunctionType = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  data: DataType,
+) => unknown;
 
 export class FolderService {
   private readonly cmd: { [key: string]: CommandFunctionType };
@@ -21,11 +30,11 @@ export class FolderService {
       md: this._makedir.bind(this),
       mv: this._move.bind(this),
       rmrf: this._remove.bind(this),
-    }
+    };
   }
 
   static async handleCommand(req: Request, res: Response, next: NextFunction) {
-    const serviceInstance = new FolderService()
+    const serviceInstance = new FolderService();
     const command = req.query.cmd?.toString();
     const uuid = req.user.sub!;
     const { path: relativePath, newPath } = req.body;
@@ -33,30 +42,35 @@ export class FolderService {
     const directoryPath = getFilePath(uuid, relativePath);
     const newDirectoryPath = getFilePath(uuid, newPath ?? 'ERR');
 
-    if(!command) {
+    if (!command) {
       return next(new BadRequestException('No command provided.'));
     }
 
     const data: DataType = { directoryPath, newDirectoryPath, directoryName };
     const commandFunction = serviceInstance.cmd[command];
-    if(!commandFunction) {
+    if (!commandFunction) {
       return next();
     }
     return await commandFunction(req, res, next, data);
   }
 
   private async _checkDirectoryExists(dirpath: string, next: NextFunction) {
-    if(!(await isExists(dirpath))) {
+    if (!(await isExists(dirpath))) {
       next(new BadRequestException('No such file or directory.'));
       return false;
     }
     return true;
   }
 
-  private async _listdir(req: Request, res: Response, next: NextFunction, data: DataType) {
+  private async _listdir(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    data: DataType,
+  ) {
     const { directoryPath } = data;
 
-    if(!(await this._checkDirectoryExists(directoryPath, next))) return;
+    if (!(await this._checkDirectoryExists(directoryPath, next))) return;
 
     const stats = await fs.stat(directoryPath);
     if (stats.isFile()) {
@@ -64,7 +78,7 @@ export class FolderService {
     }
 
     let files;
-    if(req.query.cmd === 'ls') {
+    if (req.query.cmd === 'ls') {
       files = await Folder.list(directoryPath);
     } else if (req.query.cmd === 'tree') {
       files = buildDirectoryTree(directoryPath);
@@ -73,7 +87,12 @@ export class FolderService {
     return res.status(200).json({ files });
   }
 
-  private async _makedir(req: Request, res: Response, next: NextFunction, data: DataType) {
+  private async _makedir(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    data: DataType,
+  ) {
     const { directoryPath, directoryName } = data;
 
     const directory = new Folder(directoryName);
@@ -81,22 +100,36 @@ export class FolderService {
     return res.status(201).json({ message: 'Directory created.' });
   }
 
-  private async _move(req: Request, res: Response, next: NextFunction, data: DataType) {
+  private async _move(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    data: DataType,
+  ) {
     const { directoryPath, newDirectoryPath } = data;
 
-    if(!newDirectoryPath || path.basename(newDirectoryPath) === 'ERR') {
+    if (!newDirectoryPath || path.basename(newDirectoryPath) === 'ERR') {
       return next(new BadRequestException('No such file or directory.'));
     }
-    if(!(await this._checkDirectoryExists(directoryPath, next)) || !(await this._checkDirectoryExists(path.dirname(newDirectoryPath), next))) return;
+    if (
+      !(await this._checkDirectoryExists(directoryPath, next)) ||
+      !(await this._checkDirectoryExists(path.dirname(newDirectoryPath), next))
+    )
+      return;
 
     await Folder.move(directoryPath, newDirectoryPath);
     return res.status(200).json({ message: 'File or directory moved.' });
   }
 
-  private async _remove(req: Request, res: Response, next: NextFunction, data: DataType) {
+  private async _remove(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    data: DataType,
+  ) {
     const { directoryPath } = data;
 
-    if(!(await this._checkDirectoryExists(directoryPath, next))) return;
+    if (!(await this._checkDirectoryExists(directoryPath, next))) return;
 
     await Folder.remove(directoryPath);
     return res.status(200).json({ message: 'File or directory removed.' });
