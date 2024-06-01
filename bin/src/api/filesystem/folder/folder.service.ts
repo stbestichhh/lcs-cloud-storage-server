@@ -6,7 +6,6 @@ import { buildDirectoryTree } from '../../../utils';
 import { BadRequestException } from '../../../../lib/error';
 import { getFilePath } from '../../../utils/getFilePath';
 import path from 'path';
-import { storagePath } from '../../../../lib/config';
 
 type DataType = {
   directoryPath: string;
