@@ -1,8 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 import { BlackList, UserEntity } from '../../../lib/db';
 import { EditUserDto } from './dto';
-import { hashPassword } from '../../utils';
-import { ForbiddenException } from '../../../lib/error';
+import { createUserDirectory, hashPassword } from '../../utils';
+import { BadRequestException, ForbiddenException } from '../../../lib/error';
+import { isExists } from '@stlib/utils';
+import path from 'path';
+import { storagePath } from '../../../lib/config';
+
+export const createDirectory = async (req: Request, res: Response, next: NextFunction) => {
+  const uuid = req.user.sub!;
+  const userDirectory = path.join(storagePath, uuid);
+
+  if((await isExists(userDirectory))) return next(new BadRequestException('Storage already exists.'));
+
+  await createUserDirectory(uuid);
+
+  return res.status(200).json({ message: 'Directory created' });
+}
 
 export const getUser = async (
   req: Request,
