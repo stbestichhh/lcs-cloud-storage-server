@@ -1,15 +1,13 @@
 import { loginValidation } from '../../../middleware';
-import { create, download, read, remove } from './file.service';
+import { FileService } from './file.service';
 import { upload } from '../multer.config';
-import express from 'express';
+import express, { Request, Response } from 'express';
+import { fileServiceValidation } from '../../../middleware';
 
 export const FileRouter = express.Router();
 
 FileRouter.use(loginValidation);
-FileRouter.get('/cmd/cat', read);
-FileRouter.post('/cmd/touch', create);
-FileRouter.delete('/cmd/rm', remove);
-FileRouter.get('/cmd/dl', download);
-FileRouter.post('/cmd/ul', upload.any(), (_req, res) => {
+FileRouter.post('', fileServiceValidation, FileService.handleCommand);
+FileRouter.post('/upload', upload.any(), (req: Request, res: Response) => {
   return res.status(200).json({ message: 'Uploaded.' });
-});
+})

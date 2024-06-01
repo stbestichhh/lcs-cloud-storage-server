@@ -1,17 +1,16 @@
 import * as fs from 'fs/promises';
 import multer from 'multer';
-import node_path from 'path';
-import { storagePath } from '../../../lib/config';
+import { getFilePath } from '../../utils/getFilePath';
 
 const storage = multer.diskStorage({
   destination: async (req, _file, callback) => {
     const uuid = req.user.sub!;
-    const { path } = req.body;
+    const { path: relativePath } = req.body;
 
-    const uploaddir = node_path.join(storagePath, uuid, path ?? '');
+    const uploadDirectory = getFilePath(uuid, relativePath || '');
 
-    await fs.mkdir(uploaddir, { recursive: true });
-    callback(null, uploaddir);
+    await fs.mkdir(uploadDirectory, { recursive: true });
+    callback(null, uploadDirectory);
   },
   filename: (_req, file, callback) => {
     callback(null, file.originalname);
