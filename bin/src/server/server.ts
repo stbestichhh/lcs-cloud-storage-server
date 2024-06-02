@@ -15,10 +15,10 @@ export const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(limiter);
-app.use('/auth', AuthRouter);
-app.use('/storage', FolderRouter);
-app.use('/storage', FileRouter);
-app.use('/user', UserRouter);
+app.use('/api/v3/auth', AuthRouter);
+app.use('/api/v3/storage', FolderRouter);
+app.use('/api/v3/storage', FileRouter);
+app.use('/api/v3/user', UserRouter);
 app.use(errorHandler);
 
 export const start = async (options: OptionValues) => {
