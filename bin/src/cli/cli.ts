@@ -48,7 +48,8 @@ program
   });
 
 program.action(() => {
-  return console.log('Run lcs --help to see usage instructions.');
+  console.log('Run lcs --help to see usage instructions.');
+  return process.exit(0);
 });
 
 program.parse(process.argv);

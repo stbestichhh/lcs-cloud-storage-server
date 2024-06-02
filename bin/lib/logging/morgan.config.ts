@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { logfilePath } from '../config';
 import { isExistsSync } from '@stlib/utils';
 
-const logExists = isExistsSync(logfilePath, { create: true, recursive: true });
+const logExists = isExistsSync(logfilePath, { create: true, recursive: true, content: '/' });
 
 if (!logExists) {
   throw new Error(`Cannot find 'log' directory.`);
