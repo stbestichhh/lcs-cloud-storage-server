@@ -60,7 +60,7 @@ $ yarn install
 #### Or install as NPM package
 
 ```shell
-$ npm i -g lcs-cloud-storage
+$ npm i -g @lcs-cloud-storage/server
 ```
 
 ### Deployment

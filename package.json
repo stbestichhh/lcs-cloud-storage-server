@@ -1,5 +1,5 @@
 {
-  "name": "lcs-cloud-storage",
+  "name": "@lcs-cloud-storage/server",
   "version": "1.0.1",
   "description": "Local cloud storage with authentication",
   "main": "dist/index.js",
