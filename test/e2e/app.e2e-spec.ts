@@ -150,7 +150,7 @@ describe('App', () => {
           .send({
             path: '',
           })
-          .auth(`${auth_token}`, { type: 'bearer' })
+          .auth(`${auth_token}`, { type: 'bearer' });
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ files: ['dir1', 'dir2'] });
@@ -215,7 +215,7 @@ describe('App', () => {
           .auth(`${auth_token}`, { type: 'bearer' })
           .send({
             path: '',
-          })
+          });
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ files: ['dir2', 'newname'] });
@@ -243,7 +243,7 @@ describe('App', () => {
         const response = await supertest(app)
           .post('/api/v3/storage?cmd=rmrf')
           .auth(`${auth_token}`, { type: 'bearer' })
-          .send({ path: 'newname' })
+          .send({ path: 'newname' });
 
         expect(response.statusCode).toBe(200);
       });
@@ -254,7 +254,7 @@ describe('App', () => {
           .auth(`${auth_token}`, { type: 'bearer' })
           .send({
             path: '',
-          })
+          });
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ files: ['dir2'] });
@@ -264,7 +264,7 @@ describe('App', () => {
         const response = await supertest(app)
           .post('/api/v3/storage?cmd=rmrf')
           .auth(`${auth_token}`, { type: 'bearer' })
-          .send({ path: 'dir2' })
+          .send({ path: 'dir2' });
 
         expect(response.statusCode).toBe(200);
       });
@@ -275,7 +275,7 @@ describe('App', () => {
           .auth(`${auth_token}`, { type: 'bearer' })
           .send({
             path: '',
-          })
+          });
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({ files: [] });
@@ -324,7 +324,7 @@ describe('App', () => {
         const response = await supertest(app)
           .post('/api/v3/storage?cmd=cat')
           .auth(`${auth_token}`, { type: 'bearer' })
-          .send({ path: 'content_file.txt' })
+          .send({ path: 'content_file.txt' });
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
@@ -336,7 +336,7 @@ describe('App', () => {
         const response = await supertest(app)
           .post('/api/v3/storage?cmd=cat')
           .auth(`${auth_token}`, { type: 'bearer' })
-          .send({ path: 'file.txt' })
+          .send({ path: 'file.txt' });
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
@@ -370,7 +370,7 @@ describe('App', () => {
           .auth(`${auth_token}`, { type: 'bearer' })
           .send({
             path: '',
-          })
+          });
 
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual({
