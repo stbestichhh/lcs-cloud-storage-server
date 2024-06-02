@@ -1,11 +1,10 @@
 import { start } from '../server';
 import { OptionValues, program } from 'commander';
-import { serverPrune } from '../../lib/cli';
-import { configure } from '../../lib/cli';
+import { serverPrune, configure } from '../../lib/cli';
 
 program
   .name('lcs')
-  .version('0.0.5')
+  .version('1.0.0')
   .description('Local cloud storage server with authentication')
   .allowUnknownOption();
 
@@ -18,7 +17,6 @@ program
   .option('--dhost <dhost>', 'define default server host')
   .option('--dport <dport>', 'define default server port')
   .option('--jwtkey <jwtkey>', 'define jwt key to sign tokens')
-  .option('--dbname <dbname>', 'define name for users database')
   .option(
     '--authexp <time>',
     'define a life time for login sessions. Format: "2 days", "10h", "7d"',
@@ -33,7 +31,7 @@ program
   .description('Start the local cloud storage server')
   .option('-p, --port <port>', 'tell server which port to use')
   .option('-h, --host <host>', 'tell server which host to use')
-  .option('--https [days]', 'tell server to use https protocol')
+  .option('-https, --secure [days]', 'tell server to use https protocol')
   .action(async (options) => {
     await start(options);
   });

@@ -1,5 +1,4 @@
-import { AuthRouter } from '../auth';
-import { FileRouter, FolderRouter } from '../filesystem';
+import { AuthRouter, FileRouter, FolderRouter, UserRouter } from '../api';
 import express from 'express';
 import cors from 'cors';
 import { OptionValues } from 'commander';
@@ -9,22 +8,23 @@ import { config } from '../../lib/config';
 import { handleErrorSync } from '@stlib/utils';
 import { errorHandler, limiter } from '../middleware';
 import { connectDb } from '../../lib/db';
-import { UserRouter } from '../user';
+import { clearBlacklistJob } from '../scheduler';
 
 export const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use(limiter);
-app.use('/auth', AuthRouter);
-app.use('/storage', FolderRouter);
-app.use('/storage', FileRouter);
-app.use('/user', UserRouter);
+app.use('/api/v3/auth', AuthRouter);
+app.use('/api/v3/storage', FolderRouter);
+app.use('/api/v3/storage', FileRouter);
+app.use('/api/v3/user', UserRouter);
 app.use(errorHandler);
 
 export const start = async (options: OptionValues) => {
   try {
     await connectDb();
+    clearBlacklistJob.start();
 
     const PORT: number =
       options.port || config.get('dport') || process.env.PORT || 9110;
@@ -32,7 +32,7 @@ export const start = async (options: OptionValues) => {
     const HOST: string =
       options.host || config.get('dhost') || process.env.HOST || 'localhost';
 
-    if (options.https) {
+    if (options.secure) {
       const days: number = options.https;
 
       return pem.createCertificate(

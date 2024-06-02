@@ -12,6 +12,7 @@ export interface BalckListType
     InferAttributes<BalckListType>
   > {
   token: string;
+  created?: Date;
 }
 
 export const BlackList = sequelize.define<BalckListType>(
@@ -20,6 +21,11 @@ export const BlackList = sequelize.define<BalckListType>(
     token: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    created: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
     },
   },
   {

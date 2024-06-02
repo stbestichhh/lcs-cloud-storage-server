@@ -1,8 +1,8 @@
 import { OptionValues } from 'commander';
-import { configPath, storagePath } from '../config';
+import { configPath, appNames, storagePath } from '../config';
 import path from 'path';
 import os from 'os';
-import { File, Folder } from '../../src/filesystem';
+import { File, Folder } from '../../src/api';
 import { handleErrorSync } from '@stlib/utils';
 import { sequelize } from '../db';
 
@@ -39,13 +39,17 @@ const clearDatabase = async (options: OptionValues) => {
 };
 
 const clearAllData = async (options: OptionValues) => {
-  const rootDir = path.join(os.homedir(), '.lcs-cloud-storage');
-  const configDir = path.join(os.homedir(), '.config', 'lcs-cloud-storage');
+  const rootDir = path.join(os.homedir(), appNames.rootdir);
+  const configDir = path.join(
+    os.homedir(),
+    appNames.configdir,
+    appNames.rootcfgdir,
+  );
 
   if (options.all) {
-    await Folder.remove(rootDir).then(async () => {
-      await Folder.remove(configDir);
-    });
+    await Folder.remove(rootDir);
+    await Folder.remove(configDir);
+
     return console.log('All data has been cleared.');
   }
 };

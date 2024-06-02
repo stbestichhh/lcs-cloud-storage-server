@@ -1,9 +1,9 @@
-import { UserDto } from '../auth/dto';
+import { UserDto } from '../api/auth/dto';
 import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { config, storagePath } from '../../lib/config';
 import * as argon from 'argon2';
-import { Folder } from '../filesystem';
+import { Folder } from '../api';
 
 export const signToken = async (user: UserDto) => {
   const payload: JwtPayload = {

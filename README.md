@@ -2,7 +2,6 @@
 [![NPM Version](https://img.shields.io/npm/v/lcs-cloud-storage)](https://www.npmjs.com/package/lcs-cloud-storage)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-[![Static Badge](https://img.shields.io/badge/lcs-Wiki-skyblue)](https://github.com/stbestichhh/lcs-cloud-storage-server/wiki)
 
 
 # lcs-cloud-storage server
@@ -25,9 +24,9 @@
 
 ## About
 
-LCS - is a local cloud storage server. 
-The Local Cloud Storage Server project aims to develop a robust and secure local cloud storage solution. 
-This system will provide users with the ability to store, retrieve, and manage their data locally while enjoying the benefits of cloud storage such as scalability, accessibility, and reliability. 
+LCS - is a local cloud storage server.
+The Local Cloud Storage Server project aims to develop a robust and secure local cloud storage solution.
+This system will provide users with the ability to store, retrieve, and manage their data locally while enjoying the benefits of cloud storage such as scalability, accessibility, and reliability.
 
 The server will expose a **RESTful API** that allows users to interact with the storage.
 This API will support operations such as uploading files, downloading and all default filesystem operations.
@@ -49,7 +48,7 @@ This will enable users to use server feature or to configure it.
 1. Clone the repository
 
 ```shell
-$ git clone https://github.com/stbestichhh/lcs-cloud-storage-server.git 
+$ git clone https://github.com/stbestichhh/lcs-cloud-storage-server.git
 ```
 
 2. Install dependencies
@@ -97,8 +96,8 @@ $ npm i -g lcs-cloud-storage
   $ docker build -t lcs-cloud-storage .
   $ docker run -e <ENV>=<value> -p <port>:<port> lcs-cloud-storage node dist/index.js [options] [command]
   ```
-  
-  Overriding every enviroment variable is not necessary. Options and command see in [usage](#usage) section. 
+
+  Overriding every enviroment variable is not necessary. Options and command see in [usage](#usage) section.
 
 #### Start server locally
 
@@ -146,7 +145,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 Project changes are writen in changelog, see the [CHANGELOG.md](CHANGELOG.md).
 
-We use [SemVer](https://semver.org/) for versioning. 
+We use [SemVer](https://semver.org/) for versioning.
 For the versions available, see the [tags](https://github.com/stbestichhh/lcs-cloud-storage-server/tags) on this repository.
 
 For the supported and unsupported versions, see the [SECURITY.md](SECURITY.md).
