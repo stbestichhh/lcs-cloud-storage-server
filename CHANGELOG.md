@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added:
 * Now user can delete his storage, and recreate it again
 * Secured HTTP response headers
+* Logging tool. It logs 400 and 500 responses to terminal and all responses and errors to the log file
 
 ### Changed:
 * Updated project structure
