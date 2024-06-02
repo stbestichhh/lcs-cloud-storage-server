@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added:
 * Now user can delete his storage, and recreate it again
+* Secured HTTP response headers
 
 ### Changed:
 * Updated project structure

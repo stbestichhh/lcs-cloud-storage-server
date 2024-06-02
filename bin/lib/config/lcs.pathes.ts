@@ -4,6 +4,7 @@ import os from 'os';
 export const appNames = {
   rootdir: '.lcs-cloud-storage',
   rootcfgdir: 'lcs-cloud-storage',
+  logdirectory: 'log',
   configdir: '.config',
   storagedir: 'storage',
   configfile: 'lcs.config',
@@ -27,6 +28,8 @@ export const configPath = path.join(
 export const logfilePath = path.join(
   os.homedir(),
   appNames.rootdir,
+  appNames.logdirectory,
+  Date.now().toString(),
   appNames.logsfile,
 );
 
