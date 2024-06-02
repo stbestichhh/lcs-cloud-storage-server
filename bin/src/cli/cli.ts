@@ -1,14 +1,14 @@
 import { start } from '../server';
 import { OptionValues, program } from 'commander';
 import { serverPrune, configure } from '../../lib/cli';
+import { clearBlacklistJob } from '../scheduler';
 
 program
   .name('lcs')
-  .version('1.0.0')
+  .version('1.0.1')
   .description('Local cloud storage server with authentication')
+  .option('--log', 'log every error to logfile.')
   .allowUnknownOption();
-
-program.option('-l, --log', 'log every error to logfile.');
 
 program
   .command('config')
@@ -49,7 +49,7 @@ program
 
 program.action(() => {
   console.log('Run lcs --help to see usage instructions.');
-  return process.exit(0);
+  clearBlacklistJob.stop();
 });
 
 program.parse(process.argv);

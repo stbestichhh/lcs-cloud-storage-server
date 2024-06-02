@@ -1,16 +1,20 @@
 import fs from 'fs';
 import { Request, Response } from 'express';
 import { logfilePath } from '../config';
-import { isExistsSync } from '@stlib/utils';
+import { isExistsSync, options } from '@stlib/utils';
 
-const logExists = isExistsSync(logfilePath, {
-  create: true,
-  recursive: true,
-  content: '/',
-});
+let logExists: boolean = false;
 
-if (!logExists) {
-  throw new Error(`Cannot find 'log' directory.`);
+if(options?.log !== undefined) {
+  logExists = isExistsSync(logfilePath, {
+    create: true,
+    recursive: true,
+    content: '/',
+  });
+
+  if (!logExists) {
+    throw new Error(`Cannot find 'log' directory.`);
+  }
 }
 
 export const devConf = {
@@ -19,6 +23,6 @@ export const devConf = {
   },
 };
 
-export const commonConf = {
+export const commonConf = logExists ? {
   stream: fs.createWriteStream(logfilePath, { flags: 'a' }),
-};
+} : {};

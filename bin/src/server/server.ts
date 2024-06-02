@@ -5,7 +5,7 @@ import { OptionValues } from 'commander';
 import * as pem from 'pem';
 import * as https from 'https';
 import { config } from '../../lib/config';
-import { handleErrorSync } from '@stlib/utils';
+import { handleErrorSync, options } from '@stlib/utils';
 import { errorHandler, limiter } from '../middleware';
 import { connectDb } from '../../lib/db';
 import { clearBlacklistJob } from '../scheduler';
@@ -15,11 +15,14 @@ import { commonConf, devConf } from '../../lib/logging';
 
 export const app = express();
 
+if(options?.log !== undefined) {
+  app.use(morgan('dev', devConf));
+  app.use(morgan('common', commonConf));
+}
+
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
-app.use(morgan('dev', devConf));
-app.use(morgan('common', commonConf));
 app.use(limiter);
 app.use('/api/v3/auth', AuthRouter);
 app.use('/api/v3/storage', FolderRouter);
