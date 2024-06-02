@@ -5,7 +5,7 @@ import { isExistsSync, options } from '@stlib/utils';
 
 let logExists: boolean = false;
 
-if(options?.log !== undefined) {
+if (options?.log !== undefined) {
   logExists = isExistsSync(logfilePath, {
     create: true,
     recursive: true,
@@ -23,6 +23,8 @@ export const devConf = {
   },
 };
 
-export const commonConf = logExists ? {
-  stream: fs.createWriteStream(logfilePath, { flags: 'a' }),
-} : {};
+export const commonConf = logExists
+  ? {
+      stream: fs.createWriteStream(logfilePath, { flags: 'a' }),
+    }
+  : {};

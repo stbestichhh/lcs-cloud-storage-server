@@ -15,7 +15,7 @@ import { commonConf, devConf } from '../../lib/logging';
 
 export const app = express();
 
-if(options?.log !== undefined) {
+if (options?.log !== undefined) {
   app.use(morgan('dev', devConf));
   app.use(morgan('common', commonConf));
 }
