@@ -9,11 +9,13 @@ import { handleErrorSync } from '@stlib/utils';
 import { errorHandler, limiter } from '../middleware';
 import { connectDb } from '../../lib/db';
 import { clearBlacklistJob } from '../scheduler';
+import helmet from 'helmet';
 
 export const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
 app.use(limiter);
 app.use('/api/v3/auth', AuthRouter);
 app.use('/api/v3/storage', FolderRouter);
