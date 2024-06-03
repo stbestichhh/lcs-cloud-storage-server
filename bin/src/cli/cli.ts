@@ -5,7 +5,7 @@ import { clearBlacklistJob } from '../scheduler';
 
 program
   .name('lcs')
-  .version('1.0.1')
+  .version('1.0.2')
   .description('Local cloud storage server with authentication')
   .option('--log', 'log every error to logfile.')
   .allowUnknownOption();

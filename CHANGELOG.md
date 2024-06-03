@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed:
 * After inserting command, procces had not been exiting
 
+`03-06-2024`
+
 ## Patch 1.0.1
 ### Added:
 * Now user can delete his storage, and recreate it again
