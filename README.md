@@ -109,7 +109,7 @@ $ yarn start:dev
 
 ### Usage
 
-See the usage instruction in the lcs-cloud-storage [Wiki's](https://github.com/stbestichhh/lcs-cloud-storage-server/wiki)
+See the usage instruction in the lcs-cloud-storage [documentation](https://lcs-cloud-storage-docs.vercel.app/advanced)
 
 ### Running tests
 
