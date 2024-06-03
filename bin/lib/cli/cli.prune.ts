@@ -39,12 +39,14 @@ const clearDatabase = async (options: OptionValues) => {
   }
 };
 
-const clearLogs = async(options: OptionValues) => {
-  if(options.logs) {
-    await Folder.remove(logdirectoryPath.slice(0, -path.basename(logdirectoryPath).length));
+const clearLogs = async (options: OptionValues) => {
+  if (options.logs) {
+    await Folder.remove(
+      logdirectoryPath.slice(0, -path.basename(logdirectoryPath).length),
+    );
     return console.log('Server logs has been deleted.');
   }
-}
+};
 
 const clearAllData = async (options: OptionValues) => {
   const rootDir = path.join(os.homedir(), appNames.rootdir);
