@@ -5,11 +5,11 @@ import { isExistsSync, options } from '@stlib/utils';
 
 let logExists: boolean = false;
 
-if (options?.log !== undefined) {
+if (options?.log) {
   logExists = isExistsSync(logfilePath, {
     create: true,
     recursive: true,
-    content: '/',
+    content: '',
   });
 
   if (!logExists) {
