@@ -1,7 +1,7 @@
-import fs from 'fs';
 import { Request, Response } from 'express';
-import { logfilePath } from '../config';
+import { appNames, logdirectoryPath, logfilePath } from '../config';
 import { isExistsSync, options } from '@stlib/utils';
+import * as rfs from 'rotating-file-stream';
 
 let logExists: boolean = false;
 
@@ -25,6 +25,9 @@ export const devConf = {
 
 export const commonConf = logExists
   ? {
-      stream: fs.createWriteStream(logfilePath, { flags: 'a' }),
+      stream: rfs.createStream(appNames.logsfile, {
+        interval: '1d',
+        path: logdirectoryPath,
+      }),
     }
   : {};

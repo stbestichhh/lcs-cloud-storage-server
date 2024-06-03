@@ -5,7 +5,7 @@ import { clearBlacklistJob } from '../scheduler';
 
 program
   .name('lcs')
-  .version('1.0.1')
+  .version('1.0.2')
   .description('Local cloud storage server with authentication')
   .option('--log', 'log every error to logfile.')
   .allowUnknownOption();
@@ -22,6 +22,7 @@ program
     'define a life time for login sessions. Format: "2 days", "10h", "7d"',
   )
   .action(async (options) => {
+    clearBlacklistJob.stop();
     await configure(options);
   });
 
@@ -42,14 +43,16 @@ program
   .option('-c, --config', 'clear server config')
   .option('-s, --storage', 'clear server storage')
   .option('-db, --database', 'drop user database')
+  .option('-l, --logs', 'delete server logs')
   .option('-a, --all', 'clear all server data from system')
   .action(async (options) => {
+    clearBlacklistJob.stop();
     await serverPrune(options);
   });
 
 program.action(() => {
-  console.log('Run lcs --help to see usage instructions.');
   clearBlacklistJob.stop();
+  console.log('Run lcs --help to see usage instructions.');
 });
 
 program.parse(process.argv);
