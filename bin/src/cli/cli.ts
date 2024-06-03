@@ -22,6 +22,7 @@ program
     'define a life time for login sessions. Format: "2 days", "10h", "7d"',
   )
   .action(async (options) => {
+    clearBlacklistJob.stop();
     await configure(options);
   });
 
@@ -44,12 +45,13 @@ program
   .option('-db, --database', 'drop user database')
   .option('-a, --all', 'clear all server data from system')
   .action(async (options) => {
+    clearBlacklistJob.stop();
     await serverPrune(options);
   });
 
 program.action(() => {
-  console.log('Run lcs --help to see usage instructions.');
   clearBlacklistJob.stop();
+  console.log('Run lcs --help to see usage instructions.');
 });
 
 program.parse(process.argv);
