@@ -5,4 +5,7 @@ import { createDirectory, getUser, updateUser } from './user.service';
 export const UserRouter = express.Router();
 
 UserRouter.use(loginValidation);
-UserRouter.route('/me').get(getUser).patch(editUserValidation, updateUser).post(createDirectory);
+UserRouter.route('/me')
+  .get(getUser)
+  .patch(editUserValidation, updateUser)
+  .post(createDirectory);

@@ -25,6 +25,13 @@ export const configPath = path.join(
   appNames.configfile,
 );
 
+export const logdirectoryPath = path.join(
+  os.homedir(),
+  appNames.rootdir,
+  appNames.logdirectory,
+  Date.now().toString(),
+);
+
 export const logfilePath = path.join(
   os.homedir(),
   appNames.rootdir,
