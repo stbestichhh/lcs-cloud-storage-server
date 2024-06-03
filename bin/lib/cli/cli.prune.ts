@@ -1,5 +1,5 @@
 import { OptionValues } from 'commander';
-import { configPath, appNames, storagePath } from '../config';
+import { configPath, appNames, storagePath, logdirectoryPath } from '../config';
 import path from 'path';
 import os from 'os';
 import { File, Folder } from '../../src/api';
@@ -11,6 +11,7 @@ export const serverPrune = async (options: OptionValues) => {
     await clearConfig(options);
     await clearStorage(options);
     await clearDatabase(options);
+    await clearLogs(options);
     await clearAllData(options);
   } catch (error) {
     handleErrorSync(error, { throw: true });
@@ -34,9 +35,16 @@ const clearStorage = async (options: OptionValues) => {
 const clearDatabase = async (options: OptionValues) => {
   if (options.database) {
     await sequelize.drop();
-    return console.log('User database has been cleared');
+    return console.log('User database has been cleared.');
   }
 };
+
+const clearLogs = async(options: OptionValues) => {
+  if(options.logs) {
+    await Folder.remove(logdirectoryPath.slice(0, -path.basename(logdirectoryPath).length));
+    return console.log('Server logs has been deleted.');
+  }
+}
 
 const clearAllData = async (options: OptionValues) => {
   const rootDir = path.join(os.homedir(), appNames.rootdir);
