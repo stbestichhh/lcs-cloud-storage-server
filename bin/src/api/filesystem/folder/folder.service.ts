@@ -3,14 +3,17 @@ import { NextFunction, Request, Response } from 'express';
 import fs from 'fs/promises';
 import { isExists } from '@stlib/utils';
 import { buildDirectoryTree } from '../../../utils';
-import { BadRequestException } from '../../../../lib/error';
+import { BadRequestException, NotFoundException } from '../../../../lib/error';
 import { getFilePath } from '../../../utils/getFilePath';
 import path from 'path';
+import { UserEntity } from '../../../../lib/db';
+import { storagePath } from '../../../../lib/config';
 
 type DataType = {
   directoryPath: string;
   newDirectoryPath: string;
   directoryName: string;
+  email?: string;
 };
 type CommandFunctionType = (
   req: Request,
@@ -28,6 +31,7 @@ export class FolderService {
       tree: this._listdir.bind(this),
       md: this._makedir.bind(this),
       mv: this._move.bind(this),
+      mvu: this._moveToUser.bind(this),
       rmrf: this._remove.bind(this),
     };
   }
@@ -132,5 +136,27 @@ export class FolderService {
 
     await Folder.remove(directoryPath);
     return res.status(200).json({ message: 'File or directory removed.' });
+  }
+
+  private async _moveToUser(req: Request, res: Response, next: NextFunction, data: DataType) {
+    const { email, directoryPath } = data;
+
+    const receiver = await UserEntity.findOne({
+      where: {
+        email
+      }
+    });
+
+    if(!receiver) {
+      next(new NotFoundException());
+    }
+
+    const receiverDirectory = path.join(storagePath, receiver!.uuid);
+
+    if(!(await this._checkDirectoryExists(receiverDirectory, next))) return;
+    if(!(await this._checkDirectoryExists(directoryPath, next))) return;
+
+    await Folder.move(directoryPath, receiverDirectory);
+    return res.status(200).json({ message: `File or directory sent to ${email}.` });
   }
 }
